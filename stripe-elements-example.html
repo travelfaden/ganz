@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stripe Elements - Custom Design</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        .payment-container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .payment-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .form-group label {
+            font-weight: 600;
+            color: var(--text-color);
+        }
+        /* Customizacja Stripe Elements */
+        .StripeElement {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: white;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .StripeElement--focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        .StripeElement--invalid {
+            border-color: #ef4444;
+        }
+        .StripeElement--complete {
+            border-color: #10b981;
+        }
+        .submit-button {
+            padding: 1rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .submit-button:hover {
+            background: var(--primary-dark);
+        }
+        .submit-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .error-message {
+            color: #ef4444;
+            padding: 0.75rem;
+            background: #fee2e2;
+            border-radius: 5px;
+            margin-top: 1rem;
+        }
+        .success-message {
+            color: #059669;
+            padding: 0.75rem;
+            background: #d1fae5;
+            border-radius: 5px;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="payment-container">
+        <h1>Płatność - Travel Faden</h1>
+        <p>Wprowadź dane karty płatniczej</p>
+        
+        <form class="payment-form" id="payment-form">
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="email" class="test-input" placeholder="twoj@email.com" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Dane karty</label>
+                <div id="card-element">
+                    <!-- Stripe Elements będzie tutaj -->
+                </div>
+                <div id="card-errors" role="alert"></div>
+            </div>
+            
+            <div class="form-group">
+                <label>Kwota</label>
+                <input type="number" id="amount" class="test-input" value="80" min="1" step="0.01" required>
+            </div>
+            
+            <button type="submit" class="submit-button" id="submit-button">
+                Zapłać <span id="amount-display">80€</span>
+            </button>
+        </form>
+        
+        <div id="message"></div>
+    </div>
+
+    <script>
+        // Wprowadź swój Publishable Key
+        const stripe = Stripe('pk_test_TWOJ_KLUCZ_TUTAJ'); // Zmień na swój klucz
+        const elements = stripe.elements();
+        
+        // Stylizacja Stripe Elements
+        const style = {
+            base: {
+                color: '#32325d',
+                fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+                fontSmoothing: 'antialiased',
+                fontSize: '16px',
+                '::placeholder': {
+                    color: '#aab7c4'
+                }
+            },
+            invalid: {
+                color: '#fa755a',
+                iconColor: '#fa755a'
+            }
+        };
+        
+        // Utwórz element karty
+        const cardElement = elements.create('card', { style: style });
+        cardElement.mount('#card-element');
+        
+        // Obsługa błędów
+        cardElement.on('change', ({error}) => {
+            const displayError = document.getElementById('card-errors');
+            if (error) {
+                displayError.textContent = error.message;
+            } else {
+                displayError.textContent = '';
+            }
+        });
+        
+        // Aktualizacja wyświetlanej kwoty
+        document.getElementById('amount').addEventListener('input', (e) => {
+            document.getElementById('amount-display').textContent = e.target.value + '€';
+        });
+        
+        // Obsługa formularza
+        const form = document.getElementById('payment-form');
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitButton = document.getElementById('submit-button');
+            const messageDiv = document.getElementById('message');
+            const amount = parseFloat(document.getElementById('amount').value);
+            const email = document.getElementById('email').value;
+            
+            submitButton.disabled = true;
+            submitButton.textContent = 'Przetwarzanie...';
+            messageDiv.innerHTML = '';
+            
+            try {
+                // Utwórz Payment Intent przez backend
+                const response = await fetch('http://localhost:3000/api/create-payment-intent', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        amount: amount * 100, // Stripe używa centów
+                        currency: 'eur',
+                        email: email,
+                    }),
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Błąd podczas tworzenia płatności');
+                }
+                
+                const { clientSecret } = await response.json();
+                
+                // Potwierdź płatność
+                const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+                    payment_method: {
+                        card: cardElement,
+                        billing_details: {
+                            email: email,
+                        },
+                    },
+                });
+                
+                if (error) {
+                    throw new Error(error.message);
+                }
+                
+                if (paymentIntent.status === 'succeeded') {
+                    messageDiv.innerHTML = '<div class="success-message">Płatność zakończona sukcesem! Dziękujemy.</div>';
+                    form.reset();
+                }
+                
+            } catch (error) {
+                messageDiv.innerHTML = `<div class="error-message">Błąd: ${error.message}</div>`;
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = `Zapłać ${amount}€`;
+            }
+        });
+    </script>
+</body>
+</html>
+
+
+
+

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Płatność Anulowana - Travel Faden</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .cancel-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: var(--bg-light);
+        }
+        .cancel-card {
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow-xl);
+            text-align: center;
+            max-width: 600px;
+        }
+        .cancel-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+        }
+        .cancel-card h1 {
+            color: var(--text-color);
+            margin-bottom: 1rem;
+        }
+        .cancel-card p {
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+        .cancel-button {
+            padding: 1rem 2.5rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            margin-right: 1rem;
+        }
+        .cancel-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+        }
+        .secondary-button {
+            padding: 1rem 2.5rem;
+            background: white;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        .secondary-button:hover {
+            background: var(--bg-light);
+        }
+    </style>
+</head>
+<body>
+    <div class="cancel-container">
+        <div class="cancel-card">
+            <div class="cancel-icon">❌</div>
+            <h1>Płatność Anulowana</h1>
+            <p>Twoja płatność została anulowana. Nie zostały pobrane żadne środki.</p>
+            <p>Jeśli chcesz spróbować ponownie, możesz wrócić do strony i wybrać voucher ponownie.</p>
+            <a href="index.html#vouchers" class="cancel-button">Spróbuj Ponownie</a>
+            <a href="index.html" class="secondary-button">Strona Główna</a>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+

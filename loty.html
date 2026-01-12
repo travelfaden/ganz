@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loty - Travel Faden</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <a href="index.html" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
+                    <svg class="logo-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="40" fill="none" stroke="url(#logoGradient)" stroke-width="3"/>
+                        <circle cx="50" cy="50" r="35" fill="none" stroke="url(#logoGradient)" stroke-width="2" opacity="0.6"/>
+                        <line x1="15" y1="30" x2="85" y2="30" stroke="url(#logoGradient)" stroke-width="1.5"/>
+                        <line x1="15" y1="50" x2="85" y2="50" stroke="url(#logoGradient)" stroke-width="1.5"/>
+                        <line x1="15" y1="70" x2="85" y2="70" stroke="url(#logoGradient)" stroke-width="1.5"/>
+                        <path d="M 50 10 Q 50 30, 50 50 Q 50 70, 50 90" fill="none" stroke="url(#logoGradient)" stroke-width="1.5"/>
+                        <g transform="translate(50, 50) rotate(45)">
+                            <path d="M -15 -5 L 15 -5 L 10 0 L 15 5 L -15 5 L -10 0 Z" fill="url(#logoGradient)"/>
+                            <circle cx="0" cy="0" r="3" fill="url(#logoGradient)"/>
+                        </g>
+                        <defs>
+                            <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#2563eb;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#0ea5e9;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <span class="logo-text">Travel Faden</span>
+                </a>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html#home">Home</a></li>
+                <li><a href="index.html#how-it-works">Jak to Działa</a></li>
+                <li class="nav-dropdown">
+                    <a href="index.html#vouchers" class="dropdown-toggle">Usługi <span class="dropdown-arrow">▼</span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="oferta-dnia.html">Propozycja Dnia</a></li>
+                        <li><a href="wakacje-dla-ciebie.html">Podróż dopasowana do Ciebie</a></li>
+                        <li><a href="loty.html">Loty</a></li>
+                        <li><a href="noclegi.html">Zakwaterowania</a></li>
+                        <li><a href="city-break.html">City Break</a></li>
+                    </ul>
+                </li>
+                <li><a href="oferta-dnia-nav.html">Oferta Dnia</a></li>
+                <li><a href="pytania-i-odpowiedzi.html">Pytania i Odpowiedzi</a></li>
+                <li><a href="o-nas.html">O Nas</a></li>
+                <li><a href="index.html#contact">Kontakt</a></li>
+            </ul>
+            <div class="search-container">
+                <button class="search-toggle" id="searchToggle">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+                <div class="search-box" id="searchBox">
+                    <input type="text" id="searchInput" placeholder="Szukaj..." />
+                    <button class="search-close" id="searchClose">×</button>
+                    <div class="search-results" id="searchResults"></div>
+                </div>
+            </div>
+            <div class="social-icons" style="display: flex; align-items: center; gap: 12px; margin-right: 12px;">
+                <a href="https://www.facebook.com/travelfaden" target="_blank" rel="noopener noreferrer" aria-label="Facebook" class="social-icon facebook-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                    </svg>
+                </a>
+                <a href="https://www.instagram.com/travelfaden" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="social-icon instagram-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                    </svg>
+                </a>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <section class="service-hero" style="background-image: url('images/loty.jpg.jpg'); background-size: cover; background-position: center;">
+        <div class="service-hero-overlay"></div>
+        <div class="container">
+            <div class="service-hero-content">
+                <h1>Loty</h1>
+                <p class="service-subtitle">Połączenia lotnicze w przystępnej cenie</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section service-details">
+        <div class="container">
+            <div class="service-content-wrapper">
+                <div class="service-main-content">
+                    <h2>O Usłudze</h2>
+
+                    <p><strong>Szukasz najlepszych połączeń lotniczych, ale przeraża Cię samodzielne przeszukiwanie setek stron i porównywanie cen?</strong><br>
+
+<strong>Loty</strong> to usługa, która pozwala znaleźć optymalne połączenia zgodne z Twoimi preferencjami i budżetem — szybko i bez stresu.</p>
+
+<p>Po wypełnieniu krótkiego formularza nasz zespół przygotuje dla Ciebie <strong>indywidualną propozycję połączeń lotniczych</strong>. Każdą propozycję analizujemy pod kątem <strong>jakości, wygody i opłacalności</strong>.</p>
+
+<p>Po zaksięgowaniu płatności prześlemy Ci <strong>propozycję dopasowaną do Twoich oczekiwań</strong>.</p>
+
+<p><strong>Jeśli okaże się, że:</strong></p>
+
+<ul>
+
+  <li><strong>nie jesteśmy w stanie przygotować propozycji mieszczącej się w przewidzianym przez Ciebie budżecie</strong> — masz możliwość otrzymania zwrotu środków. Wcześniej jednak skontaktujemy się z Tobą, aby przedstawić nową, równie atrakcyjną propozycję.</li>
+
+</ul>
+                </div>
+
+                <div class="service-sidebar">
+                    <div class="service-card-summary">
+                        <h3>Podsumowanie</h3>
+                        <div class="summary-item">
+                            <span>Ilość osób:</span>
+                            <select id="personCount" style="padding: 0.5rem; border-radius: 8px; border: 1px solid var(--border-color); font-size: 1.1rem; background: white; color: var(--text-color);">
+                                <option value="1">1 osoba</option>
+                                <option value="2" selected>2 osoby</option>
+                                <option value="3">3 osoby</option>
+                                <option value="4">4 osoby</option>
+                                <option value="5">5 osób</option>
+                                <option value="6">6 osób</option>
+                                <option value="7">7 osób</option>
+                                <option value="8">8 osób</option>
+                            </select>
+                        </div>
+                        <div class="summary-item">
+                            <span>Cena:</span>
+                            <strong id="servicePrice">50€</strong>
+                        </div>
+                        <div class="summary-item">
+                            <span>Czas przygotowania:</span>
+                            <strong>1-7 dni</strong>
+                        </div>
+                        <div style="margin-top: 1.5rem; padding: 1rem; background-color: var(--bg-light); border-radius: 8px;">
+                            <div style="display: flex; align-items: flex-start; gap: 0.5rem; margin-bottom: 1rem;">
+                                <input type="checkbox" id="withdrawal-consent" name="withdrawal-consent" required style="margin-top: 0.25rem; cursor: pointer; flex-shrink: 0;">
+                                <label for="withdrawal-consent" style="font-size: 0.9rem; color: var(--text-color); cursor: pointer; line-height: 1.5;">
+                                    Ich stimme ausdrücklich zu, dass mit der Ausführung der Dienstleistung vor Ablauf der Widerrufsfrist begonnen wird, und bestätige, dass ich mit vollständiger Vertragserfüllung mein Widerrufsrecht verliere. (<a href="widerrufsbelehrung.html" target="_blank" style="color: var(--primary-color); text-decoration: underline;">Widerrufsbelehrung</a>)
+                                </label>
+                            </div>
+                            <div style="display: flex; align-items: flex-start; gap: 0.5rem;">
+                                <input type="checkbox" id="agb-consent" name="agb-consent" required style="margin-top: 0.25rem; cursor: pointer; flex-shrink: 0;">
+                                <label for="agb-consent" style="font-size: 0.9rem; color: var(--text-color); cursor: pointer; line-height: 1.5;">
+                                    Ich habe die <a href="regulamin.html" target="_blank" style="color: var(--primary-color); text-decoration: underline;">AGB</a> gelesen und akzeptiere sie.
+                                </label>
+                            </div>
+                        </div>
+                        <button class="voucher-button service-buy-button" id="buyButton" data-amount="50" style="width: 100%; margin-top: 1rem; opacity: 0.5; cursor: not-allowed;" disabled>Zahlungspflichtig bestellen</button>
+                        <a href="index.html#vouchers" class="back-link" style="display: block; text-align: center; margin-top: 1rem; color: var(--primary-color); text-decoration: none;">← Powrót do wszystkich usług</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section contact-section" style="background-color: var(--bg-light); padding: 3rem 0;">
+        <div class="container">
+            <div style="text-align: center; max-width: 800px; margin: 0 auto;">
+                <h2 style="margin-bottom: 1rem; color: var(--text-color);">Masz pytania?</h2>
+                <p style="font-size: 1.1rem; line-height: 1.8; color: var(--text-light); margin-bottom: 0;">
+                    W razie jakichkolwiek pytań dotyczących usługi Loty lub potrzebujesz dodatkowych informacji, zachęcamy do kontaktu z naszym zespołem. Jesteśmy do Twojej dyspozycji i chętnie odpowiemy na wszystkie pytania.
+                </p>
+                <div style="margin-top: 2rem;">
+                    <a href="index.html#contact" class="voucher-button" style="display: inline-block; text-decoration: none;">Skontaktuj się z nami</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>&copy; 2024 Travel Faden. Wszelkie prawa zastrzeżone.</p>
+                <div class="footer-links">
+                    <a href="regulamin.html">AGB</a>
+                    <a href="impressum.html">Impressum</a>
+                    <a href="datenschutzerklaerung.html">Datenschutzerklärung</a>
+                    <a href="widerrufsbelehrung.html">Widerrufsbelehrung</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal z formularzem -->
+    <div id="travelFormModal" class="travel-form-modal" style="display: none;">
+        <div class="travel-form-modal-overlay"></div>
+        <div class="travel-form-modal-content">
+            <button class="travel-form-close" id="closeTravelForm">&times;</button>
+            <h2 style="text-align: center;">Formularz Lotów</h2>
+            <p style="margin-bottom: 1.5rem; color: var(--text-light); line-height: 1.7;">Abyśmy mogli przygotować dla Ciebie <strong>jak najlepiej dopasowaną propozycję połączeń lotniczych</strong>, prosimy o <strong>dokładne wypełnienie formularza</strong>. Podaj <strong>jak najwięcej szczegółów</strong> dotyczących Twoich oczekiwań, preferencji i budżetu — <strong>im więcej informacji otrzymamy, tym trafniejszą ofertę będziemy w stanie przygotować</strong>.<br><br>Jeśli któryś z elementów jest dla Ciebie obojętny, <strong>po prostu to wpisz</strong>. Dzięki temu unikniemy nieporozumień i stworzymy propozycję <strong>idealnie dopasowaną do Twoich potrzeb</strong>.</p>
+            
+            <div class="form-group" style="margin-bottom: 1.5rem;">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="understandCheckbox" name="understandCheckbox" required>
+                    <span>Zrozumiałem/Zrozumiałam *</span>
+                </label>
+            </div>
+            
+            <form id="travelForm">
+                <!-- Sekcja 1: Dane podstawowe -->
+                <div class="form-section">
+                    <h3 class="form-section-title" onclick="toggleSection(this)">
+                        <span>Dane podstawowe</span>
+                        <span class="section-toggle">▼</span>
+                    </h3>
+                    <div class="form-section-content">
+                        <div class="form-group">
+                        <label for="firstName">Imię *</label>
+                        <input type="text" id="firstName" name="firstName" required placeholder="np. Jan">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email *</label>
+                        <input type="email" id="email" name="email" required placeholder="twoj@email.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">Telefon (opcjonalnie)</label>
+                        <input type="tel" id="phone" name="phone" placeholder="np. +48 123 456 789">
+                    </div>
+                    </div>
+                </div>
+                
+                <!-- Sekcja 2: Informacje o wyjeździe -->
+                <div class="form-section">
+                    <h3 class="form-section-title" onclick="toggleSection(this)">
+                        <span>Informacje o wyjeździe</span>
+                        <span class="section-toggle">▼</span>
+                    </h3>
+                    <div class="form-section-content">
+                        <div class="form-group">
+                            <label for="destination">Kierunek podróży *</label>
+                            <textarea id="destination" name="destination" required placeholder="np. Paryż, Włochy, Grecja" rows="1" style="resize: none; overflow-y: hidden; min-height: 44px;"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="travelPeriod">Przedział czasowy podróży *</label>
+                            <textarea id="travelPeriod" name="travelPeriod" required placeholder="np. 15-22 lipca 2024, sierpień 2024, itp." rows="1" style="resize: none; overflow-y: hidden; min-height: 44px;"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="tripDuration">Długość wyjazdu (max. 5 dni) *</label>
+                            <textarea id="tripDuration" name="tripDuration" required placeholder="np. 1 dzień, 2 dni, itp." rows="1" style="resize: none; overflow-y: hidden; min-height: 44px;"></textarea>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="adults">Liczba dorosłych *</label>
+                                <input type="number" id="adults" name="adults" min="1" max="10" value="2" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="children">Liczba dzieci *</label>
+                                <input type="number" id="children" name="children" min="0" max="10" value="0" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group" id="childrenAgeGroup" style="display: none;">
+                            <label for="childrenAge">Wiek dziecka/dzieci *</label>
+                            <textarea id="childrenAge" name="childrenAge" placeholder="np. 5 lat, 8 i 12 lat, itp." rows="1" style="resize: none; overflow-y: hidden; min-height: 44px;"></textarea>
+                        </div>
+                    
+                        <div class="form-group">
+                            <label for="budget">Budżet (na osobę, EUR) *</label>
+                            <textarea id="budget" name="budget" required placeholder="np. 2000, około 2000-2500" rows="1" style="resize: none; overflow-y: hidden; min-height: 44px;"></textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sekcja 3: Preferencje dotyczące lotu -->
+                <div class="form-section">
+                    <h3 class="form-section-title" onclick="toggleSection(this)">
+                        <span>Preferencje dotyczące lotu</span>
+                        <span class="section-toggle">▼</span>
+                    </h3>
+                    <div class="form-section-content">
+                        <div class="form-group">
+                            <label for="departureLocation">Miejsce wylotu i przylotu *</label>
+                            <textarea id="departureLocation" name="departureLocation" required placeholder="np. Warszawa, Kraków, Gdańsk" rows="1" style="resize: none; overflow-y: hidden; min-height: 44px;"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="maxTransfers">Maksymalna liczba przesiadek (w jedną stronę) *</label>
+                            <textarea id="maxTransfers" name="maxTransfers" required placeholder="np. 0, 1, 2" rows="1" style="resize: none; overflow-y: hidden; min-height: 44px;"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="preferredFlightTimes">Preferowane godziny lotów *</label>
+                            <textarea id="preferredFlightTimes" name="preferredFlightTimes" required placeholder="np. rano, wieczorem, przed południem" rows="1" style="resize: none; overflow-y: hidden; min-height: 44px;"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="preferredAirlines">Preferowana linie lotnicze *</label>
+                            <textarea id="preferredAirlines" name="preferredAirlines" required placeholder="np. LOT, Lufthansa, Ryanair" rows="1" style="resize: none; overflow-y: hidden; min-height: 44px;"></textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sekcja 4: Dodatkowe informacje (opcjonalnie) -->
+                <div class="form-section">
+                    <h3 class="form-section-title" onclick="toggleSection(this)">
+                        <span>Dodatkowe informacje (opcjonalnie)</span>
+                        <span class="section-toggle">▼</span>
+                    </h3>
+                    <div class="form-section-content">
+                        <div class="form-group">
+                            <textarea id="preferences" name="preferences" rows="4" placeholder="Dodaj opis"></textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" id="cancelTravelForm">Anuluj</button>
+                    <button type="submit" class="voucher-button" id="submitFormBtn" disabled>Przejdź do płatności</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Obsługa formularza lotów - czekamy na załadowanie DOM
+        document.addEventListener('DOMContentLoaded', function() {
+            const travelFormModal = document.getElementById('travelFormModal');
+            const travelForm = document.getElementById('travelForm');
+            const closeTravelForm = document.getElementById('closeTravelForm');
+            const cancelTravelForm = document.getElementById('cancelTravelForm');
+            const buyButton = document.getElementById('buyButton');
+            
+            // Sprawdź, czy wszystkie elementy istnieją
+            if (!travelFormModal || !travelForm || !closeTravelForm || !cancelTravelForm) {
+                console.error('Niektóre elementy formularza nie zostały znalezione');
+                return;
+            }
+            
+            // Zamknij modal
+            function closeModal() {
+                if (travelFormModal) {
+                    travelFormModal.style.display = 'none';
+                    document.body.style.overflow = '';
+                }
+            }
+            
+            closeTravelForm.addEventListener('click', closeModal);
+            cancelTravelForm.addEventListener('click', closeModal);
+            
+            // Zamknij po kliknięciu w overlay
+            const overlay = travelFormModal.querySelector('.travel-form-modal-overlay');
+            if (overlay) {
+                overlay.addEventListener('click', closeModal);
+            }
+            
+            // Otwórz modal po kliknięciu "Kup Teraz"
+            if (buyButton) {
+                // Użyj capture phase, aby przechwycić zdarzenie przed script.js
+                buyButton.addEventListener('click', (e) => {
+                    // Sprawdź checkboxy z akceptacją
+                    const withdrawalConsent = document.getElementById('withdrawal-consent');
+                    const agbConsent = document.getElementById('agb-consent');
+                    
+                    if (!withdrawalConsent || !withdrawalConsent.checked) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        e.stopImmediatePropagation();
+                        alert('Bitte akzeptieren Sie die Widerrufsrechtsvereinbarung, um fortzufahren.');
+                        if (withdrawalConsent) {
+                            withdrawalConsent.focus();
+                        }
+                        return;
+                    }
+                    
+                    if (!agbConsent || !agbConsent.checked) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        e.stopImmediatePropagation();
+                        alert('Bitte akzeptieren Sie die AGB, um fortzufahren.');
+                        if (agbConsent) {
+                            agbConsent.focus();
+                        }
+                        return;
+                    }
+                    
+                    // Zawsze otwieraj formularz, nie przekierowuj do płatności
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.stopImmediatePropagation(); // Zatrzymaj propagację do innych listenerów
+                    if (travelFormModal) {
+                        travelFormModal.style.display = 'flex';
+                        document.body.style.overflow = 'hidden';
+                    }
+                }, true); // true = capture phase
+            }
+        
+            // Funkcja wysyłania emaila
+            async function sendFormToEmail(data) {
+            const email = data.email;
+            
+            // Adres email firmy (zmień na właściwy adres)
+            const companyEmail = 'kontakt@travelfaden.pl'; // ZMIEŃ NA WŁAŚCIWY ADRES
+            
+            // Przygotuj treść emaila
+            let emailBody = 'Nowy formularz lotów - Loty\n\n';
+            emailBody += '\nSzczegóły formularza:\n\n';
+                emailBody += `Imię: ${data.firstName || 'Nie podano'}\n`;
+                emailBody += `Email: ${data.email || 'Nie podano'}\n`;
+                emailBody += `Kierunek podróży: ${data.destination || 'Nie podano'}\n`;
+                emailBody += `Miejsce wylotu i przylotu: ${data.departureLocation || 'Nie podano'}\n`;
+                emailBody += `Maksymalna liczba przesiadek (w jedną stronę): ${data.maxTransfers || 'Nie podano'}\n`;
+                emailBody += `Preferowane godziny lotów: ${data.preferredFlightTimes || 'Nie podano'}\n`;
+                emailBody += `Preferowana linie lotnicze: ${data.preferredAirlines || 'Nie podano'}\n`;
+                emailBody += `Przedział czasowy podróży: ${data.travelPeriod || 'Nie podano'}\n`;
+                emailBody += `Długość wyjazdu: ${data.tripDuration || 'Nie podano'}\n`;
+                emailBody += `Liczba dorosłych: ${data.adults || 'Nie podano'}\n`;
+                emailBody += `Liczba dzieci: ${data.children || 'Nie podano'}\n`;
+                if (data.childrenAge) {
+                    emailBody += `Wiek dziecka/dzieci: ${data.childrenAge}\n`;
+                }
+                emailBody += `Budżet (na osobę): ${data.budget || 'Nie podano'} EUR\n`;
+                if (data.preferences) {
+                    emailBody += `Dodatkowe informacje: ${data.preferences}\n`;
+                }
+                if (data.phone) {
+                    emailBody += `Telefon: ${data.phone}\n`;
+                }
+                emailBody += `\nEmail klienta: ${data.email || 'Nie podano'}\n`;
+            
+            // Użyj mailto do wysłania emaila na adres firmy
+            // Dla produkcji zalecane jest użycie backend API lub EmailJS
+            const subject = encodeURIComponent('Formularz Lotów - Loty');
+            const body = encodeURIComponent(emailBody);
+            
+            // Otwórz klienta email z wypełnionym adresem odbiorcy (firma)
+            window.location.href = `mailto:${companyEmail}?subject=${subject}&body=${body}`;
+            
+            // Alternatywnie, jeśli masz backend API, użyj tego (odkomentuj i zmień URL):
+            /*
+            try {
+                const response = await fetch('YOUR_BACKEND_URL/api/send-email', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        to: companyEmail,
+                        replyTo: email,
+                        subject: 'Formularz Lotów - Loty',
+                        body: emailBody
+                    })
+                });
+                if (!response.ok) {
+                    console.error('Błąd wysyłania emaila');
+                }
+            } catch (error) {
+                console.error('Błąd:', error);
+            }
+            */
+        }
+        
+            // Obsługa wysłania formularza
+            travelForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Sprawdź checkbox "Zrozumiałem/Zrozumiałam"
+            const understandCheckbox = document.getElementById('understandCheckbox');
+            if (!understandCheckbox || !understandCheckbox.checked) {
+                alert('Proszę zaznaczyć potwierdzenie "Zrozumiałem/Zrozumiałam".');
+                if (understandCheckbox) {
+                    understandCheckbox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    understandCheckbox.focus();
+                }
+                return;
+            }
+            
+            // Walidacja formularza - sprawdź wszystkie wymagane pola
+            const requiredFields = travelForm.querySelectorAll('[required]');
+            let isValid = true;
+            let firstInvalidField = null;
+            
+            requiredFields.forEach(field => {
+                // Sprawdź, czy pole jest widoczne (nie ukryte przez display: none)
+                const isVisible = field.offsetParent !== null;
+                
+                // Dla checkboxów sprawdź czy są zaznaczone
+                if (field.type === 'checkbox') {
+                    if (isVisible && !field.checked) {
+                        isValid = false;
+                        if (!firstInvalidField) {
+                            firstInvalidField = field;
+                        }
+                    }
+                } else if (isVisible && !field.value.trim()) {
+                    isValid = false;
+                    field.style.borderColor = '#ef4444';
+                    
+                    if (!firstInvalidField) {
+                        firstInvalidField = field;
+                    }
+                } else {
+                    if (field.type !== 'checkbox') {
+                        field.style.borderColor = '';
+                    }
+                }
+            });
+            
+            // Jeśli formularz jest nieprawidłowy, pokaż komunikat i przewiń do pierwszego błędnego pola
+            if (!isValid) {
+                alert('Proszę wypełnić wszystkie wymagane pola oznaczone gwiazdką (*).');
+                if (firstInvalidField) {
+                    firstInvalidField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    firstInvalidField.focus();
+                }
+                return;
+            }
+            
+            const formData = new FormData(travelForm);
+            const data = Object.fromEntries(formData);
+            
+            // Wyślij formularz na email
+            await sendFormToEmail(data);
+            
+            // Zapisz dane formularza do sessionStorage
+            sessionStorage.setItem('travelFormData', JSON.stringify(data));
+            
+            // Zamknij modal
+            closeModal();
+            
+            // Po wysłaniu formularza pokaż komunikat zamiast przekierowywać do płatności
+            alert('Dziękujemy! Formularz został wysłany. Skontaktujemy się z Tobą wkrótce.');
+            });
+            
+            // Obsługa zmiany ceny w zależności od liczby osób
+            const personCountSelect = document.getElementById('personCount');
+            const servicePriceElement = document.getElementById('servicePrice');
+            
+            const priceMap = {
+                1: 50,
+                2: 50,
+                3: 65,
+                4: 65,
+                5: 80,
+                6: 80,
+                7: 95,
+                8: 95
+            };
+            
+            function updatePrice() {
+                if (!personCountSelect || !servicePriceElement) return;
+                const personCount = parseInt(personCountSelect.value);
+                const price = priceMap[personCount];
+                
+                if (price) {
+                    servicePriceElement.textContent = price + '€';
+                    if (buyButton) {
+                        buyButton.setAttribute('data-amount', price);
+                    }
+                }
+            }
+            
+            if (personCountSelect) {
+                personCountSelect.addEventListener('change', updatePrice);
+                // Ustaw początkową cenę
+                updatePrice();
+            }
+            
+            // Obsługa checkboxów z akceptacją - zmiana stanu przycisku
+            const withdrawalConsent = document.getElementById('withdrawal-consent');
+            const agbConsent = document.getElementById('agb-consent');
+            const buyButtonCheckbox = document.getElementById('buyButton');
+            
+            if (withdrawalConsent && agbConsent && buyButtonCheckbox) {
+                function updateButtonState() {
+                    if (withdrawalConsent.checked && agbConsent.checked) {
+                        buyButtonCheckbox.disabled = false;
+                        buyButtonCheckbox.style.opacity = '1';
+                        buyButtonCheckbox.style.cursor = 'pointer';
+                    } else {
+                        buyButtonCheckbox.disabled = true;
+                        buyButtonCheckbox.style.opacity = '0.5';
+                        buyButtonCheckbox.style.cursor = 'not-allowed';
+                    }
+                }
+                
+                withdrawalConsent.addEventListener('change', updateButtonState);
+                agbConsent.addEventListener('change', updateButtonState);
+                updateButtonState();
+            }
+        }); // Koniec DOMContentLoaded dla obsługi formularza
+        
+        // Funkcja walidacji formularza w czasie rzeczywistym (globalna)
+        function validateForm() {
+            const submitBtn = document.getElementById('submitFormBtn');
+            const understandCheckbox = document.getElementById('understandCheckbox');
+            const travelForm = document.getElementById('travelForm');
+            
+            if (!submitBtn || !travelForm) return;
+            
+            // Sprawdź checkbox "Zrozumiałem/Zrozumiałam"
+            if (!understandCheckbox || !understandCheckbox.checked) {
+                submitBtn.disabled = true;
+                return;
+            }
+            
+            // Sprawdź wszystkie wymagane pola
+            const requiredFields = travelForm.querySelectorAll('[required]');
+            let isValid = true;
+            
+            requiredFields.forEach(field => {
+                // Sprawdź, czy pole jest widoczne (nie ukryte przez display: none)
+                const isVisible = field.offsetParent !== null;
+                
+                // Dla checkboxów sprawdź czy są zaznaczone
+                if (field.type === 'checkbox') {
+                    if (isVisible && !field.checked) {
+                        isValid = false;
+                    }
+                } else if (isVisible) {
+                    // Dla pól tekstowych, number, email, tel sprawdź czy mają wartość
+                    const value = field.value ? field.value.trim() : '';
+                    if (!value) {
+                        isValid = false;
+                    }
+                }
+            });
+            
+            // Dezaktywuj/aktywuj przycisk w zależności od walidacji
+            submitBtn.disabled = !isValid;
+        }
+        
+        // Obsługa pokazywania/ukrywania pola "Wiek dziecka"
+        document.addEventListener('DOMContentLoaded', function() {
+            const childrenInput = document.getElementById('children');
+            const childrenAgeGroup = document.getElementById('childrenAgeGroup');
+            const childrenAgeInput = document.getElementById('childrenAge');
+            
+            if (!childrenInput || !childrenAgeGroup || !childrenAgeInput) return;
+            
+            function toggleChildrenAge() {
+                const childrenCount = parseInt(childrenInput.value) || 0;
+                if (childrenCount > 0) {
+                    childrenAgeGroup.style.display = 'block';
+                    childrenAgeInput.required = true;
+                    // Ustaw auto-resize dla textarea "Wiek dziecka"
+                    if (childrenAgeInput.tagName === 'TEXTAREA') {
+                        childrenAgeInput.style.height = '44px';
+                        if (!childrenAgeInput.hasAttribute('data-auto-resize-added')) {
+                            childrenAgeInput.setAttribute('data-auto-resize-added', 'true');
+                            childrenAgeInput.addEventListener('input', function() {
+                                autoResizeTextarea(this);
+                            });
+                        }
+                    }
+                } else {
+                    childrenAgeGroup.style.display = 'none';
+                    childrenAgeInput.required = false;
+                    childrenAgeInput.value = '';
+                }
+                // Wywołaj walidację po zmianie widoczności pola
+                setTimeout(validateForm, 100);
+            }
+            
+            childrenInput.addEventListener('change', toggleChildrenAge);
+            childrenInput.addEventListener('input', toggleChildrenAge);
+            // Sprawdź początkową wartość
+            toggleChildrenAge();
+        });
+        
+        // Funkcja automatycznego rozszerzania textarea
+        function autoResizeTextarea(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = textarea.scrollHeight + 'px';
+        }
+        
+        // Funkcja zwijania/rozwijania sekcji
+        function toggleSection(element) {
+            const section = element.closest('.form-section');
+            section.classList.toggle('collapsed');
+            element.classList.toggle('collapsed');
+        }
+        
+        // Domyślnie pierwsza sekcja jest otwarta, pozostałe zwinięte
+        document.addEventListener('DOMContentLoaded', function() {
+            // Funkcja do ustawiania auto-resize dla textarea
+            function setupAutoResize() {
+                const textareas = document.querySelectorAll('#travelForm textarea');
+                textareas.forEach(textarea => {
+                    // Ustaw początkową wysokość
+                    if (!textarea.style.height || textarea.style.height === 'auto') {
+                        textarea.style.height = '44px';
+                    }
+                    
+                    // Sprawdź, czy event listener już nie został dodany
+                    if (!textarea.hasAttribute('data-auto-resize-added')) {
+                        textarea.setAttribute('data-auto-resize-added', 'true');
+                        
+                        // Auto-resize przy wpisywaniu
+                        textarea.addEventListener('input', function() {
+                            autoResizeTextarea(this);
+                        });
+                        
+                        // Auto-resize przy załadowaniu (jeśli ma już wartość)
+                        if (textarea.value) {
+                            autoResizeTextarea(textarea);
+                        }
+                    }
+                });
+            }
+            
+            // Ustaw auto-resize przy załadowaniu
+            setupAutoResize();
+            const sections = document.querySelectorAll('.form-section');
+            sections.forEach((section, index) => {
+                if (index > 0) {
+                    section.classList.add('collapsed');
+                    const title = section.querySelector('.form-section-title');
+                    if (title) {
+                        title.classList.add('collapsed');
+                    }
+                }
+            });
+            
+            // Blokuj formularz do momentu zaznaczenia checkboxa
+            const understandCheckbox = document.getElementById('understandCheckbox');
+            const travelForm = document.getElementById('travelForm');
+            
+            function toggleFormFields(enabled) {
+                const formFields = travelForm.querySelectorAll('input, textarea, select, button[type="submit"]');
+                formFields.forEach(field => {
+                    if (field.id !== 'understandCheckbox') {
+                        field.disabled = !enabled;
+                    }
+                });
+                
+                // Blokuj również klikalność sekcji
+                const sectionTitles = travelForm.querySelectorAll('.form-section-title');
+                sectionTitles.forEach(title => {
+                    if (enabled) {
+                        title.style.pointerEvents = 'auto';
+                        title.style.opacity = '1';
+                    } else {
+                        title.style.pointerEvents = 'none';
+                        title.style.opacity = '0.5';
+                    }
+                });
+                
+                // Po odblokowaniu, ustaw auto-resize dla textarea
+                if (enabled) {
+                    setTimeout(function() {
+                        setupAutoResize();
+                    }, 100);
+                }
+            }
+            
+            // Na początku zablokuj wszystkie pola
+            toggleFormFields(false);
+            
+            // Obsługa zmiany checkboxa
+            if (understandCheckbox) {
+                understandCheckbox.addEventListener('change', function() {
+                    toggleFormFields(this.checked);
+                    if (this.checked) {
+                        setTimeout(validateForm, 100);
+                    } else {
+                        const submitBtn = document.getElementById('submitFormBtn');
+                        if (submitBtn) submitBtn.disabled = true;
+                    }
+                });
+            }
+            
+            // Dodaj event listenery do wszystkich pól formularza
+            const formFields = travelForm.querySelectorAll('input, textarea, select');
+            formFields.forEach(field => {
+                if (field.id !== 'understandCheckbox') {
+                    field.addEventListener('input', validateForm);
+                    field.addEventListener('change', validateForm);
+                }
+            });
+            
+            // Sprawdź walidację przy załadowaniu (jeśli checkbox jest już zaznaczony)
+            if (understandCheckbox && understandCheckbox.checked) {
+                setTimeout(validateForm, 200);
+            }
+        });
+    </script>
+</body>
+</html>
+

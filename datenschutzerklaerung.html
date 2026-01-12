@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Datenschutzerklärung - Travel Faden</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <a href="index.html" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
+                    <svg class="logo-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="40" fill="none" stroke="url(#logoGradient)" stroke-width="3"/>
+                        <circle cx="50" cy="50" r="35" fill="none" stroke="url(#logoGradient)" stroke-width="2" opacity="0.6"/>
+                        <line x1="15" y1="30" x2="85" y2="30" stroke="url(#logoGradient)" stroke-width="1.5"/>
+                        <line x1="15" y1="50" x2="85" y2="50" stroke="url(#logoGradient)" stroke-width="1.5"/>
+                        <line x1="15" y1="70" x2="85" y2="70" stroke="url(#logoGradient)" stroke-width="1.5"/>
+                        <path d="M 50 10 Q 50 30, 50 50 Q 50 70, 50 90" fill="none" stroke="url(#logoGradient)" stroke-width="1.5"/>
+                        <g transform="translate(50, 50) rotate(45)">
+                            <path d="M -15 -5 L 15 -5 L 10 0 L 15 5 L -15 5 L -10 0 Z" fill="url(#logoGradient)"/>
+                            <circle cx="0" cy="0" r="3" fill="url(#logoGradient)"/>
+                        </g>
+                        <defs>
+                            <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#2563eb;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#0ea5e9;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <span class="logo-text">Travel Faden</span>
+                </a>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html#home">Home</a></li>
+                <li><a href="index.html#how-it-works">Jak to Działa</a></li>
+                <li class="nav-dropdown">
+                    <a href="index.html#vouchers" class="dropdown-toggle">Usługi <span class="dropdown-arrow">▼</span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="oferta-dnia.html">Propozycja Dnia</a></li>
+                        <li><a href="wakacje-dla-ciebie.html">Podróż dopasowana do Ciebie</a></li>
+                        <li><a href="loty.html">Loty</a></li>
+                        <li><a href="noclegi.html">Zakwaterowania</a></li>
+                        <li><a href="city-break.html">City Break</a></li>
+                    </ul>
+                </li>
+                <li><a href="oferta-dnia.html">Propozycja Dnia</a></li>
+                <li><a href="pytania-i-odpowiedzi.html">Pytania i Odpowiedzi</a></li>
+                <li><a href="o-nas.html">O Nas</a></li>
+                <li><a href="index.html#contact">Kontakt</a></li>
+            </ul>
+            <div class="search-container">
+                <button class="search-toggle" id="searchToggle">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+                <div class="search-box" id="searchBox">
+                    <input type="text" id="searchInput" placeholder="Szukaj..." />
+                    <button class="search-close" id="searchClose">×</button>
+                    <div class="search-results" id="searchResults"></div>
+                </div>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <section class="section" style="margin-top: 80px; padding: 4rem 0;">
+        <div class="container">
+            <h1 style="font-size: 3rem; margin-bottom: 3rem; text-align: center; color: var(--text-color);">Datenschutzerklärung</h1>
+            
+            <div style="max-width: 800px; margin: 0 auto;">
+                <div class="regulamin">
+                    <section>
+                        <h2>1. Verantwortlicher</h2>
+                        <p>Verantwortlicher im Sinne der Datenschutz-Grundverordnung (DSGVO) ist:</p>
+                        <p>
+                            <strong>Travel Faden</strong><br>
+                            Einzelunternehmer<br>
+                            [Imię i nazwisko właściciela]<br>
+                            [Adres siedziby]<br>
+                            Deutschland<br>
+                            E-Mail: <a href="mailto:[adres e-mail]">[adres e-mail]</a>
+                        </p>
+                    </section>
+
+                    <section>
+                        <h2>2. Allgemeine Hinweise zur Datenverarbeitung</h2>
+                        <p>Der Schutz Ihrer personenbezogenen Daten ist uns ein wichtiges Anliegen. Personenbezogene Daten werden von uns nur im Rahmen der gesetzlichen Vorschriften, insbesondere der DSGVO, verarbeitet.</p>
+                    </section>
+
+                    <section>
+                        <h2>3. Zugriffsdaten und Hosting</h2>
+                        <p>Beim Aufruf unserer Website werden automatisch Informationen durch den Browser Ihres Endgerätes an unseren Server übermittelt. Diese Informationen werden temporär in sogenannten Logfiles gespeichert. Dabei werden insbesondere folgende Daten erfasst:</p>
+                        <ul>
+                            <li>IP-Adresse</li>
+                            <li>Datum und Uhrzeit des Zugriffs</li>
+                            <li>aufgerufene Seite</li>
+                            <li>verwendeter Browser und Betriebssystem</li>
+                        </ul>
+                        <p>Die Verarbeitung erfolgt auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der technischen Stabilität und Sicherheit der Website).</p>
+                    </section>
+
+                    <section>
+                        <h2>4. Cookies</h2>
+                        <p>Unsere Website verwendet ausschließlich technisch notwendige Cookies. Diese Cookies sind erforderlich, um grundlegende Funktionen der Website bereitzustellen.</p>
+                        <p>Die Nutzung technisch notwendiger Cookies erfolgt auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO.</p>
+                    </section>
+
+                    <section>
+                        <h2>5. Kontaktformular</h2>
+                        <p>Wenn Sie uns über das Kontaktformular kontaktieren, werden die von Ihnen gemachten Angaben (Name, E-Mail-Adresse, Nachricht) zum Zwecke der Bearbeitung der Anfrage gespeichert.</p>
+                        <p>Rechtsgrundlage für die Verarbeitung ist Art. 6 Abs. 1 lit. b DSGVO (vorvertragliche Maßnahmen bzw. Vertragserfüllung).</p>
+                    </section>
+
+                    <section>
+                        <h2>6. Zahlungsdienstleister (Stripe)</h2>
+                        <p>Für die Abwicklung von Zahlungen nutzen wir den Zahlungsdienstleister Stripe Payments Europe Ltd., 1 Grand Canal Street Lower, Grand Canal Dock, Dublin, Irland.</p>
+                        <p>Die im Rahmen des Zahlungsvorgangs übermittelten Daten werden ausschließlich zur Zahlungsabwicklung verwendet. Die Verarbeitung erfolgt auf Grundlage von Art. 6 Abs. 1 lit. b DSGVO.</p>
+                        <p>Weitere Informationen zum Datenschutz bei Stripe finden Sie in der Datenschutzerklärung von Stripe.</p>
+                    </section>
+
+                    <section>
+                        <h2>7. Social Media Verlinkungen</h2>
+                        <p>Auf unserer Website finden Sie Verlinkungen zu sozialen Netzwerken (Facebook und Instagram). Beim Anklicken der jeweiligen Links werden Daten an den jeweiligen Anbieter übertragen.</p>
+                        <p>Die Nutzung erfolgt auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an Öffentlichkeitsarbeit).</p>
+                    </section>
+
+                    <section>
+                        <h2>8. Speicherdauer</h2>
+                        <p>Wir speichern personenbezogene Daten nur so lange, wie dies für die jeweiligen Verarbeitungszwecke erforderlich ist oder gesetzliche Aufbewahrungspflichten bestehen.</p>
+                    </section>
+
+                    <section>
+                        <h2>9. Rechte der betroffenen Personen</h2>
+                        <p>Sie haben das Recht:</p>
+                        <ul>
+                            <li>auf Auskunft über Ihre gespeicherten Daten (Art. 15 DSGVO)</li>
+                            <li>auf Berichtigung unrichtiger Daten (Art. 16 DSGVO)</li>
+                            <li>auf Löschung Ihrer Daten (Art. 17 DSGVO)</li>
+                            <li>auf Einschränkung der Verarbeitung (Art. 18 DSGVO)</li>
+                            <li>auf Datenübertragbarkeit (Art. 20 DSGVO)</li>
+                            <li>auf Widerspruch gegen die Verarbeitung (Art. 21 DSGVO)</li>
+                            <li>eine erteilte Einwilligung jederzeit zu widerrufen (Art. 7 Abs. 3 DSGVO)</li>
+                        </ul>
+                    </section>
+
+                    <section>
+                        <h2>10. Beschwerderecht</h2>
+                        <p>Sie haben das Recht, sich bei einer Datenschutzaufsichtsbehörde zu beschweren. Zuständig ist die Aufsichtsbehörde Ihres gewöhnlichen Aufenthaltsortes oder des Sitzes des Verantwortlichen.</p>
+                    </section>
+
+                    <section>
+                        <h2>11. Datensicherheit</h2>
+                        <p>Wir setzen geeignete technische und organisatorische Sicherheitsmaßnahmen ein, um Ihre Daten gegen Manipulation, Verlust oder unbefugten Zugriff zu schützen.</p>
+                    </section>
+
+                    <section>
+                        <h2>12. Aktualität und Änderung dieser Datenschutzerklärung</h2>
+                        <p>Wir behalten uns vor, diese Datenschutzerklärung anzupassen, um sie an geänderte rechtliche Anforderungen oder Änderungen unserer Leistungen anzupassen.</p>
+                        <p><strong>Stand: [Monat/Jahr]</strong></p>
+                    </section>
+                </div>
+                
+                <div style="text-align: center; margin-top: 3rem;">
+                    <a href="index.html" style="display: inline-block; padding: 0.75rem 2rem; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: white; text-decoration: none; border-radius: 12px; font-weight: 700; transition: all 0.3s ease;">← Powrót do strony głównej</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>&copy; 2024 Travel Faden. Wszelkie prawa zastrzeżone.</p>
+                <div class="footer-links">
+                    <a href="regulamin.html">AGB</a>
+                    <a href="impressum.html">Impressum</a>
+                    <a href="datenschutzerklaerung.html">Datenschutzerklärung</a>
+                    <a href="widerrufsbelehrung.html">Widerrufsbelehrung</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
+

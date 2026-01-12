@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Propozycja Dnia - Travel Faden</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <a href="index.html" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
+                    <svg class="logo-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="40" fill="none" stroke="url(#logoGradient)" stroke-width="3"/>
+                        <circle cx="50" cy="50" r="35" fill="none" stroke="url(#logoGradient)" stroke-width="2" opacity="0.6"/>
+                        <line x1="15" y1="30" x2="85" y2="30" stroke="url(#logoGradient)" stroke-width="1.5"/>
+                        <line x1="15" y1="50" x2="85" y2="50" stroke="url(#logoGradient)" stroke-width="1.5"/>
+                        <line x1="15" y1="70" x2="85" y2="70" stroke="url(#logoGradient)" stroke-width="1.5"/>
+                        <path d="M 50 10 Q 50 30, 50 50 Q 50 70, 50 90" fill="none" stroke="url(#logoGradient)" stroke-width="1.5"/>
+                        <g transform="translate(50, 50) rotate(45)">
+                            <path d="M -15 -5 L 15 -5 L 10 0 L 15 5 L -15 5 L -10 0 Z" fill="url(#logoGradient)"/>
+                            <circle cx="0" cy="0" r="3" fill="url(#logoGradient)"/>
+                        </g>
+                        <defs>
+                            <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#2563eb;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#0ea5e9;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <span class="logo-text">Travel Faden</span>
+                </a>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html#home">Home</a></li>
+                <li><a href="index.html#how-it-works">Jak to Działa</a></li>
+                <li class="nav-dropdown">
+                    <a href="index.html#vouchers" class="dropdown-toggle">Usługi <span class="dropdown-arrow">▼</span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="oferta-dnia.html">Propozycja Dnia</a></li>
+                        <li><a href="wakacje-dla-ciebie.html">Podróż dopasowana do Ciebie</a></li>
+                        <li><a href="loty.html">Loty</a></li>
+                        <li><a href="noclegi.html">Zakwaterowania</a></li>
+                        <li><a href="city-break.html">City Break</a></li>
+                    </ul>
+                </li>
+                <li><a href="oferta-dnia-nav.html">Oferta Dnia</a></li>
+                <li><a href="pytania-i-odpowiedzi.html">Pytania i Odpowiedzi</a></li>
+                <li><a href="o-nas.html">O Nas</a></li>
+                <li><a href="index.html#contact">Kontakt</a></li>
+            </ul>
+            <div class="search-container">
+                <button class="search-toggle" id="searchToggle">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+                <div class="search-box" id="searchBox">
+                    <input type="text" id="searchInput" placeholder="Szukaj..." />
+                    <button class="search-close" id="searchClose">×</button>
+                    <div class="search-results" id="searchResults"></div>
+                </div>
+            </div>
+            <div class="social-icons" style="display: flex; align-items: center; gap: 12px; margin-right: 12px;">
+                <a href="https://www.facebook.com/travelfaden" target="_blank" rel="noopener noreferrer" aria-label="Facebook" class="social-icon facebook-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                    </svg>
+                </a>
+                <a href="https://www.instagram.com/travelfaden" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="social-icon instagram-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                    </svg>
+                </a>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <section class="service-hero" style="background-image: url('images/oferta-dnia.jpg.png'); background-size: cover; background-position: center;">
+        <div class="service-hero-overlay"></div>
+        <div class="container">
+            <div class="service-hero-content">
+                <h1>Propozycja Dnia</h1>
+                <p class="service-subtitle">To gotowa, starannie opracowana oferta podróży przygotowana na podstawie naszej wiedzy i doświadczenia — nie jest ofertą indywidualną, lecz uniwersalną propozycją dostępną do rezerwacji.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section service-details">
+        <div class="container">
+            <div class="service-content-wrapper">
+                <div class="service-main-content">
+                    <h2>O Usłudze</h2>
+                    <div>
+                        <p><strong>Propozycja Dnia</strong> to usługa obejmująca <strong>jedną, konkretną ofertę wyjazdu</strong> opublikowaną na naszych mediach społecznościowych lub stronie internetowej. Każda propozycja jest <strong>aktualna w momencie publikacji</strong> i <strong>dostępna do natychmiastowej rezerwacji</strong>.</p>
+
+                        <p>W ramach zakupu otrzymujesz <strong>wyłącznie usługę przygotowania i udostępnienia gotowej propozycji wyjazdu</strong> — dokładnie takiej, jaka została przedstawiona w publikacji. <strong>Usługa nie obejmuje personalizacji ani wprowadzania zmian.</strong> Jeśli potrzebujesz oferty dostosowanej do Twoich preferencji, zapraszamy do skorzystania z usługi <strong>„Podróż dopasowana do Ciebie"</strong>.</p>
+
+                        <p>Po zaksięgowaniu płatności prześlemy Ci <strong>zestaw linków do rezerwacji</strong> lotów, hotelu lub całego pakietu.</p>
+
+                        <p>Jeśli w momencie tworzenia Twojej propozycji okaże się, że oferta:</p>
+
+                        <ul class="service-features-list">
+                            <li>• jest już <strong>niedostępna</strong>, lub</li>
+                            <li>• jej cena wzrosła o <strong>więcej niż 20%</strong>,</li>
+                        </ul>
+
+                        <p>— masz możliwość <strong>otrzymania zwrotu środków</strong> albo <strong>wykorzystania usługi na inną Propozycję Dnia</strong> przez okres do <strong>180 dni</strong>.</p>
+                    </div>
+                </div>
+
+                <div class="service-sidebar">
+                    <div class="service-card-summary">
+                        <h3>Podsumowanie</h3>
+                        <div class="summary-item">
+                            <span>Cena:</span>
+                            <strong>40€</strong>
+                        </div>
+                        <div class="summary-item">
+                            <span>Czas przygotowania:</span>
+                            <strong>1-3 dni</strong>
+                        </div>
+                        <div style="margin-top: 1.5rem; padding: 1rem; background-color: var(--bg-light); border-radius: 8px;">
+                            <div style="display: flex; align-items: flex-start; gap: 0.5rem; margin-bottom: 1rem;">
+                                <input type="checkbox" id="withdrawal-consent" name="withdrawal-consent" required style="margin-top: 0.25rem; cursor: pointer; flex-shrink: 0;">
+                                <label for="withdrawal-consent" style="font-size: 0.9rem; color: var(--text-color); cursor: pointer; line-height: 1.5;">
+                                    Ich stimme ausdrücklich zu, dass mit der Ausführung der Dienstleistung vor Ablauf der Widerrufsfrist begonnen wird, und bestätige, dass ich mit vollständiger Vertragserfüllung mein Widerrufsrecht verliere. (<a href="widerrufsbelehrung.html" target="_blank" style="color: var(--primary-color); text-decoration: underline;">Widerrufsbelehrung</a>)
+                                </label>
+                            </div>
+                            <div style="display: flex; align-items: flex-start; gap: 0.5rem;">
+                                <input type="checkbox" id="agb-consent" name="agb-consent" required style="margin-top: 0.25rem; cursor: pointer; flex-shrink: 0;">
+                                <label for="agb-consent" style="font-size: 0.9rem; color: var(--text-color); cursor: pointer; line-height: 1.5;">
+                                    Ich habe die <a href="regulamin.html" target="_blank" style="color: var(--primary-color); text-decoration: underline;">AGB</a> gelesen und akzeptiere sie.
+                                </label>
+                            </div>
+                        </div>
+                        <button class="voucher-button" id="buyButtonOfertaDnia" data-amount="40" style="width: 100%; margin-top: 1rem; opacity: 0.5; cursor: not-allowed;" disabled>Zahlungspflichtig bestellen</button>
+                        <a href="index.html#vouchers" class="back-link" style="display: block; text-align: center; margin-top: 1rem; color: var(--primary-color); text-decoration: none;">← Powrót do wszystkich usług</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section contact-section" style="background-color: var(--bg-light); padding: 3rem 0;">
+        <div class="container">
+            <div style="text-align: center; max-width: 800px; margin: 0 auto;">
+                <h2 style="margin-bottom: 1rem; color: var(--text-color);">Masz pytania?</h2>
+                <p style="font-size: 1.1rem; line-height: 1.8; color: var(--text-light); margin-bottom: 0;">
+                    W razie jakichkolwiek pytań dotyczących usługi Propozycja Dnia lub potrzebujesz dodatkowych informacji, zachęcamy do kontaktu z naszym zespołem. Jesteśmy do Twojej dyspozycji i chętnie odpowiemy na wszystkie pytania.
+                </p>
+                <div style="margin-top: 2rem;">
+                    <a href="index.html#contact" class="voucher-button" style="display: inline-block; text-decoration: none;">Skontaktuj się z nami</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>&copy; 2024 Travel Faden. Wszelkie prawa zastrzeżone.</p>
+                <div class="footer-links">
+                    <a href="regulamin.html">AGB</a>
+                    <a href="impressum.html">Impressum</a>
+                    <a href="datenschutzerklaerung.html">Datenschutzerklärung</a>
+                    <a href="widerrufsbelehrung.html">Widerrufsbelehrung</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Obsługa checkboxów z akceptacją - zmiana stanu przycisku
+        document.addEventListener('DOMContentLoaded', function() {
+            const withdrawalConsent = document.getElementById('withdrawal-consent');
+            const agbConsent = document.getElementById('agb-consent');
+            const buyButton = document.getElementById('buyButtonOfertaDnia');
+            
+            if (withdrawalConsent && agbConsent && buyButton) {
+                // Funkcja zmieniająca stan przycisku
+                function updateButtonState() {
+                    if (withdrawalConsent.checked && agbConsent.checked) {
+                        buyButton.disabled = false;
+                        buyButton.style.opacity = '1';
+                        buyButton.style.cursor = 'pointer';
+                    } else {
+                        buyButton.disabled = true;
+                        buyButton.style.opacity = '0.5';
+                        buyButton.style.cursor = 'not-allowed';
+                    }
+                }
+                
+                // Nasłuchuj zmian checkboxów
+                withdrawalConsent.addEventListener('change', updateButtonState);
+                agbConsent.addEventListener('change', updateButtonState);
+                
+                // Ustaw początkowy stan
+                updateButtonState();
+            }
+        });
+    </script>
+</body>
+</html>
+

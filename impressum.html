@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Impressum - Travel Faden</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <a href="index.html" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
+                    <svg class="logo-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="40" fill="none" stroke="url(#logoGradient)" stroke-width="3"/>
+                        <circle cx="50" cy="50" r="35" fill="none" stroke="url(#logoGradient)" stroke-width="2" opacity="0.6"/>
+                        <line x1="15" y1="30" x2="85" y2="30" stroke="url(#logoGradient)" stroke-width="1.5"/>
+                        <line x1="15" y1="50" x2="85" y2="50" stroke="url(#logoGradient)" stroke-width="1.5"/>
+                        <line x1="15" y1="70" x2="85" y2="70" stroke="url(#logoGradient)" stroke-width="1.5"/>
+                        <path d="M 50 10 Q 50 30, 50 50 Q 50 70, 50 90" fill="none" stroke="url(#logoGradient)" stroke-width="1.5"/>
+                        <g transform="translate(50, 50) rotate(45)">
+                            <path d="M -15 -5 L 15 -5 L 10 0 L 15 5 L -15 5 L -10 0 Z" fill="url(#logoGradient)"/>
+                            <circle cx="0" cy="0" r="3" fill="url(#logoGradient)"/>
+                        </g>
+                        <defs>
+                            <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#2563eb;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#0ea5e9;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <span class="logo-text">Travel Faden</span>
+                </a>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html#home">Home</a></li>
+                <li><a href="index.html#how-it-works">Jak to Działa</a></li>
+                <li class="nav-dropdown">
+                    <a href="index.html#vouchers" class="dropdown-toggle">Usługi <span class="dropdown-arrow">▼</span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="oferta-dnia.html">Propozycja Dnia</a></li>
+                        <li><a href="wakacje-dla-ciebie.html">Podróż dopasowana do Ciebie</a></li>
+                        <li><a href="loty.html">Loty</a></li>
+                        <li><a href="noclegi.html">Zakwaterowania</a></li>
+                        <li><a href="city-break.html">City Break</a></li>
+                    </ul>
+                </li>
+                <li><a href="oferta-dnia.html">Propozycja Dnia</a></li>
+                <li><a href="pytania-i-odpowiedzi.html">Pytania i Odpowiedzi</a></li>
+                <li><a href="o-nas.html">O Nas</a></li>
+                <li><a href="index.html#contact">Kontakt</a></li>
+            </ul>
+            <div class="search-container">
+                <button class="search-toggle" id="searchToggle">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+                <div class="search-box" id="searchBox">
+                    <input type="text" id="searchInput" placeholder="Szukaj..." />
+                    <button class="search-close" id="searchClose">×</button>
+                    <div class="search-results" id="searchResults"></div>
+                </div>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <section class="section" style="margin-top: 80px; padding: 4rem 0;">
+        <div class="container">
+            <h1 style="font-size: 3rem; margin-bottom: 3rem; text-align: center; color: var(--text-color);">Impressum</h1>
+            
+            <div style="max-width: 800px; margin: 0 auto;">
+                <div class="regulamin">
+                    <section>
+                        <h2>Informacje prawne</h2>
+                        
+                        <p><strong>Pełna nazwa firmy:</strong><br>
+                        [Nazwa firmy]</p>
+
+                        <p><strong>Forma prawna:</strong><br>
+                        [np. Einzelunternehmen / UG / GmbH / Sp. z o.o. / Spółka cywilna]</p>
+
+                        <p><strong>Adres siedziby:</strong><br>
+                        [Ulica i numer]<br>
+                        [Kod pocztowy i miasto]<br>
+                        [Kraj]</p>
+
+                        <p><strong>Właściciel / Geschäftsführer:</strong><br>
+                        [Imię i nazwisko]</p>
+
+                        <p><strong>Kontakt:</strong><br>
+                        E-mail: <a href="mailto:[email]">[email]</a><br>
+                        Telefon: <a href="tel:[telefon]">[telefon]</a></p>
+
+                        <p><strong>Numer rejestru:</strong><br>
+                        [Jeśli dotyczy - np. KRS, HRB, itp.]</p>
+
+                        <p><strong>USt-ID (VAT-ID):</strong><br>
+                        [Jeśli dotyczy]</p>
+                    </section>
+                </div>
+                
+                <div style="text-align: center; margin-top: 3rem;">
+                    <a href="index.html" style="display: inline-block; padding: 0.75rem 2rem; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: white; text-decoration: none; border-radius: 12px; font-weight: 700; transition: all 0.3s ease;">← Powrót do strony głównej</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>&copy; 2024 Travel Faden. Wszelkie prawa zastrzeżone.</p>
+                <div class="footer-links">
+                    <a href="regulamin.html">AGB</a>
+                    <a href="impressum.html">Impressum</a>
+                    <a href="datenschutzerklaerung.html">Datenschutzerklärung</a>
+                    <a href="widerrufsbelehrung.html">Widerrufsbelehrung</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
