@@ -89,7 +89,11 @@ window.addEventListener('scroll', () => {
 // Dla testów możesz użyć: pk_test_51...
 // Dla produkcji użyj: pk_live_...
 let stripe = null;
-let BACKEND_URL = 'http://localhost:3000'; // Zmień na właściwy URL w produkcji
+// Automatyczne wykrywanie URL backendu
+// Jeśli jesteś na Vercel, użyj aktualnego URL, w przeciwnym razie localhost
+let BACKEND_URL = typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1'
+  ? window.location.origin // Użyj aktualnego URL (Vercel)
+  : 'http://localhost:3000'; // Localhost dla testów lokalnych
 
 // Inicjalizacja Stripe tylko jeśli jest dostępny
 document.addEventListener('DOMContentLoaded', function() {
@@ -111,6 +115,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     button.addEventListener('click', async (e) => {
+        // Pobierz przycisk i kwotę na początku
+        const button = e.target;
+        const amount = button.getAttribute('data-amount');
+        
         // Sprawdź checkboxy z akceptacją (jeśli istnieją)
         const withdrawalConsent = document.getElementById('withdrawal-consent');
         const agbConsent = document.getElementById('agb-consent');
@@ -137,9 +145,6 @@ document.addEventListener('DOMContentLoaded', function() {
             e.stopPropagation();
             return;
         }
-        
-        const amount = e.target.getAttribute('data-amount');
-        const button = e.target;
         
         // Disable button and show loading
         button.disabled = true;
