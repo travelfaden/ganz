@@ -99,7 +99,7 @@ let BACKEND_URL = typeof window !== 'undefined' && window.location.hostname !== 
 document.addEventListener('DOMContentLoaded', function() {
     if (typeof Stripe !== 'undefined') {
         try {
-            stripe = Stripe('YOUR_PUBLISHABLE_KEY'); // Klucz publiczny (publishable key) z Stripe
+            stripe = Stripe('pk_test_51SpXfA0v0hpavs4B6yGcGGwLa6z3vVlwhFAPRGNc46570wwT9OMUWirrYrf3y74nh9oBdC5lQKQB9C17UccPRIyc00cIywttqE'); // Klucz publiczny (publishable key) z Stripe
         } catch (e) {
             console.log('Stripe nie jest dostępny:', e);
         }
