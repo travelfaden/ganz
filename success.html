@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Płatność Zakończona - Travel Faden</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .success-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: var(--bg-light);
+        }
+        .success-card {
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow-xl);
+            text-align: center;
+            max-width: 600px;
+        }
+        .success-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+        }
+        .success-card h1 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        .success-card p {
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+        .success-button {
+            padding: 1rem 2.5rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        .success-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="success-container">
+        <div class="success-card">
+            <div class="success-icon">✅</div>
+            <h1>Płatność Zakończona Pomyślnie!</h1>
+            <p>Dziękujemy za zakup vouchera. Otrzymasz email z potwierdzeniem płatności oraz numerem vouchera.</p>
+            <p>Możesz teraz wykorzystać swój voucher, składając zapytanie o ofertę podróży.</p>
+            <a href="index.html#request" class="success-button">Złóż Zapytanie o Ofertę</a>
+            <br><br>
+            <a href="index.html" style="color: var(--text-light); text-decoration: none;">← Powrót do strony głównej</a>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+

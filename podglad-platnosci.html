@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Podgląd Płatności Stripe - Travel Faden</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            background: var(--bg-light);
+            padding: 2rem;
+        }
+        .preview-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .preview-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+        .preview-section h2 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+        }
+        .step-number {
+            display: inline-block;
+            background: var(--primary-color);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 1rem;
+            font-weight: bold;
+        }
+        .step {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: #f9fafb;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-color);
+        }
+        .step h3 {
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+        }
+        .mockup {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+        .mockup-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .mockup-input {
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: #f9fafb;
+        }
+        .mockup-button {
+            padding: 1rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+        .stripe-checkout-preview {
+            background: #f6f9fc;
+            border: 2px dashed #cbd5e1;
+            padding: 2rem;
+            text-align: center;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+        .stripe-checkout-preview::before {
+            content: "🔒 Stripe Checkout";
+            display: block;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .info-box {
+            background: #eff6ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1rem;
+            margin-top: 1rem;
+            border-radius: 4px;
+        }
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            margin-top: 1rem;
+        }
+        .screenshot-placeholder {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem;
+            text-align: center;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+        .screenshot-placeholder::before {
+            content: "📸";
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="preview-container">
+        <div class="preview-section">
+            <h1 style="color: var(--primary-color); text-align: center; margin-bottom: 2rem;">
+                Podgląd Płatności Stripe - Travel Faden
+            </h1>
+            <p style="text-align: center; color: var(--text-light); font-size: 1.1rem;">
+                Oto jak wygląda obecna implementacja płatności
+            </p>
+        </div>
+
+        <!-- Krok 1: Strona testowa -->
+        <div class="preview-section">
+            <div class="step">
+                <h3><span class="step-number">1</span>Strona Testowa Płatności</h3>
+                <p>To jest strona, którą widzisz przed rozpoczęciem płatności:</p>
+                
+                <div class="mockup">
+                    <h4 style="margin-top: 0;">Test Płatności Stripe</h4>
+                    <div style="background: #f0f9ff; padding: 1rem; border-radius: 5px; margin-bottom: 1rem; border-left: 4px solid var(--primary-color);">
+                        <strong>Instrukcja:</strong>
+                        <ol style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                            <li>Wprowadź swój Publishable Key</li>
+                            <li>Wprowadź kwotę w EUR</li>
+                            <li>Kliknij "Przetestuj Płatność"</li>
+                        </ol>
+                    </div>
+                    
+                    <div class="mockup-form">
+                        <input type="text" class="mockup-input" placeholder="Stripe Publishable Key: pk_test_51..." value="pk_test_51SZE0fDBlDajj0U" disabled>
+                        <input type="number" class="mockup-input" placeholder="Kwota (EUR):" value="80" disabled>
+                        <input type="text" class="mockup-input" placeholder="Nazwa produktu:" value="Test Usługi Travel Faden" disabled>
+                        <button class="mockup-button">Przetestuj Płatność</button>
+                    </div>
+                </div>
+                
+                <div class="info-box">
+                    <strong>📍 Lokalizacja:</strong> <code>test-stripe.html</code> lub <code>http://localhost:3000/test-stripe.html</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- Krok 2: Stripe Checkout -->
+        <div class="preview-section">
+            <div class="step">
+                <h3><span class="step-number">2</span>Stripe Checkout (Formularz Płatności)</h3>
+                <p>Po kliknięciu "Przetestuj Płatność" otwiera się okno Stripe Checkout:</p>
+                
+                <div class="stripe-checkout-preview">
+                    <div style="text-align: left; max-width: 500px; margin: 0 auto; background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                        <h3 style="margin-top: 0;">Travel Faden</h3>
+                        <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 1rem 0;">
+                        
+                        <div style="margin-bottom: 1.5rem;">
+                            <strong>Test Usługi Travel Faden</strong><br>
+                            <span style="color: #6b7280; font-size: 0.9rem;">Voucher podróżniczy o wartości 80€ do wykorzystania na dowolną ofertę</span>
+                        </div>
+                        
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 1.5rem; font-size: 1.2rem; font-weight: bold;">
+                            <span>Suma:</span>
+                            <span>80,00 €</span>
+                        </div>
+                        
+                        <div style="margin-bottom: 1.5rem;">
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Email</label>
+                            <input type="email" class="mockup-input" placeholder="twoj@email.com" style="width: 100%;">
+                        </div>
+                        
+                        <div style="margin-bottom: 1.5rem;">
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Dane karty</label>
+                            <div style="border: 1px solid #ddd; border-radius: 5px; padding: 0.75rem; background: #f9fafb;">
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <span style="font-size: 1.5rem;">💳</span>
+                                    <span style="color: #6b7280;">4242 4242 4242 4242</span>
+                                </div>
+                                <div style="display: flex; gap: 1rem; margin-top: 0.5rem; font-size: 0.9rem; color: #6b7280;">
+                                    <span>12/25</span>
+                                    <span>CVC: 123</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button class="mockup-button" style="width: 100%;">Zapłać 80,00 €</button>
+                        
+                        <p style="text-align: center; margin-top: 1rem; font-size: 0.8rem; color: #6b7280;">
+                            🔒 Zabezpieczone przez Stripe
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="info-box">
+                    <strong>ℹ️ Informacje:</strong>
+                    <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                        <li>To jest <strong>Stripe Checkout</strong> - gotowy formularz płatności</li>
+                        <li>Design jest kontrolowany przez Stripe (można zmienić kolory w Dashboard)</li>
+                        <li>Formularz jest w pełni responsywny i bezpieczny</li>
+                        <li>Obsługuje wiele metod płatności (karty, Apple Pay, Google Pay)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Krok 3: Strona sukcesu -->
+        <div class="preview-section">
+            <div class="step">
+                <h3><span class="step-number">3</span>Strona Sukcesu</h3>
+                <p>Po pomyślnej płatności użytkownik zostaje przekierowany na stronę sukcesu:</p>
+                
+                <div class="screenshot-placeholder">
+                    <div style="background: white; color: #1e293b; padding: 3rem; border-radius: 8px; max-width: 600px; margin: 0 auto;">
+                        <div style="font-size: 4rem; margin-bottom: 1rem;">✅</div>
+                        <h2 style="color: var(--primary-color); margin-bottom: 1rem;">Płatność Zakończona Pomyślnie!</h2>
+                        <p style="color: #6b7280; margin-bottom: 2rem; line-height: 1.8;">
+                            Dziękujemy za zakup vouchera. Otrzymasz email z potwierdzeniem płatności oraz numerem vouchera.
+                        </p>
+                        <p style="color: #6b7280; margin-bottom: 2rem;">
+                            Możesz teraz wykorzystać swój voucher, składając zapytanie o ofertę podróży.
+                        </p>
+                        <button class="mockup-button" style="border-radius: 50px;">Złóż Zapytanie o Ofertę</button>
+                        <br><br>
+                        <a href="#" style="color: #6b7280; text-decoration: none;">← Powrót do strony głównej</a>
+                    </div>
+                </div>
+                
+                <div class="info-box">
+                    <strong>📍 Lokalizacja:</strong> <code>success.html</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- Konfiguracja -->
+        <div class="preview-section">
+            <h2>🔧 Obecna Konfiguracja</h2>
+            
+            <div class="step">
+                <h3>Backend (backend-example.js)</h3>
+                <div class="code-block">
+app.post('/api/create-checkout-session', async (req, res) => {
+  const session = await stripe.checkout.sessions.create({
+    payment_method_types: ['card'],
+    line_items: [{
+      price_data: {
+        currency: 'eur',
+        product_data: {
+          name: productName,
+          description: 'Voucher podróżniczy...'
+        },
+        unit_amount: amount * 100
+      },
+      quantity: 1
+    }],
+    mode: 'payment',
+    success_url: '.../success.html',
+    cancel_url: '.../cancel.html',
+    custom_text: {
+      submit: {
+        message: 'Dziękujemy za wybór Travel Faden!'
+      }
+    }
+  });
+});
+                </div>
+            </div>
+
+            <div class="step">
+                <h3>Frontend (test-stripe.html)</h3>
+                <div class="code-block">
+// Tworzenie sesji przez backend
+const response = await fetch('http://localhost:3000/api/create-checkout-session', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ amount, currency: 'eur', productName })
+});
+
+// Przekierowanie do Stripe Checkout
+const session = await response.json();
+stripe.redirectToCheckout({ sessionId: session.id });
+                </div>
+            </div>
+        </div>
+
+        <!-- Możliwości customizacji -->
+        <div class="preview-section">
+            <h2>🎨 Możliwości Customizacji</h2>
+            
+            <div class="step">
+                <h3>Co można zmienić TERAZ (bez dodatkowego kodu):</h3>
+                <ul style="line-height: 2;">
+                    <li>✅ <strong>Kolory</strong> - Stripe Dashboard → Settings → Branding</li>
+                    <li>✅ <strong>Logo</strong> - Stripe Dashboard → Settings → Branding</li>
+                    <li>✅ <strong>Teksty</strong> - przez <code>custom_text</code> w backendzie (już dodane)</li>
+                </ul>
+            </div>
+
+            <div class="step">
+                <h3>Co można zmienić z dodatkowym kodem:</h3>
+                <ul style="line-height: 2;">
+                    <li>🔧 <strong>Pełna kontrola designu</strong> - użyj Stripe Elements (przykład: <code>stripe-elements-example.html</code>)</li>
+                    <li>🔧 <strong>Własny formularz</strong> - zbuduj formularz na swojej stronie</li>
+                    <li>🔧 <strong>Dodatkowe pola</strong> - adres, telefon, itp.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Linki -->
+        <div class="preview-section" style="text-align: center;">
+            <h2>🔗 Przetestuj Teraz</h2>
+            <p style="margin-bottom: 2rem;">Otwórz stronę testową i zobacz jak to działa:</p>
+            <a href="http://localhost:3000/test-stripe.html" class="mockup-button" style="text-decoration: none; display: inline-block;">
+                Otwórz Stronę Testową
+            </a>
+        </div>
+    </div>
+</body>
+</html>
+
+
+
+

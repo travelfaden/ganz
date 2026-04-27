@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Płatności Stripe - Travel Faden</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        .test-container {
+            max-width: 600px;
+            margin: 100px auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .test-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .test-input {
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        .test-button {
+            padding: 1rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .test-button:hover {
+            background: var(--primary-dark);
+        }
+        .test-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .test-info {
+            background: #f0f9ff;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary-color);
+        }
+        .test-info h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+        .test-info code {
+            background: #e0e7ff;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-size: 0.9rem;
+        }
+        .test-info ul {
+            margin: 0.5rem 0;
+            padding-left: 1.5rem;
+        }
+        .error-message {
+            color: #ef4444;
+            padding: 0.75rem;
+            background: #fee2e2;
+            border-radius: 5px;
+            margin-top: 1rem;
+        }
+        .success-message {
+            color: #059669;
+            padding: 0.75rem;
+            background: #d1fae5;
+            border-radius: 5px;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Test Płatności Stripe</h1>
+        
+        <div class="test-info">
+            <h3>Instrukcja:</h3>
+            <ol>
+                <li>Wprowadź swój <strong>Publishable Key</strong> z Stripe Dashboard (zaczyna się od <code>pk_test_</code>)</li>
+                <li>Wprowadź kwotę w EUR (np. 80)</li>
+                <li>Kliknij "Przetestuj Płatność"</li>
+                <li>Użyj testowej karty: <code>4242 4242 4242 4242</code></li>
+                <li>Data wygaśnięcia: dowolna przyszła data (np. 12/25)</li>
+                <li>CVC: dowolne 3 cyfry (np. 123)</li>
+            </ol>
+            <p><strong>Gdzie znaleźć klucz?</strong><br>
+            Stripe Dashboard → Developers → API keys → Publishable key</p>
+        </div>
+
+        <form class="test-form" id="testForm">
+            <label>
+                <strong>Stripe Publishable Key:</strong>
+                <input 
+                    type="text" 
+                    id="stripeKey" 
+                    class="test-input" 
+                    placeholder="pk_test_51..." 
+                    required
+                >
+            </label>
+            
+            <label>
+                <strong>Kwota (EUR):</strong>
+                <input 
+                    type="number" 
+                    id="amount" 
+                    class="test-input" 
+                    value="80" 
+                    min="1" 
+                    step="0.01"
+                    required
+                >
+            </label>
+            
+            <label>
+                <strong>Nazwa produktu:</strong>
+                <input 
+                    type="text" 
+                    id="productName" 
+                    class="test-input" 
+                    value="Test Usługi Travel Faden" 
+                    required
+                >
+            </label>
+            
+            <button type="submit" class="test-button" id="testButton">
+                Przetestuj Płatność
+            </button>
+        </form>
+
+        <div id="message"></div>
+    </div>
+
+    <script>
+        let stripe = null;
+
+        document.getElementById('testForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const messageDiv = document.getElementById('message');
+            const testButton = document.getElementById('testButton');
+            const stripeKeyInput = document.getElementById('stripeKey');
+            const amountInput = document.getElementById('amount');
+            const productNameInput = document.getElementById('productName');
+            
+            const publishableKey = stripeKeyInput.value.trim();
+            const amount = parseFloat(amountInput.value);
+            const productName = productNameInput.value.trim();
+            
+            // Walidacja
+            if (!publishableKey.startsWith('pk_test_') && !publishableKey.startsWith('pk_live_')) {
+                messageDiv.innerHTML = '<div class="error-message">Błąd: Klucz musi zaczynać się od pk_test_ lub pk_live_</div>';
+                return;
+            }
+            
+            if (isNaN(amount) || amount <= 0) {
+                messageDiv.innerHTML = '<div class="error-message">Błąd: Wprowadź poprawną kwotę</div>';
+                return;
+            }
+            
+            // Inicjalizacja Stripe
+            try {
+                stripe = Stripe(publishableKey);
+            } catch (error) {
+                messageDiv.innerHTML = `<div class="error-message">Błąd inicjalizacji Stripe: ${error.message}</div>`;
+                return;
+            }
+            
+            // Wyłącz przycisk i pokaż loading
+            testButton.disabled = true;
+            testButton.textContent = 'Przetwarzanie...';
+            messageDiv.innerHTML = '';
+            
+            try {
+                // UWAGA: Ta metoda wymaga backendu!
+                // Dla testów bez backendu, użyjemy Stripe Payment Intents API
+                // W produkcji zawsze używaj backendu!
+                
+                messageDiv.innerHTML = '<div class="success-message">Tworzenie sesji płatności... (wymaga backendu)</div>';
+                
+                // Próba utworzenia sesji przez backend
+                // Użyj aktualnego hosta (działa zarówno na localhost jak i na telefonie)
+                const backendUrl = window.location.origin;
+                const response = await fetch(`${backendUrl}/api/create-checkout-session`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        amount: amount,
+                        currency: 'eur',
+                        productName: productName,
+                    }),
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Backend nie odpowiada (${response.status}). Upewnij się, że backend jest uruchomiony na porcie 3000.`);
+                }
+                
+                const session = await response.json();
+                
+                // Przekierowanie do Stripe Checkout
+                const result = await stripe.redirectToCheckout({
+                    sessionId: session.id
+                });
+                
+                if (result.error) {
+                    throw new Error(result.error.message);
+                }
+                
+            } catch (error) {
+                console.error('Błąd:', error);
+                messageDiv.innerHTML = `
+                    <div class="error-message">
+                        <strong>Błąd:</strong> ${error.message}<br><br>
+                        <strong>Rozwiązanie:</strong><br>
+                        1. Uruchom backend: <code>node backend-example.js</code><br>
+                        2. Upewnij się, że masz plik <code>.env</code> z kluczem <code>STRIPE_SECRET_KEY</code><br>
+                        3. Sprawdź, czy backend działa na <code>http://localhost:3000</code>
+                    </div>
+                `;
+                
+                testButton.disabled = false;
+                testButton.textContent = 'Przetestuj Płatność';
+            }
+        });
+    </script>
+</body>
+</html>
+
