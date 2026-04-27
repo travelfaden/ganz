@@ -158,7 +158,11 @@ document.addEventListener('DOMContentLoaded', function() {
 // Voucher button handlers with Stripe integration
 document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.voucher-button').forEach(button => {
-    // Pomiń przyciski z klasą service-buy-button (obsługiwane przez własny kod w wakacje-dla-ciebie.html)
+    // Linki stylowane jak przycisk (np. Kontakt) — bez Stripe
+    if (button.tagName === 'A') {
+        return;
+    }
+    // Pomiń przyciski z klasą service-buy-button (formularz + własny checkout)
     if (button.classList.contains('service-buy-button')) {
         return;
     }
