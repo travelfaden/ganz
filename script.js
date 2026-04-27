@@ -95,6 +95,55 @@ let BACKEND_URL = typeof window !== 'undefined' && window.location.hostname !== 
   ? window.location.origin // Użyj aktualnego URL (Vercel)
   : 'http://localhost:3000'; // Localhost dla testów lokalnych
 
+/**
+ * Start Stripe Checkout (używane przez strony z formularzem: Flüge, Unterkünfte, City Break, itd.)
+ */
+window.travelFadenStartCheckout = async function (amount, productName, loadingButton) {
+    if (!stripe) {
+        alert('Zahlungssystem nicht geladen. Bitte die Seite neu laden.');
+        return;
+    }
+    const btn = loadingButton || null;
+    const originalText = btn ? btn.textContent : '';
+    if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'Wird geladen...';
+        btn.style.opacity = '0.65';
+    }
+    try {
+        const response = await fetch(`${BACKEND_URL}/api/create-checkout-session`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                amount: amount,
+                currency: 'eur',
+                productName: productName || `Travel Faden - ${amount}€`,
+            }),
+        });
+        if (!response.ok) {
+            let msg = 'Checkout konnte nicht gestartet werden.';
+            try {
+                const err = await response.json();
+                msg = err.message || err.error || msg;
+            } catch (_) {}
+            throw new Error(msg);
+        }
+        const session = await response.json();
+        const result = await stripe.redirectToCheckout({ sessionId: session.id });
+        if (result.error) {
+            throw new Error(result.error.message);
+        }
+    } catch (error) {
+        console.error('travelFadenStartCheckout:', error);
+        alert(`Fehler: ${error.message}`);
+        if (btn) {
+            btn.disabled = false;
+            btn.textContent = originalText;
+            btn.style.opacity = '1';
+        }
+    }
+};
+
 // Inicjalizacja Stripe tylko jeśli jest dostępny
 document.addEventListener('DOMContentLoaded', function() {
     if (typeof Stripe !== 'undefined') {

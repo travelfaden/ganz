@@ -511,18 +511,21 @@
             
             const formData = new FormData(travelForm);
             const data = Object.fromEntries(formData);
-            
-            // Wyślij formularz na email
-            await sendFormToEmail(data);
-            
-            // Zapisz dane formularza do sessionStorage
             sessionStorage.setItem('travelFormData', JSON.stringify(data));
-            
-            // Zamknij modal
             closeModal();
-            
-            // Po wysłaniu formularza pokaż komunikat zamiast przekierowywać do płatności
-            alert('Dziękujemy! Formularz został wysłany. Skontaktujemy się z Tobą wkrótce.');
+
+            const amountAttr = buyButton ? buyButton.getAttribute('data-amount') : null;
+            const amountNum = amountAttr ? parseInt(amountAttr, 10) : NaN;
+            if (!amountNum || amountNum <= 0) {
+                alert('Ungültiger Betrag. Bitte versuchen Sie es erneut.');
+                return;
+            }
+            if (typeof travelFadenStartCheckout !== 'function') {
+                alert('Zahlung nicht verfügbar. Bitte die Seite neu laden.');
+                return;
+            }
+            const submitBtn = document.getElementById('submitFormBtn');
+            await travelFadenStartCheckout(amountNum, 'Travel Faden - Unterkünfte', submitBtn);
             });
             
             // Obsługa zmiany ceny w zależności od liczby osób
