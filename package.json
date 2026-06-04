@@ -5,6 +5,7 @@
   "main": "backend-example.js",
   "scripts": {
     "start": "node backend-example.js",
+    "preview": "npx --yes serve . -l 3000",
     "test": "echo \"Otwórz test-stripe.html w przeglądarce\" && exit 0"
   },
   "keywords": [

@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Impressum - Travel Faden</title>
+    <title>Reisevorschlag des Tages | Travel Faden</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://js.stripe.com/v3/"></script>
 </head>
-<body>
+<body class="has-daily-offers-hinweis">
     <nav class="navbar">
         <div class="container">
             <div class="logo">
@@ -82,43 +82,49 @@
         </div>
     </nav>
 
-    <section class="section" style="margin-top: 80px; padding: 4rem 0;">
-        <div class="container">
-            <h1 style="font-size: 3rem; margin-bottom: 3rem; text-align: center; color: var(--text-color);">Impressum</h1>
-            
-            <div style="max-width: 800px; margin: 0 auto;">
-                <div class="regulamin">
-                    <section>
-                        <p><strong>Travel Faden</strong></p>
-
-                        <p><strong>Inhaber:</strong><br>
-                        Bartosz Nagiec</p>
-
-                        <p>Einzelunternehmen</p>
-
-                        <p>Pönitzer Weg 2a<br>
-                        23684 Scharbeutz<br>
-                        Deutschland</p>
-
-                        <p>E-Mail: <a href="mailto:travelfaden@gmail.com">travelfaden@gmail.com</a><br>
-                        Telefon: <a href="tel:+491733053783">+49 173 3053783</a></p>
-                    </section>
-
-                    <section style="margin-top: 2rem;">
-                        <p><strong>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV:</strong></p>
-                        <p>Bartosz Nagiec<br>
-                        Pönitzer Weg 2a<br>
-                        23684 Scharbeutz<br>
-                        Deutschland</p>
-                    </section>
-                </div>
-                
-                <div style="text-align: center; margin-top: 3rem;">
-                    <a href="index.html" style="display: inline-block; padding: 0.75rem 2rem; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: white; text-decoration: none; border-radius: 12px; font-weight: 700; transition: all 0.3s ease;">← Zurück zur Startseite</a>
+    <div id="angebot-detail-root">
+        <section class="service-hero" id="angebot-hero" style="background-size: cover; background-position: center;">
+            <div class="service-hero-overlay"></div>
+            <div class="container">
+                <div class="service-hero-content">
+                    <p class="service-subtitle" style="margin-bottom: 0.5rem; opacity: 0.95;">Reisevorschlag des Tages</p>
+                    <h1 id="angebot-hero-title">…</h1>
                 </div>
             </div>
+        </section>
+
+        <section class="section service-details">
+            <div class="container">
+                <div class="service-content-wrapper">
+                    <div class="service-main-content">
+                        <div class="angebot-meta-grid" id="angebot-meta-grid"></div>
+                        <h2>Über diesen Reisevorschlag</h2>
+                        <div id="angebot-description"></div>
+                        <p><a href="oferta-dnia-nav.html" style="color: var(--primary-color); text-decoration: none; font-weight: 600;">← Zurück zu allen Reisevorschlägen</a></p>
+                    </div>
+                    <div class="service-sidebar">
+                        <div class="service-card-summary">
+                            <h3>Dienstleistung buchen</h3>
+                            <p style="font-size: 0.95rem; color: var(--text-light); line-height: 1.6; margin-bottom: 1rem;">
+                                Erhalten Sie diesen Reisevorschlag inkl. Recherche und Buchungslinks.
+                            </p>
+                            <div class="summary-item">
+                                <span>Preis der Dienstleistung:</span>
+                                <strong>40€</strong>
+                            </div>
+                            <a href="oferta-dnia.html" class="daily-offer-cta" style="width: 100%; margin-top: 1.25rem; text-align: center; box-sizing: border-box;">Jetzt bestellen</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <aside class="daily-offers-hinweis" role="note" aria-label="Wichtiger Hinweis zum Angebot">
+        <div class="daily-offers-hinweis-inner">
+            <p><strong>Wichtiger Hinweis:</strong> Preis und Verfügbarkeit gelten zum Zeitpunkt der Recherche. Änderungen durch Drittanbieter sind jederzeit möglich. Die Buchung erfolgt eigenständig über die bereitgestellten Links.</p>
         </div>
-    </section>
+    </aside>
 
     <footer class="footer">
         <div class="container">
@@ -134,7 +140,7 @@
         </div>
     </footer>
 
+    <script src="js/daily-offers.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
-
