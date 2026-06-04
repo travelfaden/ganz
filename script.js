@@ -95,6 +95,76 @@ let BACKEND_URL = typeof window !== 'undefined' && window.location.hostname !== 
   ? window.location.origin // Użyj aktualnego URL (Vercel)
   : 'http://localhost:3000'; // Localhost dla testów lokalnych
 
+function collectPageConsents() {
+    const consentIds = ['withdrawal-consent', 'agb-consent', 'privacy-consent'];
+    const collected = [];
+
+    consentIds.forEach((id) => {
+        const input = document.getElementById(id);
+        if (!input) return;
+
+        const label = document.querySelector(`label[for="${id}"]`);
+        collected.push({
+            id,
+            label: label ? label.innerText.replace(/\s+/g, ' ').trim() : id,
+            checked: Boolean(input.checked),
+        });
+    });
+
+    return collected;
+}
+
+async function recordConsentAndCreateSession(amount, productName, consents) {
+    let consentId = null;
+
+    if (consents.length > 0) {
+    const consentResponse = await fetch(`${BACKEND_URL}/api/record-consent`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            amount,
+            currency: 'eur',
+            productName,
+            consents,
+        }),
+    });
+
+    if (!consentResponse.ok) {
+        let msg = 'Zgody nie zostały zapisane.';
+        try {
+            const err = await consentResponse.json();
+            msg = err.message || err.error || msg;
+        } catch (_) {}
+        throw new Error(msg);
+    }
+
+    const consentData = await consentResponse.json();
+    consentId = consentData.consentId;
+    }
+
+    const sessionResponse = await fetch(`${BACKEND_URL}/api/create-checkout-session`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            amount,
+            currency: 'eur',
+            productName,
+            consentId,
+        }),
+    });
+
+    if (!sessionResponse.ok) {
+        let msg = 'Checkout konnte nicht gestartet werden.';
+        try {
+            const err = await sessionResponse.json();
+            msg = err.message || err.error || msg;
+        } catch (_) {}
+        throw new Error(msg);
+    }
+
+    return sessionResponse.json();
+}
+
 /**
  * Start Stripe Checkout (używane przez strony z formularzem: Flüge, Unterkünfte, City Break, itd.)
  */
@@ -111,24 +181,12 @@ window.travelFadenStartCheckout = async function (amount, productName, loadingBu
         btn.style.opacity = '0.65';
     }
     try {
-        const response = await fetch(`${BACKEND_URL}/api/create-checkout-session`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                amount: amount,
-                currency: 'eur',
-                productName: productName || `Travel Faden - ${amount}€`,
-            }),
-        });
-        if (!response.ok) {
-            let msg = 'Checkout konnte nicht gestartet werden.';
-            try {
-                const err = await response.json();
-                msg = err.message || err.error || msg;
-            } catch (_) {}
-            throw new Error(msg);
-        }
-        const session = await response.json();
+        const consents = collectPageConsents();
+        const session = await recordConsentAndCreateSession(
+            amount,
+            productName || `Travel Faden - ${amount}€`,
+            consents
+        );
         const result = await stripe.redirectToCheckout({ sessionId: session.id });
         if (result.error) {
             throw new Error(result.error.message);
@@ -206,27 +264,13 @@ document.addEventListener('DOMContentLoaded', function() {
         button.style.opacity = '0.6';
         
         try {
-            // Tworzenie Checkout Session przez backend
-            // WAŻNE: Musisz stworzyć endpoint na backendzie, który utworzy Stripe Checkout Session
-            const response = await fetch(`${BACKEND_URL}/api/create-checkout-session`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    amount: amount,
-                    currency: 'eur',
-                    productName: `Usługa Travel Faden - ${amount}€`,
-                }),
-            });
+            const consents = collectPageConsents();
+            const session = await recordConsentAndCreateSession(
+                amount,
+                `Usługa Travel Faden - ${amount}€`,
+                consents
+            );
 
-            if (!response.ok) {
-                throw new Error('Błąd podczas tworzenia sesji płatności');
-            }
-
-            const session = await response.json();
-
-            // Przekierowanie do Stripe Checkout
             const result = await stripe.redirectToCheckout({
                 sessionId: session.id
             });
@@ -260,9 +304,50 @@ if (requestForm) {
 // Contact form submission
 const contactForm = document.querySelector('.contact-form');
 if (contactForm) {
+    const getGermanValidationMessage = (field) => {
+        if (field.id === 'privacy-checkbox') {
+            return 'Bitte akzeptieren Sie die Datenschutzerklaerung.';
+        }
+        if (field.type === 'email') {
+            if (field.validity.valueMissing) {
+                return 'Bitte geben Sie Ihre E-Mail-Adresse ein.';
+            }
+            if (field.validity.typeMismatch) {
+                return 'Bitte geben Sie eine gueltige E-Mail-Adresse ein.';
+            }
+        }
+        if (field.tagName === 'TEXTAREA') {
+            return 'Bitte geben Sie Ihre Nachricht ein.';
+        }
+        if (field.type === 'text') {
+            return 'Bitte geben Sie Ihren Namen ein.';
+        }
+        return 'Bitte fuellen Sie dieses Feld aus.';
+    };
+
+    const contactFields = contactForm.querySelectorAll('input, textarea');
+    contactFields.forEach((field) => {
+        field.addEventListener('invalid', () => {
+            field.setCustomValidity(getGermanValidationMessage(field));
+        });
+
+        field.addEventListener('input', () => {
+            field.setCustomValidity('');
+        });
+
+        field.addEventListener('change', () => {
+            field.setCustomValidity('');
+        });
+    });
+
     contactForm.addEventListener('submit', (e) => {
+        if (!contactForm.checkValidity()) {
+            e.preventDefault();
+            contactForm.reportValidity();
+            return;
+        }
         e.preventDefault();
-        alert('Dziękujemy za wiadomość! Skontaktujemy się z Tobą wkrótce.');
+        alert('Vielen Dank fuer Ihre Nachricht! Wir werden uns in Kuerze bei Ihnen melden.');
         contactForm.reset();
     });
 }
@@ -457,13 +542,13 @@ function initSearch() {
             keywords: 'so funktioniert es prozess dienstleistung schritte anleitung'
         },
         {
-            title: 'Dienstleistungen',
+            title: 'Unsere Leistungen',
             desc: 'Kaufen Sie eine Dienstleistung und nutzen Sie sie für jedes Angebot',
             link: isHomePage ? '#vouchers' : 'index.html#vouchers',
             keywords: 'dienstleistungen dienstleistung kaufen kauf euro'
         },
         {
-            title: 'Tagesvorschlag',
+            title: 'Reisevorschlag des Tages',
             desc: 'Fertiges, sorgfältig ausgearbeitetes Reiseangebot basierend auf unserem Wissen',
             link: 'oferta-dnia.html',
             keywords: 'tagesvorschlag tagesangebot fertiges angebot reise'

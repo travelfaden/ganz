@@ -1,6 +1,10 @@
 // Vercel Serverless Function - Webhook Stripe
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const { Resend } = require('resend');
+const {
+  isSupabaseConfigured,
+  updateOrderConsentByConsentId,
+} = require('./_lib/supabase');
 
 // Funkcje pomocnicze (importowane z utils)
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
@@ -191,7 +195,22 @@ module.exports = async (req, res) => {
         const currency = sessionDetails.metadata?.voucher_currency || sessionDetails.currency || 'eur';
         const customerEmail = sessionDetails.customer_details?.email || sessionDetails.customer_email;
         const customerName = sessionDetails.customer_details?.name || null;
-        
+        const consentId = sessionDetails.metadata?.consent_id || null;
+
+        if (consentId && isSupabaseConfigured()) {
+          try {
+            await updateOrderConsentByConsentId(consentId, {
+              stripe_session_id: sessionDetails.id,
+              customer_email: customerEmail || null,
+              payment_status: 'paid',
+              voucher_number: voucherNumber,
+            });
+            console.log('✅ Zaktualizowano zgodę w Supabase:', consentId);
+          } catch (dbError) {
+            console.error('❌ Błąd aktualizacji Supabase:', dbError.message);
+          }
+        }
+
         console.log('📧 Wysyłanie emaila z voucherem do:', customerEmail);
         
         // Wysyłanie emaila z voucherem

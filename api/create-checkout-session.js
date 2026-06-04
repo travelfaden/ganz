@@ -24,7 +24,7 @@ module.exports = async (req, res) => {
 
   try {
     console.log('Otrzymano żądanie:', req.body);
-    const { amount, currency = 'eur', productName } = req.body;
+    const { amount, currency = 'eur', productName, consentId } = req.body;
 
     if (!amount) {
       console.error('Błąd: Brak kwoty');
@@ -65,6 +65,7 @@ module.exports = async (req, res) => {
       metadata: {
         voucher_amount: amount.toString(),
         voucher_currency: currency,
+        ...(consentId ? { consent_id: String(consentId) } : {}),
       },
       custom_text: {
         submit: {
