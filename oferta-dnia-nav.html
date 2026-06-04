@@ -90,8 +90,24 @@
                 Neue Angebote werden regelmäßig hinzugefügt – schauen Sie gerne regelmäßig vorbei und lassen Sie sich inspirieren.
             </p>
 
-            <!-- Angebote: data/angebote.json bearbeiten (siehe NEUES-ANGEBOT.md) -->
-            <div class="daily-offers-list" id="daily-offers-list"></div>
+            <!-- Neue Angebote immer OBEN einfügen (neueste zuerst). Detailseite: angebot-mallorca.html als Vorlage (inkl. fixierter Hinweis unten). -->
+            <div class="daily-offers-list">
+                <article class="daily-offer-card">
+                    <div class="daily-offer-image">
+                        <img src="images/mallorca-2026.png" alt="Mallorca – Bucht mit türkisem Wasser" width="320" height="240" loading="lazy">
+                    </div>
+                    <div class="daily-offer-content">
+                        <h2 class="daily-offer-destination">Mallorca</h2>
+                        <ul class="daily-offer-details">
+                            <li><span class="daily-offer-emoji" aria-hidden="true">📅</span> 12.09.2026 – 16.09.2026</li>
+                            <li><span class="daily-offer-emoji" aria-hidden="true">✈️</span> Ab Hamburg</li>
+                            <li><span class="daily-offer-emoji" aria-hidden="true">🌙</span> 4 Tage</li>
+                            <li><span class="daily-offer-emoji" aria-hidden="true">💰</span> ab 299 € pro Person</li>
+                        </ul>
+                        <a href="angebot-mallorca.html" class="daily-offer-cta">Reisevorschlag ansehen</a>
+                    </div>
+                </article>
+            </div>
         </div>
     </section>
 
@@ -129,7 +145,6 @@
         </div>
     </footer>
 
-    <script src="js/daily-offers.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
