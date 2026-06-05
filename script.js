@@ -114,7 +114,13 @@ function collectPageConsents() {
     return collected;
 }
 
-async function recordConsentAndCreateSession(amount, productName, consents) {
+/** Bekannte Reisevorschlag-IDs (rid in URL) – bei neuer Angebotsseite hier ergänzen */
+const VALID_REISEVORSCHLAG_IDS = {
+    'TF-MALLORCA-12092026': { title: 'Mallorca' },
+    'TF-KRETA-12092026': { title: 'Kreta' },
+};
+
+async function recordConsentAndCreateSession(amount, productName, consents, reisevorschlagId = null) {
     let consentId = null;
 
     if (consents.length > 0) {
@@ -126,6 +132,7 @@ async function recordConsentAndCreateSession(amount, productName, consents) {
             currency: 'eur',
             productName,
             consents,
+            reisevorschlagId: reisevorschlagId || undefined,
         }),
     });
 
@@ -150,6 +157,7 @@ async function recordConsentAndCreateSession(amount, productName, consents) {
             currency: 'eur',
             productName,
             consentId,
+            reisevorschlagId: reisevorschlagId || undefined,
         }),
     });
 
@@ -265,10 +273,15 @@ document.addEventListener('DOMContentLoaded', function() {
         
         try {
             const consents = collectPageConsents();
+            const reiseId = button.getAttribute('data-reise-id');
+            const productName = reiseId
+                ? `Reisevorschlag des Tages - ${reiseId}`
+                : `Usługa Travel Faden - ${amount}€`;
             const session = await recordConsentAndCreateSession(
                 amount,
-                `Usługa Travel Faden - ${amount}€`,
-                consents
+                productName,
+                consents,
+                reiseId || null
             );
 
             const result = await stripe.redirectToCheckout({

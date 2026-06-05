@@ -11,11 +11,16 @@ Wrzuć do `images/`, np. `images/kreta-2026.png`
 
 1. Skopiuj **`angebot-mallorca.html`** → **`angebot-kreta.html`**
 2. Zamień (Ctrl+H): Mallorca → Kreta, zdjęcie, daty, teksty, `<title>`
-3. Zostaw: link **Jetzt bestellen** → `oferta-dnia.html`, dolny **Wichtiger Hinweis**
+3. **Reisevorschlag-ID** — nad datą podróży blok `.angebot-reise-id`, np. `TF-KRETA-12092026` (format: `TF-NAZWA-DDMMYYYY` od daty wyjazdu)
+4. Link **Jetzt bestellen** → `oferta-dnia.html?rid=TF-KRETA-12092026` (ten sam ID co w bloku)
+5. W **`script.js`** w obiekcie `VALID_REISEVORSCHLAG_IDS` dopisz nowy wpis z tym samym ID
+6. **Data podróży** — blok `.angebot-travel-date` nad siatką; zmień daty w `angebot-travel-date-value`
+7. W siatce meta (✈️ 🌙 💰 🏡) jest stałe pole **Unterkunftsart** — zmień wartość (np. `Hotel`)
+8. Dolny **Wichtiger Hinweis** zostaw bez zmian
 
 ## Krok 3 – Karta na liście
 
-W **`oferta-dnia-nav.html`** wklej **na górze** `<div class="daily-offers-list">` nową kartę (wzór: Mallorca), link:
+W **`oferta-dnia-nav.html`** wklej **na górze** `<div class="daily-offers-list">` nową kartę (wzór: Mallorca). **Data** w bloku `daily-offer-travel-date` (duża, na środku). Link:
 
 `href="angebot-kreta.html"`
 

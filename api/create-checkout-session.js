@@ -24,7 +24,7 @@ module.exports = async (req, res) => {
 
   try {
     console.log('Otrzymano żądanie:', req.body);
-    const { amount, currency = 'eur', productName, consentId } = req.body;
+    const { amount, currency = 'eur', productName, consentId, reisevorschlagId } = req.body;
 
     if (!amount) {
       console.error('Błąd: Brak kwoty');
@@ -51,8 +51,10 @@ module.exports = async (req, res) => {
           price_data: {
             currency: currency,
             product_data: {
-              name: productName || `Voucher Travel Faden - ${amount}€`,
-              description: `Voucher podróżniczy o wartości ${amount}€ do wykorzystania na dowolną ofertę`,
+              name: productName || `Reisevorschlag des Tages - ${amount}€`,
+              description: reisevorschlagId
+                ? `Reisevorschlag-ID: ${reisevorschlagId}`
+                : `Reisevorschlag des Tages – ${amount}€`,
             },
             unit_amount: amount * 100, // Stripe używa centów
           },
@@ -66,6 +68,7 @@ module.exports = async (req, res) => {
         voucher_amount: amount.toString(),
         voucher_currency: currency,
         ...(consentId ? { consent_id: String(consentId) } : {}),
+        ...(reisevorschlagId ? { reisevorschlag_id: String(reisevorschlagId) } : {}),
       },
       custom_text: {
         submit: {

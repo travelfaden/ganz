@@ -9,6 +9,7 @@ create table if not exists public.order_consents (
   amount numeric,
   currency text default 'eur',
   product_name text,
+  reisevorschlag_id text,
   consents jsonb not null default '[]'::jsonb,
   stripe_session_id text,
   customer_email text,

@@ -5,6 +5,11 @@ const {
   isSupabaseConfigured,
   updateOrderConsentByConsentId,
 } = require('./_lib/supabase');
+const {
+  generateVoucherNumber,
+  createPurchaseConfirmationEmail,
+  buildPurchaseConfirmationSubject,
+} = require('./_lib/purchase-email');
 
 // Funkcje pomocnicze (importowane z utils)
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
@@ -33,77 +38,6 @@ async function sendEmail(to, subject, html, text = null) {
     console.error('❌ Błąd wysyłania emaila:', error);
     return { success: false, error: error.message };
   }
-}
-
-// Funkcja do generowania numeru vouchera
-function generateVoucherNumber() {
-  const timestamp = Date.now();
-  const random = Math.floor(Math.random() * 1000);
-  return `TF-${timestamp}-${random}`;
-}
-
-// Szablon emaila z voucherem
-function createVoucherEmailTemplate(voucherNumber, amount, currency, customerEmail, customerName = null) {
-  const name = customerName || customerEmail.split('@')[0];
-  
-  return `
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <style>
-    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-    .header { background: linear-gradient(135deg, #2563eb, #0ea5e9); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
-    .content { background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px; }
-    .voucher-box { background: white; border: 2px dashed #2563eb; padding: 20px; margin: 20px 0; text-align: center; border-radius: 8px; }
-    .voucher-number { font-size: 24px; font-weight: bold; color: #2563eb; margin: 10px 0; }
-    .voucher-amount { font-size: 32px; font-weight: bold; color: #0ea5e9; margin: 10px 0; }
-    .button { display: inline-block; background: linear-gradient(135deg, #2563eb, #0ea5e9); color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
-    .footer { text-align: center; margin-top: 30px; color: #666; font-size: 12px; }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <div class="header">
-      <h1>🎉 Dziękujemy za zakup!</h1>
-      <p>Travel Faden</p>
-    </div>
-    <div class="content">
-      <p>Witaj ${name},</p>
-      <p>Twoja płatność została pomyślnie zrealizowana. Oto Twój voucher podróżniczy:</p>
-      
-      <div class="voucher-box">
-        <div style="font-size: 14px; color: #666; margin-bottom: 10px;">NUMER VOUCHERA</div>
-        <div class="voucher-number">${voucherNumber}</div>
-        <div style="font-size: 14px; color: #666; margin-top: 20px;">WARTOŚĆ</div>
-        <div class="voucher-amount">${amount} ${currency.toUpperCase()}</div>
-      </div>
-      
-      <p>Ten voucher możesz wykorzystać na dowolną ofertę Travel Faden w ciągu 180 dni od daty zakupu.</p>
-      
-      <p style="text-align: center;">
-        <a href="https://twoja-domena.pl" class="button">Zobacz Oferty</a>
-      </p>
-      
-      <p><strong>Co dalej?</strong></p>
-      <ul>
-        <li>Wybierz jedną z naszych usług (Propozycja Dnia, City Break, Loty, Noclegi)</li>
-        <li>Skontaktuj się z nami, podając numer vouchera</li>
-        <li>Otrzymasz spersonalizowaną ofertę podróży</li>
-      </ul>
-      
-      <p>Jeśli masz pytania, skontaktuj się z nami pod adresem: ${CONTACT_EMAIL}</p>
-      
-      <div class="footer">
-        <p>Travel Faden - Idealne wakacje dla Ciebie</p>
-        <p>Ten email został wysłany automatycznie. Prosimy nie odpowiadać na tę wiadomość.</p>
-      </div>
-    </div>
-  </div>
-</body>
-</html>
-  `;
 }
 
 // Vercel wymaga eksportu domyślnego dla webhooków
@@ -196,6 +130,7 @@ module.exports = async (req, res) => {
         const customerEmail = sessionDetails.customer_details?.email || sessionDetails.customer_email;
         const customerName = sessionDetails.customer_details?.name || null;
         const consentId = sessionDetails.metadata?.consent_id || null;
+        const reisevorschlagId = sessionDetails.metadata?.reisevorschlag_id || null;
 
         if (consentId && isSupabaseConfigured()) {
           try {
@@ -215,13 +150,14 @@ module.exports = async (req, res) => {
         
         // Wysyłanie emaila z voucherem
         if (customerEmail) {
-          const emailSubject = `Twój voucher Travel Faden - ${voucherNumber}`;
-          const emailHtml = createVoucherEmailTemplate(
+          const emailSubject = buildPurchaseConfirmationSubject(voucherNumber, reisevorschlagId);
+          const emailHtml = createPurchaseConfirmationEmail(
             voucherNumber,
             amount,
             currency,
             customerEmail,
-            customerName
+            customerName,
+            reisevorschlagId
           );
           
           const emailResult = await sendEmail(customerEmail, emailSubject, emailHtml);

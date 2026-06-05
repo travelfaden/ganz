@@ -24,7 +24,7 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const { amount, currency = 'eur', productName, consents } = req.body || {};
+    const { amount, currency = 'eur', productName, consents, reisevorschlagId } = req.body || {};
 
     if (!amount || !Array.isArray(consents) || consents.length === 0) {
       return res.status(400).json({ error: 'amount i consents są wymagane' });
@@ -37,7 +37,7 @@ module.exports = async (req, res) => {
 
     const consentId = generateConsentId();
 
-    await insertOrderConsent({
+    const row = {
       consent_id: consentId,
       ip_address: getClientIp(req),
       user_agent: req.headers['user-agent'] || null,
@@ -46,7 +46,11 @@ module.exports = async (req, res) => {
       product_name: productName || null,
       consents,
       payment_status: 'pending',
-    });
+    };
+    if (reisevorschlagId) {
+      row.reisevorschlag_id = String(reisevorschlagId).trim();
+    }
+    await insertOrderConsent(row);
 
     console.log('Zapisano zgodę:', consentId);
     res.json({ consentId });
