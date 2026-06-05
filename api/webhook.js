@@ -3,18 +3,25 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const { Resend } = require('resend');
 const {
   isSupabaseConfigured,
+  getOrderConsentByConsentId,
+  getNextOrderNumber,
   updateOrderConsentByConsentId,
 } = require('./_lib/supabase');
 const {
-  generateVoucherNumber,
   createPurchaseConfirmationEmail,
+  createPurchaseConfirmationPlainText,
+  createServicePurchaseConfirmationEmail,
+  createServicePurchaseConfirmationPlainText,
   buildPurchaseConfirmationSubject,
+  buildServicePurchaseConfirmationSubject,
+  isReisevorschlagDesTagesOrder,
 } = require('./_lib/purchase-email');
+const { sendAdminFormPdfEmail } = require('./_lib/admin-form-email');
 
 // Funkcje pomocnicze (importowane z utils)
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 const FROM_EMAIL = process.env.FROM_EMAIL || 'onboarding@resend.dev';
-const CONTACT_EMAIL = process.env.CONTACT_EMAIL || 'contact@example.com';
+const CONTACT_EMAIL = process.env.CONTACT_EMAIL || 'travelfaden@gmail.com';
 
 // Funkcja pomocnicza do wysyłania emaili
 async function sendEmail(to, subject, html, text = null) {
@@ -27,6 +34,7 @@ async function sendEmail(to, subject, html, text = null) {
     const data = await resend.emails.send({
       from: FROM_EMAIL,
       to: [to],
+      reply_to: CONTACT_EMAIL,
       subject: subject,
       html: html,
       text: text || subject,
@@ -123,8 +131,6 @@ module.exports = async (req, res) => {
           expand: ['customer', 'customer_details']
         });
         
-        // Generuj numer vouchera
-        const voucherNumber = generateVoucherNumber();
         const amount = sessionDetails.metadata?.voucher_amount || sessionDetails.amount_total / 100;
         const currency = sessionDetails.metadata?.voucher_currency || sessionDetails.currency || 'eur';
         const customerEmail = sessionDetails.customer_details?.email || sessionDetails.customer_email;
@@ -132,43 +138,99 @@ module.exports = async (req, res) => {
         const consentId = sessionDetails.metadata?.consent_id || null;
         const reisevorschlagId = sessionDetails.metadata?.reisevorschlag_id || null;
 
+        let voucherNumber = null;
+        let productName = null;
+        let storedFormData = null;
+
         if (consentId && isSupabaseConfigured()) {
           try {
+            const existing = await getOrderConsentByConsentId(consentId);
+            productName = existing?.product_name || null;
+            storedFormData = existing?.form_data || null;
+            voucherNumber = existing?.voucher_number || null;
+
+            if (!voucherNumber) {
+              voucherNumber = await getNextOrderNumber();
+            }
+
             await updateOrderConsentByConsentId(consentId, {
               stripe_session_id: sessionDetails.id,
               customer_email: customerEmail || null,
               payment_status: 'paid',
               voucher_number: voucherNumber,
             });
-            console.log('✅ Zaktualizowano zgodę w Supabase:', consentId);
+            console.log('✅ Zaktualizowano zgodę w Supabase:', consentId, voucherNumber);
           } catch (dbError) {
             console.error('❌ Błąd aktualizacji Supabase:', dbError.message);
           }
         }
 
-        console.log('📧 Wysyłanie emaila z voucherem do:', customerEmail);
+        const isRdT = isReisevorschlagDesTagesOrder(reisevorschlagId, productName);
+
+        console.log('📧 Wysyłanie e-maila do:', customerEmail, isRdT ? '(RdT)' : '(Service)');
         
-        // Wysyłanie emaila z voucherem
-        if (customerEmail) {
-          const emailSubject = buildPurchaseConfirmationSubject(voucherNumber, reisevorschlagId);
-          const emailHtml = createPurchaseConfirmationEmail(
-            voucherNumber,
-            amount,
-            currency,
-            customerEmail,
-            customerName,
-            reisevorschlagId
-          );
-          
-          const emailResult = await sendEmail(customerEmail, emailSubject, emailHtml);
+        if (customerEmail && voucherNumber) {
+          let emailSubject;
+          let emailHtml;
+          let emailText;
+
+          if (isRdT) {
+            emailSubject = buildPurchaseConfirmationSubject(voucherNumber, reisevorschlagId);
+            emailHtml = createPurchaseConfirmationEmail(
+              voucherNumber,
+              amount,
+              currency,
+              customerEmail,
+              customerName,
+              reisevorschlagId
+            );
+            emailText = createPurchaseConfirmationPlainText(
+              voucherNumber,
+              customerEmail,
+              customerName,
+              reisevorschlagId
+            );
+          } else {
+            emailSubject = buildServicePurchaseConfirmationSubject(voucherNumber);
+            emailHtml = createServicePurchaseConfirmationEmail(
+              voucherNumber,
+              customerEmail,
+              customerName
+            );
+            emailText = createServicePurchaseConfirmationPlainText(
+              voucherNumber,
+              customerEmail,
+              customerName
+            );
+          }
+
+          const emailResult = await sendEmail(customerEmail, emailSubject, emailHtml, emailText);
           
           if (emailResult.success) {
-            console.log('✅ Email z voucherem wysłany pomyślnie');
+            console.log('✅ E-mail an Kunden gesendet');
           } else {
             console.error('❌ Błąd wysyłania emaila:', emailResult.error);
           }
-        } else {
+        } else if (!customerEmail) {
           console.warn('⚠️  Brak adresu email klienta - nie można wysłać vouchera');
+        } else if (!voucherNumber) {
+          console.warn('⚠️  Brak Bestellnummer (Supabase) - nie można wysłać e-maila');
+        }
+
+        if (!isRdT && storedFormData && voucherNumber) {
+          const adminResult = await sendAdminFormPdfEmail({
+            productName,
+            voucherNumber,
+            customerEmail,
+            amount,
+            currency,
+            formData: storedFormData,
+          });
+          if (adminResult.success) {
+            console.log('✅ Formular-PDF an Admin gesendet');
+          } else {
+            console.error('❌ Admin-Formular-E-Mail:', adminResult.error);
+          }
         }
       } catch (error) {
         console.error('❌ Błąd podczas przetwarzania płatności:', error);

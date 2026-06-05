@@ -566,9 +566,9 @@
                 return;
             }
             
-            const formData = new FormData(travelForm);
-            const data = Object.fromEntries(formData);
-            data.accommodationRating = formData.getAll('accommodationRating').join(', ');
+            const data = window.travelFadenSerializeForm
+                ? window.travelFadenSerializeForm(travelForm)
+                : Object.fromEntries(new FormData(travelForm));
             sessionStorage.setItem('travelFormData', JSON.stringify(data));
             closeModal();
 

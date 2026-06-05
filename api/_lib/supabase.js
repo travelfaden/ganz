@@ -30,6 +30,46 @@ async function insertOrderConsent(row) {
   return Array.isArray(data) ? data[0] : data;
 }
 
+function formatOrderNumber(sequenceValue) {
+  const n = Number(sequenceValue);
+  const digits = Math.max(3, String(n).length);
+  return `TF-${String(n).padStart(digits, '0')}`;
+}
+
+async function getOrderConsentByConsentId(consentId) {
+  const response = await fetch(
+    `${SUPABASE_URL}/rest/v1/order_consents?consent_id=eq.${encodeURIComponent(consentId)}&select=*&limit=1`,
+    {
+      method: 'GET',
+      headers: supabaseHeaders(),
+    }
+  );
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`Supabase select failed: ${response.status} ${text}`);
+  }
+
+  const data = await response.json();
+  return Array.isArray(data) && data.length > 0 ? data[0] : null;
+}
+
+async function getNextOrderNumber() {
+  const response = await fetch(`${SUPABASE_URL}/rest/v1/rpc/next_order_number`, {
+    method: 'POST',
+    headers: supabaseHeaders(),
+    body: '{}',
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`Supabase next_order_number failed: ${response.status} ${text}`);
+  }
+
+  const sequenceValue = await response.json();
+  return formatOrderNumber(sequenceValue);
+}
+
 async function updateOrderConsentByConsentId(consentId, patch) {
   const response = await fetch(
     `${SUPABASE_URL}/rest/v1/order_consents?consent_id=eq.${encodeURIComponent(consentId)}`,
@@ -79,6 +119,9 @@ function setCors(res) {
 module.exports = {
   isSupabaseConfigured,
   insertOrderConsent,
+  getOrderConsentByConsentId,
+  getNextOrderNumber,
+  formatOrderNumber,
   updateOrderConsentByConsentId,
   generateConsentId,
   getClientIp,

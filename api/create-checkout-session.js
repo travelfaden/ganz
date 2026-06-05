@@ -53,7 +53,7 @@ module.exports = async (req, res) => {
             product_data: {
               name: productName || `Reisevorschlag des Tages - ${amount}€`,
               description: reisevorschlagId
-                ? `Reisevorschlag-ID: ${reisevorschlagId}`
+                ? `Reisevorschlag des Tages ID: ${reisevorschlagId}`
                 : `Reisevorschlag des Tages – ${amount}€`,
             },
             unit_amount: amount * 100, // Stripe używa centów

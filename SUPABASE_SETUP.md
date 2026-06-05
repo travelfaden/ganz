@@ -50,4 +50,11 @@ Vercel zbuduje projekt automatycznie.
 - `created_at` – czas zapisu
 - `ip_address`, `user_agent`
 - `consents` – JSON z treścią i statusem checkboxów
-- po płatności: `stripe_session_id`, `customer_email`, `voucher_number`
+- po płatności: `stripe_session_id`, `customer_email`, `voucher_number` (Bestellnummer: `TF-001`, `TF-002`…)
+- `reisevorschlag_id` — Reisevorschlag des Tages ID z oferty (np. `TF-MALLORCA-12092026`)
+
+## Migracje (jeśli tabela już istnieje)
+
+1. `supabase/migration-reisevorschlag-id.sql` — kolumna `reisevorschlag_id`
+2. `supabase/migration-order-sequence.sql` — sekwencja Bestellnummer + unikalność numeru
+3. `supabase/migration-form-data.sql` — kolumna `form_data` (formularze usług)

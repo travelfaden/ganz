@@ -114,13 +114,40 @@ function collectPageConsents() {
     return collected;
 }
 
-/** Bekannte Reisevorschlag-IDs (rid in URL) – bei neuer Angebotsseite hier ergänzen */
+/** Reisevorschlag des Tages IDs (rid in URL) – auch in api/_lib/reisevorschlag-ids.js pflegen */
 const VALID_REISEVORSCHLAG_IDS = {
     'TF-MALLORCA-12092026': { title: 'Mallorca' },
     'TF-KRETA-12092026': { title: 'Kreta' },
 };
 
-async function recordConsentAndCreateSession(amount, productName, consents, reisevorschlagId = null) {
+function serializeTravelForm(form) {
+    const data = {};
+    const fd = new FormData(form);
+    for (const [key, value] of fd.entries()) {
+        if (Object.prototype.hasOwnProperty.call(data, key)) {
+            const prev = data[key];
+            data[key] = Array.isArray(prev) ? [...prev, value] : [prev, value];
+        } else {
+            data[key] = value;
+        }
+    }
+    return data;
+}
+
+window.travelFadenSerializeForm = serializeTravelForm;
+
+function readStoredTravelFormData() {
+    try {
+        const raw = sessionStorage.getItem('travelFormData');
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        return parsed && typeof parsed === 'object' ? parsed : null;
+    } catch (_) {
+        return null;
+    }
+}
+
+async function recordConsentAndCreateSession(amount, productName, consents, reisevorschlagId = null, formData = null) {
     let consentId = null;
 
     if (consents.length > 0) {
@@ -133,6 +160,7 @@ async function recordConsentAndCreateSession(amount, productName, consents, reis
             productName,
             consents,
             reisevorschlagId: reisevorschlagId || undefined,
+            formData: formData || undefined,
         }),
     });
 
@@ -190,11 +218,15 @@ window.travelFadenStartCheckout = async function (amount, productName, loadingBu
     }
     try {
         const consents = collectPageConsents();
+        const formData = readStoredTravelFormData();
         const session = await recordConsentAndCreateSession(
             amount,
             productName || `Travel Faden - ${amount}€`,
-            consents
+            consents,
+            null,
+            formData
         );
+        sessionStorage.removeItem('travelFormData');
         const result = await stripe.redirectToCheckout({ sessionId: session.id });
         if (result.error) {
             throw new Error(result.error.message);

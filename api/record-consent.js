@@ -5,6 +5,11 @@ const {
   getClientIp,
   setCors,
 } = require('./_lib/supabase');
+const {
+  normalizeReisevorschlagId,
+  isValidReisevorschlagId,
+} = require('./_lib/reisevorschlag-ids');
+const { sanitizeFormData } = require('./_lib/form-pdf');
 
 module.exports = async (req, res) => {
   setCors(res);
@@ -24,7 +29,7 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const { amount, currency = 'eur', productName, consents, reisevorschlagId } = req.body || {};
+    const { amount, currency = 'eur', productName, consents, reisevorschlagId, formData } = req.body || {};
 
     if (!amount || !Array.isArray(consents) || consents.length === 0) {
       return res.status(400).json({ error: 'amount i consents są wymagane' });
@@ -47,9 +52,30 @@ module.exports = async (req, res) => {
       consents,
       payment_status: 'pending',
     };
-    if (reisevorschlagId) {
-      row.reisevorschlag_id = String(reisevorschlagId).trim();
+    const isRdT = /Reisevorschlag des Tages/i.test(productName || '');
+    const normalizedRid = reisevorschlagId ? normalizeReisevorschlagId(reisevorschlagId) : null;
+
+    if (isRdT) {
+      if (!normalizedRid || !isValidReisevorschlagId(normalizedRid)) {
+        return res.status(400).json({
+          error: 'Ungültige oder fehlende Reisevorschlag des Tages ID',
+        });
+      }
+      row.reisevorschlag_id = normalizedRid;
+    } else if (normalizedRid) {
+      if (!isValidReisevorschlagId(normalizedRid)) {
+        return res.status(400).json({
+          error: 'Ungültige Reisevorschlag des Tages ID',
+        });
+      }
+      row.reisevorschlag_id = normalizedRid;
     }
+
+    const cleanedFormData = sanitizeFormData(formData);
+    if (cleanedFormData && !isRdT) {
+      row.form_data = cleanedFormData;
+    }
+
     await insertOrderConsent(row);
 
     console.log('Zapisano zgodę:', consentId);

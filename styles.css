@@ -2875,12 +2875,13 @@ body {
 
 .angebot-reise-id-label {
     display: block;
-    font-size: 0.8rem;
+    font-size: 0.72rem;
     font-weight: 600;
     color: var(--text-light);
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.04em;
     margin-bottom: 0.25rem;
+    line-height: 1.35;
 }
 
 .angebot-reise-id-value {
