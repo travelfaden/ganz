@@ -16,7 +16,7 @@ const {
   buildServicePurchaseConfirmationSubject,
   isReisevorschlagDesTagesOrder,
 } = require('./_lib/purchase-email');
-const { sendAdminFormPdfEmail } = require('./_lib/admin-form-email');
+const { sendAdminNewOrderEmail } = require('./_lib/admin-form-email');
 
 // Funkcje pomocnicze (importowane z utils)
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
@@ -136,7 +136,7 @@ module.exports = async (req, res) => {
         const customerEmail = sessionDetails.customer_details?.email || sessionDetails.customer_email;
         const customerName = sessionDetails.customer_details?.name || null;
         const consentId = sessionDetails.metadata?.consent_id || null;
-        const reisevorschlagId = sessionDetails.metadata?.reisevorschlag_id || null;
+        let reisevorschlagId = sessionDetails.metadata?.reisevorschlag_id || null;
 
         let voucherNumber = null;
         let productName = null;
@@ -148,6 +148,9 @@ module.exports = async (req, res) => {
             productName = existing?.product_name || null;
             storedFormData = existing?.form_data || null;
             voucherNumber = existing?.voucher_number || null;
+            if (!reisevorschlagId && existing?.reisevorschlag_id) {
+              reisevorschlagId = existing.reisevorschlag_id;
+            }
 
             if (!voucherNumber) {
               voucherNumber = await getNextOrderNumber();
@@ -159,7 +162,12 @@ module.exports = async (req, res) => {
               payment_status: 'paid',
               voucher_number: voucherNumber,
             });
-            console.log('✅ Zaktualizowano zgodę w Supabase:', consentId, voucherNumber);
+            console.log(
+              '✅ Zaktualizowano zgodę w Supabase:',
+              consentId,
+              voucherNumber,
+              reisevorschlagId || '(Service)'
+            );
           } catch (dbError) {
             console.error('❌ Błąd aktualizacji Supabase:', dbError.message);
           }
@@ -217,19 +225,22 @@ module.exports = async (req, res) => {
           console.warn('⚠️  Brak Bestellnummer (Supabase) - nie można wysłać e-maila');
         }
 
-        if (!isRdT && storedFormData && voucherNumber) {
-          const adminResult = await sendAdminFormPdfEmail({
+        if (voucherNumber) {
+          const adminResult = await sendAdminNewOrderEmail({
             productName,
             voucherNumber,
             customerEmail,
+            customerName,
             amount,
             currency,
+            reisevorschlagId,
+            isRdT,
             formData: storedFormData,
           });
           if (adminResult.success) {
-            console.log('✅ Formular-PDF an Admin gesendet');
+            console.log('✅ Admin-Benachrichtigung gesendet');
           } else {
-            console.error('❌ Admin-Formular-E-Mail:', adminResult.error);
+            console.error('❌ Admin-Benachrichtigung:', adminResult.error);
           }
         }
       } catch (error) {
