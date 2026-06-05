@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Podgląd – E-Mail admina (nowe zamówienie)</title>
+  <style>
+    body { margin: 0; font-family: system-ui, sans-serif; background: #eef2f7; }
+    .preview-bar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 12px 20px;
+      text-align: center;
+      font-size: 14px;
+      line-height: 1.5;
+      border-bottom: 2px solid #2563eb;
+    }
+    .preview-bar strong { color: #fff; }
+    .wrap { max-width: 640px; margin: 0 auto; padding: 24px 16px 40px; }
+    .card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 24px;
+      margin-bottom: 28px;
+      box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
+    }
+    .card h2 {
+      margin: 0 0 6px;
+      font-size: 18px;
+      color: #0f172a;
+    }
+    .badge {
+      display: inline-block;
+      margin-bottom: 16px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .badge-rdt { background: #dbeafe; color: #1d4ed8; }
+    .badge-service { background: #dcfce7; color: #15803d; }
+    .subject {
+      margin: 0 0 18px;
+      padding: 12px 14px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 14px;
+      color: #475569;
+    }
+    .subject strong { color: #0f172a; }
+    .mail-body {
+      font-family: Arial, Helvetica, sans-serif;
+      color: #334155;
+      line-height: 1.65;
+      font-size: 15px;
+    }
+    .mail-body h2 {
+      margin: 0 0 14px;
+      font-size: 20px;
+      color: #0f172a;
+    }
+    .mail-body p { margin: 0 0 10px; }
+    .attachment {
+      margin-top: 16px;
+      padding: 12px 14px;
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-radius: 10px;
+      font-size: 14px;
+      color: #92400e;
+    }
+    .note {
+      margin-top: 14px;
+      font-size: 13px;
+      color: #64748b;
+    }
+  </style>
+</head>
+<body>
+  <div class="preview-bar">
+    <strong>Podgląd lokalny</strong> — maile na <strong>travelfaden@gmail.com</strong> po każdej opłaconej płatności (dane przykładowe)
+  </div>
+
+  <div class="wrap">
+    <div class="card">
+      <span class="badge badge-rdt">Reisevorschlag des Tages</span>
+      <h2>Wariant 1 — Mallorca (bez formularza)</h2>
+      <p class="subject"><strong>Temat:</strong> Neue Bestellung TF-003 – TF-MALLORCA-12092026</p>
+      <div class="mail-body">
+        <h2>Neue bezahlte Bestellung</h2>
+        <p><strong>Dienstleistung:</strong> Reisevorschlag des Tages - TF-MALLORCA-12092026</p>
+        <p><strong>Bestellnummer:</strong> TF-003</p>
+        <p><strong>Reisevorschlag des Tages ID:</strong> TF-MALLORCA-12092026</p>
+        <p><strong>Kunde (E-Mail):</strong> anna.mueller@example.com</p>
+        <p><strong>Kunde (Name):</strong> Anna Müller</p>
+        <p><strong>Betrag:</strong> 40 EUR</p>
+        <p>Kein Kundenformular (Reisevorschlag des Tages oder Direktbestellung).</p>
+      </div>
+      <p class="note">Brak załącznika PDF — tylko informacja o zakupie.</p>
+    </div>
+
+    <div class="card">
+      <span class="badge badge-service">Usługa z formularzem</span>
+      <h2>Wariant 2 — Flüge (z formularzem)</h2>
+      <p class="subject"><strong>Temat:</strong> Neue Bestellung TF-004 – Travel Faden - Flüge</p>
+      <div class="mail-body">
+        <h2>Neue bezahlte Bestellung</h2>
+        <p><strong>Dienstleistung:</strong> Travel Faden - Flüge</p>
+        <p><strong>Bestellnummer:</strong> TF-004</p>
+        <p><strong>Kunde (E-Mail):</strong> max.schmidt@example.com</p>
+        <p><strong>Kunde (Name):</strong> Max Schmidt</p>
+        <p><strong>Betrag:</strong> 25 EUR</p>
+        <p>Im Anhang finden Sie das ausgefüllte Kundenformular als PDF.</p>
+      </div>
+      <div class="attachment">📎 Załącznik: <strong>Formular-TF-004.pdf</strong> (pola formularza klienta)</div>
+    </div>
+  </div>
+</body>
+</html>
