@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Widerrufsbelehrung - Travel Faden</title>
+    <title>Reisevorschlag des Tages - Travel Faden</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://js.stripe.com/v3/"></script>
 </head>
-<body>
+<body class="has-daily-offers-hinweis">
     <nav class="navbar">
         <div class="container">
             <div class="logo">
@@ -78,55 +78,69 @@
         </div>
     </nav>
 
-    <section class="section" style="margin-top: 80px; padding: 4rem 0;">
+    <section class="section services" style="padding-top: 8rem;">
         <div class="container">
-            <h1 style="font-size: 3rem; margin-bottom: 3rem; text-align: center; color: var(--text-color);">Widerrufsbelehrung</h1>
-            
-            <div style="max-width: 800px; margin: 0 auto;">
-                <div class="regulamin">
-                    <section>
-                        <h2>Widerrufsrecht</h2>
-                        <p>Verbraucher haben das Recht, binnen vierzehn Tagen ohne Angabe von Gründen diesen Vertrag zu widerrufen.</p>
-                        <p>Die Widerrufsfrist beträgt 14 Tage ab dem Tag des Vertragsschlusses.</p>
-                        <p>Um Ihr Widerrufsrecht auszuüben, müssen Sie uns</p>
-                        <p style="margin-left: 1.5rem;">
-                            <strong>Travel Faden</strong><br>
-                            <strong>Bartosz Nagiec</strong><br>
-                            <strong>Pönitzer Weg 2a</strong><br>
-                            <strong>23684 Scharbeutz</strong><br>
-                            <strong>Deutschland</strong><br>
-                            E-Mail: <a href="mailto:travelfaden@gmail.com">travelfaden@gmail.com</a>
-                        </p>
-                        <p>mittels einer eindeutigen Erklärung (z. B. per E-Mail) über Ihren Entschluss, diesen Vertrag zu widerrufen, informieren.</p>
-                    </section>
+            <h1 style="text-align: center; margin-bottom: 0.75rem;">Reisevorschlag des Tages</h1>
+            <p style="text-align: center; max-width: 820px; margin: 0 auto 2rem; color: var(--text-light); line-height: 1.5;">
+                Hier finden Sie unsere aktuellen Reisevorschläge des Tages.<br>
+                Neue Angebote werden regelmäßig hinzugefügt – schauen Sie gerne regelmäßig vorbei und lassen Sie sich inspirieren.
+            </p>
 
-                    <section>
-                        <h2>Folgen des Widerrufs</h2>
-                        <p>Wenn Sie diesen Vertrag widerrufen, haben wir Ihnen alle Zahlungen, die wir von Ihnen erhalten haben, unverzüglich und spätestens binnen 14 Tagen ab dem Tag, an dem die Mitteilung über Ihren Widerruf bei uns eingegangen ist, zurückzuzahlen.</p>
-                        <p>Für diese Rückzahlung verwenden wir dasselbe Zahlungsmittel, das Sie bei der ursprünglichen Transaktion eingesetzt haben, es sei denn, mit Ihnen wurde ausdrücklich etwas anderes vereinbart.</p>
-                        <p>In keinem Fall werden Ihnen wegen dieser Rückzahlung Entgelte berechnet.</p>
-                    </section>
-
-                    <section>
-                        <h2>Erlöschen des Widerrufsrechts bei Dienstleistungen</h2>
-                        <p>Das Widerrufsrecht erlischt vorzeitig, wenn</p>
-                        <ul>
-                            <li>wir die Dienstleistung vollständig erbracht haben und</li>
-                            <li>Sie ausdrücklich zugestimmt haben, dass wir mit der Ausführung der Dienstleistung vor Ablauf der Widerrufsfrist beginnen, und</li>
-                            <li>Sie bestätigt haben, dass Sie mit vollständiger Vertragserfüllung Ihr Widerrufsrecht verlieren (§ 356 Abs. 4 BGB).</li>
+            <!-- Neue Angebote immer OBEN einfügen (neueste zuerst). Detailseite: angebot-mallorca.html als Vorlage (inkl. fixierter Hinweis unten). -->
+            <div class="daily-offers-list">
+                <article class="daily-offer-card">
+                    <div class="daily-offer-image">
+                        <img src="images/kreta.PNG" alt="Kreta – Mittelmeer und Küste" width="320" height="240" loading="lazy">
+                    </div>
+                    <div class="daily-offer-content">
+                        <h2 class="daily-offer-destination">Kreta</h2>
+                        <div class="daily-offer-travel-date">
+                            <span class="daily-offer-travel-date-value">📅 12.09.2026 – 16.09.2026</span>
+                        </div>
+                        <ul class="daily-offer-details">
+                            <li><span class="daily-offer-emoji" aria-hidden="true">✈️</span> Ab Hamburg</li>
+                            <li><span class="daily-offer-emoji" aria-hidden="true">🌙</span> 4 Tage</li>
+                            <li><span class="daily-offer-emoji" aria-hidden="true">💰</span> ab 299 € pro Person</li>
                         </ul>
-                    </section>
+                        <a href="angebot-kreta.html" class="daily-offer-cta">Reisevorschlag ansehen</a>
+                    </div>
+                </article>
+                <article class="daily-offer-card">
+                    <div class="daily-offer-image">
+                        <img src="images/mallorca-2026.png" alt="Mallorca – Bucht mit türkisem Wasser" width="320" height="240" loading="lazy">
+                    </div>
+                    <div class="daily-offer-content">
+                        <h2 class="daily-offer-destination">Mallorca</h2>
+                        <div class="daily-offer-travel-date">
+                            <span class="daily-offer-travel-date-value">📅 12.09.2026 – 16.09.2026</span>
+                        </div>
+                        <ul class="daily-offer-details">
+                            <li><span class="daily-offer-emoji" aria-hidden="true">✈️</span> Ab Hamburg</li>
+                            <li><span class="daily-offer-emoji" aria-hidden="true">🌙</span> 4 Tage</li>
+                            <li><span class="daily-offer-emoji" aria-hidden="true">💰</span> ab 299 € pro Person</li>
+                        </ul>
+                        <a href="angebot-mallorca.html" class="daily-offer-cta">Reisevorschlag ansehen</a>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
 
-                    <section>
-                        <h2>Hinweis zur Dienstleistung</h2>
-                        <p>Bei der angebotenen Leistung handelt es sich um eine entgeltliche Recherche- und Informationsdienstleistung im Bereich Reisen.</p>
-                        <p><strong>Wir sind kein Reiseveranstalter und kein Reisevermittler.</strong><br>
-                        Reiseverträge werden ausschließlich zwischen Ihnen und Drittanbietern (z. B. Airlines, Hotels, Buchungsplattformen) geschlossen.</p>
-                    </section>
-                </div>
-                
-                <div style="text-align: center; margin-top: 3rem;">
-                    <a href="index.html" style="display: inline-block; padding: 0.75rem 2rem; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: white; text-decoration: none; border-radius: 12px; font-weight: 700; transition: all 0.3s ease;">← Zurück zur Startseite</a>
+    <aside class="daily-offers-hinweis" role="note" aria-label="Hinweis zu den Angeboten">
+        <div class="daily-offers-hinweis-inner">
+            <p><strong>Hinweis:</strong> Alle dargestellten Angebote sind Reisevorschläge. Die Buchung erfolgt eigenständig über die bereitgestellten Links bei den jeweiligen Drittanbietern.</p>
+        </div>
+    </aside>
+
+    <section class="section contact-section" style="background-color: var(--bg-light); padding: 3rem 0;">
+        <div class="container">
+            <div style="text-align: center; max-width: 800px; margin: 0 auto;">
+                <h2 style="margin-bottom: 1rem; color: var(--text-color);">Haben Sie Fragen?</h2>
+                <p style="font-size: 1.1rem; line-height: 1.8; color: var(--text-light); margin-bottom: 0;">
+                    Haben Sie Fragen zur Dienstleistung Reisevorschlag des Tages oder benoetigen Sie zusaetzliche Informationen? Kontaktieren Sie gerne unser Team - wir sind fuer Sie da und beantworten Ihre Fragen schnell und zuverlaessig.
+                </p>
+                <div style="margin-top: 2rem;">
+                    <a href="index.html#contact" class="voucher-button" style="display: inline-block; text-decoration: none;">Kontaktieren Sie uns</a>
                 </div>
             </div>
         </div>
@@ -149,4 +163,7 @@
     <script src="script.js"></script>
 </body>
 </html>
+
+
+
 

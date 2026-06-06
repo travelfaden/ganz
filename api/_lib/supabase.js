@@ -70,6 +70,24 @@ async function getNextOrderNumber() {
   return formatOrderNumber(sequenceValue);
 }
 
+async function getOrderConsentByStripeSessionId(stripeSessionId) {
+  const response = await fetch(
+    `${SUPABASE_URL}/rest/v1/order_consents?stripe_session_id=eq.${encodeURIComponent(stripeSessionId)}&select=*&limit=1`,
+    {
+      method: 'GET',
+      headers: supabaseHeaders(),
+    }
+  );
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`Supabase select failed: ${response.status} ${text}`);
+  }
+
+  const data = await response.json();
+  return Array.isArray(data) && data.length > 0 ? data[0] : null;
+}
+
 async function updateOrderConsentByConsentId(consentId, patch) {
   const response = await fetch(
     `${SUPABASE_URL}/rest/v1/order_consents?consent_id=eq.${encodeURIComponent(consentId)}`,
@@ -120,6 +138,7 @@ module.exports = {
   isSupabaseConfigured,
   insertOrderConsent,
   getOrderConsentByConsentId,
+  getOrderConsentByStripeSessionId,
   getNextOrderNumber,
   formatOrderNumber,
   updateOrderConsentByConsentId,

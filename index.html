@@ -37,32 +37,32 @@
                     <span class="logo-text">Travel<span class="logo-gap"></span>Faden</span>
                 </a>
             </div>
-            <ul class="nav-menu">
+            <ul class="nav-menu" id="navMenu">
                 <li class="nav-dropdown">
                     <a href="#vouchers" class="dropdown-toggle">Unsere Leistungen <span class="dropdown-arrow">▼</span></a>
                     <ul class="dropdown-menu">
-                        <li><a href="oferta-dnia.html">Reisevorschlag des Tages</a></li>
-                        <li><a href="wakacje-dla-ciebie.html">Individueller Reisevorschlag</a></li>
-                        <li><a href="loty.html">Flugvorschläge</a></li>
-                        <li><a href="noclegi.html">Unterkunftsvorschläge</a></li>
-                        <li><a href="city-break.html">Kurztrip-Vorschläge</a></li>
+                        <li><a href="reisevorschlag-des-tages.html">Reisevorschlag des Tages</a></li>
+                        <li><a href="individueller-reisevorschlag.html">Individueller Reisevorschlag</a></li>
+                        <li><a href="flugvorschlaege.html">Flugvorschläge</a></li>
+                        <li><a href="unterkunftsvorschlaege.html">Unterkunftsvorschläge</a></li>
+                        <li><a href="kurztrip-vorschlaege.html">Kurztrip-Vorschläge</a></li>
                     </ul>
                 </li>
                 <li><a href="#how-it-works">So läuft’s ab</a></li>
-                <li><a href="oferta-dnia-nav.html">Reisevorschlag des Tages</a></li>
-                <li><a href="pytania-i-odpowiedzi.html">FAQ</a></li>
-                <li><a href="o-nas.html">Über uns</a></li>
+                <li><a href="reisevorschlaege.html">Reisevorschlag des Tages</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+                <li><a href="ueber-uns.html">Über uns</a></li>
                 <li><a href="#contact">Kontakt</a></li>
             </ul>
             <div class="search-container">
-                <button class="search-toggle" id="searchToggle">
+                <button type="button" class="search-toggle" id="searchToggle" aria-label="Suche öffnen" aria-expanded="false" aria-controls="searchBox">
                     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                 </button>
                 <div class="search-box" id="searchBox">
                     <input type="text" id="searchInput" placeholder="Suchen..." />
-                    <button class="search-close" id="searchClose">×</button>
+                    <button type="button" class="search-close" id="searchClose" aria-label="Suche schließen">×</button>
                     <div class="search-results" id="searchResults"></div>
                 </div>
             </div>
@@ -78,11 +78,7 @@
                     </svg>
                 </a>
             </div>
-            <div class="hamburger">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
+            <button type="button" class="hamburger" aria-label="Menü öffnen" aria-expanded="false" aria-controls="navMenu"><span></span><span></span><span></span></button>
         </div>
     </nav>
 
@@ -99,7 +95,7 @@
         <div class="container">
             <h2>Unsere Leistungen</h2>
             <div class="vouchers-grid">
-                <a href="oferta-dnia.html" class="voucher-card-link">
+                <a href="reisevorschlag-des-tages.html" class="voucher-card-link">
                     <div class="voucher-card voucher-card-with-bg">
                         <div class="voucher-bg-overlay"></div>
                         <div class="voucher-amount">Reisevorschlag des Tages</div>
@@ -109,7 +105,7 @@
                         <div class="voucher-button" style="pointer-events: none;">Mehr erfahren</div>
                     </div>
                 </a>
-                <a href="wakacje-dla-ciebie.html" class="voucher-card-link">
+                <a href="individueller-reisevorschlag.html" class="voucher-card-link">
                     <div class="voucher-card voucher-card-with-bg-2">
                         <div class="voucher-bg-overlay"></div>
                         <div class="voucher-amount">Individueller Reisevorschlag</div>
@@ -119,7 +115,7 @@
                         <div class="voucher-button" style="pointer-events: none;">Mehr erfahren</div>
                     </div>
                 </a>
-                <a href="loty.html" class="voucher-card-link">
+                <a href="flugvorschlaege.html" class="voucher-card-link">
                     <div class="voucher-card voucher-card-with-bg-3">
                         <div class="voucher-bg-overlay"></div>
                         <div class="voucher-amount">Flugvorschläge</div>
@@ -129,7 +125,7 @@
                         <div class="voucher-button" style="pointer-events: none;">Mehr erfahren</div>
                     </div>
                 </a>
-                <a href="noclegi.html" class="voucher-card-link">
+                <a href="unterkunftsvorschlaege.html" class="voucher-card-link">
                     <div class="voucher-card voucher-card-with-bg-4">
                         <div class="voucher-bg-overlay"></div>
                         <div class="voucher-amount">Unterkunfts-<br>Vorschläge</div>
@@ -139,7 +135,7 @@
                         <div class="voucher-button" style="pointer-events: none;">Mehr erfahren</div>
                     </div>
                 </a>
-                <a href="city-break.html" class="voucher-card-link">
+                <a href="kurztrip-vorschlaege.html" class="voucher-card-link">
                     <div class="voucher-card voucher-card-with-bg-5">
                         <div class="voucher-bg-overlay"></div>
                         <div class="voucher-amount">Kurztrip-Vorschläge</div>
@@ -190,9 +186,9 @@
         <div class="container">
             <h2>Kontaktieren Sie uns</h2>
             <form class="contact-form">
-                <input type="text" name="name" id="contact-name" placeholder="Ihr Name" required>
-                <input type="email" name="email" id="contact-email" placeholder="Ihre E-Mail" required>
-                <textarea name="message" id="contact-message" placeholder="Ihre Nachricht" rows="5" required></textarea>
+                <input type="text" placeholder="Ihr Name" required>
+                <input type="email" placeholder="Ihre E-Mail" required>
+                <textarea placeholder="Ihre Nachricht" rows="5" required></textarea>
                 <div style="display: flex; align-items: flex-start; gap: 0.5rem; margin-bottom: 1rem;">
                     <input type="checkbox" id="privacy-checkbox" name="privacy-accept" required style="margin-top: 0.25rem; cursor: pointer;">
                     <label for="privacy-checkbox" style="font-size: 0.9rem; color: var(--text-color); cursor: pointer;">
@@ -200,7 +196,6 @@
                     </label>
                 </div>
                 <button type="submit" class="submit-button">Nachricht senden</button>
-                <p class="contact-form-status" id="contactFormStatus" role="status" aria-live="polite" hidden></p>
             </form>
         </div>
     </section>
@@ -210,7 +205,7 @@
             <div class="footer-content">
                 <p>&copy; 2026 Travel Faden. Alle Rechte vorbehalten.</p>
                 <div class="footer-links">
-                    <a href="regulamin.html">AGB</a>
+                    <a href="agb.html">AGB</a>
                     <a href="impressum.html">Impressum</a>
                     <a href="datenschutzerklaerung.html">Datenschutzerklärung</a>
                     <a href="widerrufsbelehrung.html">Widerrufsbelehrung</a>

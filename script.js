@@ -1,3 +1,8 @@
+function updateHamburgerA11y(hamburger, isOpen) {
+    hamburger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    hamburger.setAttribute('aria-label', isOpen ? 'Menü schließen' : 'Menü öffnen');
+}
+
 // Mobile menu toggle
 document.addEventListener('DOMContentLoaded', function() {
     const hamburger = document.querySelector('.hamburger');
@@ -7,6 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
         hamburger.addEventListener('click', () => {
             navMenu.classList.toggle('active');
             hamburger.classList.toggle('active');
+            updateHamburgerA11y(hamburger, navMenu.classList.contains('active'));
         });
     }
 });
@@ -18,12 +24,12 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (dropdownToggle) {
             dropdownToggle.addEventListener('click', (e) => {
-                // On mobile, toggle dropdown
                 if (window.innerWidth <= 768) {
                     e.preventDefault();
-                    navDropdown.classList.toggle('active');
+                    e.stopPropagation();
+                    const isOpen = navDropdown.classList.toggle('active');
+                    dropdownToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
                 }
-                // On desktop, allow default behavior (hover)
             });
         }
     });
@@ -35,13 +41,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const hamburger = document.querySelector('.hamburger');
     
     if (navMenu && hamburger) {
-        document.querySelectorAll('.nav-menu a').forEach(link => {
+        document.querySelectorAll('.nav-menu a:not(.dropdown-toggle)').forEach(link => {
             link.addEventListener('click', () => {
                 navMenu.classList.remove('active');
                 hamburger.classList.remove('active');
-                // Close all dropdowns on mobile
+                updateHamburgerA11y(hamburger, false);
                 document.querySelectorAll('.nav-dropdown').forEach(dropdown => {
                     dropdown.classList.remove('active');
+                    const toggle = dropdown.querySelector('.dropdown-toggle');
+                    if (toggle) toggle.setAttribute('aria-expanded', 'false');
                 });
             });
         });
@@ -95,112 +103,6 @@ let BACKEND_URL = typeof window !== 'undefined' && window.location.hostname !== 
   ? window.location.origin // Użyj aktualnego URL (Vercel)
   : 'http://localhost:3000'; // Localhost dla testów lokalnych
 
-function collectPageConsents() {
-    const consentIds = ['withdrawal-consent', 'agb-consent', 'privacy-consent'];
-    const collected = [];
-
-    consentIds.forEach((id) => {
-        const input = document.getElementById(id);
-        if (!input) return;
-
-        const label = document.querySelector(`label[for="${id}"]`);
-        collected.push({
-            id,
-            label: label ? label.innerText.replace(/\s+/g, ' ').trim() : id,
-            checked: Boolean(input.checked),
-        });
-    });
-
-    return collected;
-}
-
-/** Reisevorschlag des Tages IDs (rid in URL) – auch in api/_lib/reisevorschlag-ids.js pflegen */
-const VALID_REISEVORSCHLAG_IDS = {
-    'TF-MALLORCA-12092026': { title: 'Mallorca' },
-    'TF-KRETA-12092026': { title: 'Kreta' },
-};
-
-function serializeTravelForm(form) {
-    const data = {};
-    const fd = new FormData(form);
-    for (const [key, value] of fd.entries()) {
-        if (Object.prototype.hasOwnProperty.call(data, key)) {
-            const prev = data[key];
-            data[key] = Array.isArray(prev) ? [...prev, value] : [prev, value];
-        } else {
-            data[key] = value;
-        }
-    }
-    return data;
-}
-
-window.travelFadenSerializeForm = serializeTravelForm;
-
-function readStoredTravelFormData() {
-    try {
-        const raw = sessionStorage.getItem('travelFormData');
-        if (!raw) return null;
-        const parsed = JSON.parse(raw);
-        return parsed && typeof parsed === 'object' ? parsed : null;
-    } catch (_) {
-        return null;
-    }
-}
-
-async function recordConsentAndCreateSession(amount, productName, consents, reisevorschlagId = null, formData = null) {
-    let consentId = null;
-
-    if (consents.length > 0) {
-    const consentResponse = await fetch(`${BACKEND_URL}/api/record-consent`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            amount,
-            currency: 'eur',
-            productName,
-            consents,
-            reisevorschlagId: reisevorschlagId || undefined,
-            formData: formData || undefined,
-        }),
-    });
-
-    if (!consentResponse.ok) {
-        let msg = 'Die Einwilligungen konnten nicht gespeichert werden.';
-        try {
-            const err = await consentResponse.json();
-            msg = err.message || err.error || msg;
-        } catch (_) {}
-        throw new Error(msg);
-    }
-
-    const consentData = await consentResponse.json();
-    consentId = consentData.consentId;
-    }
-
-    const sessionResponse = await fetch(`${BACKEND_URL}/api/create-checkout-session`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            amount,
-            currency: 'eur',
-            productName,
-            consentId,
-            reisevorschlagId: reisevorschlagId || undefined,
-        }),
-    });
-
-    if (!sessionResponse.ok) {
-        let msg = 'Checkout konnte nicht gestartet werden.';
-        try {
-            const err = await sessionResponse.json();
-            msg = err.message || err.error || msg;
-        } catch (_) {}
-        throw new Error(msg);
-    }
-
-    return sessionResponse.json();
-}
-
 /**
  * Start Stripe Checkout (używane przez strony z formularzem: Flüge, Unterkünfte, City Break, itd.)
  */
@@ -217,16 +119,24 @@ window.travelFadenStartCheckout = async function (amount, productName, loadingBu
         btn.style.opacity = '0.65';
     }
     try {
-        const consents = collectPageConsents();
-        const formData = readStoredTravelFormData();
-        const session = await recordConsentAndCreateSession(
-            amount,
-            productName || `Travel Faden - ${amount}€`,
-            consents,
-            null,
-            formData
-        );
-        sessionStorage.removeItem('travelFormData');
+        const response = await fetch(`${BACKEND_URL}/api/create-checkout-session`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                amount: amount,
+                currency: 'eur',
+                productName: productName || `Travel Faden - ${amount}€`,
+            }),
+        });
+        if (!response.ok) {
+            let msg = 'Checkout konnte nicht gestartet werden.';
+            try {
+                const err = await response.json();
+                msg = err.message || err.error || msg;
+            } catch (_) {}
+            throw new Error(msg);
+        }
+        const session = await response.json();
         const result = await stripe.redirectToCheckout({ sessionId: session.id });
         if (result.error) {
             throw new Error(result.error.message);
@@ -246,7 +156,7 @@ window.travelFadenStartCheckout = async function (amount, productName, loadingBu
 document.addEventListener('DOMContentLoaded', function() {
     if (typeof Stripe !== 'undefined') {
         try {
-            stripe = Stripe('pk_test_51SpXfA0v0hpavs4B6yGcGGwLa6z3vVlwhFAPRGNc46570wwT9OMUWirrYrf3y74nh9oBdC5lQKQB9C17UccPRIyc00cIywttqE', { locale: 'de' });
+            stripe = Stripe('pk_test_51SpXfA0v0hpavs4B6yGcGGwLa6z3vVlwhFAPRGNc46570wwT9OMUWirrYrf3y74nh9oBdC5lQKQB9C17UccPRIyc00cIywttqE'); // Klucz publiczny (publishable key) z Stripe
         } catch (e) {
             console.log('Stripe nie jest dostępny:', e);
         }
@@ -300,22 +210,31 @@ document.addEventListener('DOMContentLoaded', function() {
         // Disable button and show loading
         button.disabled = true;
         const originalText = button.textContent;
-        button.textContent = 'Wird geladen...';
+        button.textContent = 'Przetwarzanie...';
         button.style.opacity = '0.6';
         
         try {
-            const consents = collectPageConsents();
-            const reiseId = button.getAttribute('data-reise-id');
-            const productName = reiseId
-                ? `Reisevorschlag des Tages - ${reiseId}`
-                : `Travel Faden – Dienstleistung ${amount}€`;
-            const session = await recordConsentAndCreateSession(
-                amount,
-                productName,
-                consents,
-                reiseId || null
-            );
+            // Tworzenie Checkout Session przez backend
+            // WAŻNE: Musisz stworzyć endpoint na backendzie, który utworzy Stripe Checkout Session
+            const response = await fetch(`${BACKEND_URL}/api/create-checkout-session`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    amount: amount,
+                    currency: 'eur',
+                    productName: `Usługa Travel Faden - ${amount}€`,
+                }),
+            });
 
+            if (!response.ok) {
+                throw new Error('Błąd podczas tworzenia sesji płatności');
+            }
+
+            const session = await response.json();
+
+            // Przekierowanie do Stripe Checkout
             const result = await stripe.redirectToCheckout({
                 sessionId: session.id
             });
@@ -325,7 +244,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         } catch (error) {
             console.error('Błąd:', error);
-            alert(`Fehler: ${error.message}\n\nBitte versuchen Sie es erneut oder laden Sie die Seite neu.`);
+            alert(`Wystąpił błąd: ${error.message}\n\nUpewnij się, że backend jest skonfigurowany i działa.`);
             
             // Re-enable button
             button.disabled = false;
@@ -341,7 +260,7 @@ const requestForm = document.querySelector('.request-form');
 if (requestForm) {
     requestForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        alert('Vielen Dank für Ihre Anfrage! Wir melden uns in Kürze bei Ihnen.');
+        alert('Dziękujemy za zapytanie! Skontaktujemy się z Tobą wkrótce z najlepszą ofertą.');
         requestForm.reset();
     });
 }
@@ -385,76 +304,15 @@ if (contactForm) {
         });
     });
 
-    function showContactFormStatus(message, type) {
-        const statusEl = document.getElementById('contactFormStatus');
-        if (!statusEl) return;
-        statusEl.textContent = message;
-        statusEl.className = `contact-form-status contact-form-status--${type}`;
-        statusEl.hidden = false;
-    }
-
-    function clearContactFormStatus() {
-        const statusEl = document.getElementById('contactFormStatus');
-        if (!statusEl) return;
-        statusEl.textContent = '';
-        statusEl.className = 'contact-form-status';
-        statusEl.hidden = true;
-    }
-
-    contactForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        clearContactFormStatus();
+    contactForm.addEventListener('submit', (e) => {
         if (!contactForm.checkValidity()) {
+            e.preventDefault();
             contactForm.reportValidity();
             return;
         }
-
-        const nameInput = contactForm.querySelector('#contact-name');
-        const emailInput = contactForm.querySelector('#contact-email');
-        const messageInput = contactForm.querySelector('#contact-message');
-        const submitBtn = contactForm.querySelector('.submit-button');
-        const originalText = submitBtn ? submitBtn.textContent : '';
-
-        if (submitBtn) {
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Wird gesendet...';
-            submitBtn.style.opacity = '0.65';
-        }
-
-        try {
-            const response = await fetch(`${BACKEND_URL}/api/send-contact-email`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    name: nameInput?.value.trim(),
-                    email: emailInput?.value.trim(),
-                    message: messageInput?.value.trim(),
-                }),
-            });
-
-            if (!response.ok) {
-                let msg = 'Die Nachricht konnte nicht gesendet werden.';
-                try {
-                    const err = await response.json();
-                    msg = err.error || err.message || msg;
-                } catch (_) {}
-                throw new Error(msg);
-            }
-
-            contactForm.reset();
-            showContactFormStatus(
-                'Vielen Dank für Ihre Nachricht! Wir melden uns in Kürze bei Ihnen.',
-                'success'
-            );
-        } catch (error) {
-            showContactFormStatus(`Fehler: ${error.message}`, 'error');
-        } finally {
-            if (submitBtn) {
-                submitBtn.disabled = false;
-                submitBtn.textContent = originalText;
-                submitBtn.style.opacity = '1';
-            }
-        }
+        e.preventDefault();
+        alert('Vielen Dank fuer Ihre Nachricht! Wir werden uns in Kuerze bei Ihnen melden.');
+        contactForm.reset();
     });
 }
 
@@ -554,7 +412,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const timeSpan = document.createElement('span');
         timeSpan.className = 'message-time';
         const now = new Date();
-        timeSpan.textContent = now.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+        timeSpan.textContent = now.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' });
         
         messageDiv.appendChild(contentDiv);
         messageDiv.appendChild(timeSpan);
@@ -573,10 +431,10 @@ document.addEventListener('DOMContentLoaded', function() {
             // Simulate bot response (możesz to zastąpić prawdziwą integracją)
             setTimeout(() => {
                 const responses = [
-                    'Vielen Dank für Ihre Nachricht! Wir melden uns in Kürze bei Ihnen.',
-                    'Verstanden. Wie können wir Ihnen bei der Reiseplanung helfen?',
-                    'Sehr gerne! Erzählen Sie uns mehr über Ihre Reisepläne.',
-                    'Möchten Sie eine Dienstleistung buchen oder eine Anfrage stellen?',
+                    'Dziękujemy za wiadomość! Skontaktujemy się z Tobą wkrótce.',
+                    'Rozumiem. Jak możemy Ci pomóc w planowaniu podróży?',
+                    'Świetnie! Opowiedz nam więcej o swoich planach podróży.',
+                    'Czy chciałbyś kupić usługę lub złożyć zapytanie o ofertę?',
                 ];
                 const randomResponse = responses[Math.floor(Math.random() * responses.length)];
                 sendMessage(randomResponse, false);
@@ -638,7 +496,7 @@ function initSearch() {
         {
             title: 'Über uns',
             desc: 'Lernen Sie Travel Faden kennen - Ihr vertrauensvoller Reisevermittler',
-            link: 'o-nas.html',
+            link: 'ueber-uns.html',
             keywords: 'über uns über die firma travel faden reisevermittler'
         },
         {
@@ -654,33 +512,33 @@ function initSearch() {
             keywords: 'dienstleistungen dienstleistung kaufen kauf euro'
         },
         {
-            title: 'Reisevorschlag des Tages',
+            title: 'Tagesvorschlag',
             desc: 'Fertiges, sorgfältig ausgearbeitetes Reiseangebot basierend auf unserem Wissen',
-            link: 'oferta-dnia.html',
+            link: 'reisevorschlag-des-tages.html',
             keywords: 'tagesvorschlag tagesangebot fertiges angebot reise'
         },
         {
             title: 'Reise auf Sie zugeschnitten',
             desc: 'Umfassendes Urlaubsangebot, das auf Ihre Bedürfnisse zugeschnitten ist',
-            link: 'wakacje-dla-ciebie.html',
+            link: 'individueller-reisevorschlag.html',
             keywords: 'reise zugeschnitten ferien für sie individuelles angebot'
         },
         {
             title: 'Flüge',
             desc: 'Flugverbindungen zu erschwinglichen Preisen - schnell und ohne Stress',
-            link: 'loty.html',
+            link: 'flugvorschlaege.html',
             keywords: 'flüge flugzeug flugverbindungen flugtickets'
         },
         {
             title: 'Unterkünfte',
             desc: 'Finden Sie die perfekte Unterkunft am gewählten Ort',
-            link: 'noclegi.html',
+            link: 'unterkunftsvorschlaege.html',
             keywords: 'unterkünfte hotel apartment unterkunft übernachtung'
         },
         {
-            title: 'City Break',
+            title: 'Kurztrip-Vorschläge',
             desc: 'Kurze Reisen in die schönsten Städte Europas',
-            link: 'city-break.html',
+            link: 'kurztrip-vorschlaege.html',
             keywords: 'city break kurze reisen städte europa wochenende'
         },
         {
@@ -692,7 +550,7 @@ function initSearch() {
         {
             title: 'FAQ',
             desc: 'Finden Sie Antworten auf häufig gestellte Fragen',
-            link: 'pytania-i-odpowiedzi.html',
+            link: 'faq.html',
             keywords: 'fragen antworten faq hilfe unterstützung'
         },
         {
@@ -704,7 +562,7 @@ function initSearch() {
         {
             title: 'AGB',
             desc: 'Lesen Sie die Allgemeinen Geschäftsbedingungen der Travel Faden Dienstleistungen',
-            link: 'regulamin.html',
+            link: 'agb.html',
             keywords: 'agb regeln bedingungen nutzungsbedingungen'
         }
     ];
@@ -714,11 +572,17 @@ function initSearch() {
 
     const searchData = getSearchData();
 
+    function setSearchOpen(isOpen) {
+        searchToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        searchToggle.setAttribute('aria-label', isOpen ? 'Suche schließen' : 'Suche öffnen');
+    }
+
     // Toggle search box
     searchToggle.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
         searchBox.classList.add('active');
+        setSearchOpen(true);
         // Użyj setTimeout, aby upewnić się, że klasa 'active' została dodana przed focus
         setTimeout(() => {
             searchInput.focus();
@@ -729,6 +593,7 @@ function initSearch() {
         searchBox.classList.remove('active');
         searchInput.value = '';
         searchResults.innerHTML = '';
+        setSearchOpen(false);
     });
 
     // Close search on outside click
@@ -737,6 +602,7 @@ function initSearch() {
             searchBox.classList.remove('active');
             searchInput.value = '';
             searchResults.innerHTML = '';
+            setSearchOpen(false);
         }
     });
 
@@ -839,17 +705,18 @@ if (document.readyState === 'loading') {
 // FAQ Toggle
 document.querySelectorAll('.faq-question').forEach(question => {
     question.addEventListener('click', () => {
-        const faqItem = question.parentElement;
+        const faqItem = question.closest('.faq-item');
         const isActive = faqItem.classList.contains('active');
         
-        // Close all FAQ items
         document.querySelectorAll('.faq-item').forEach(item => {
             item.classList.remove('active');
+            const btn = item.querySelector('.faq-question');
+            if (btn) btn.setAttribute('aria-expanded', 'false');
         });
         
-        // Open clicked item if it wasn't active
         if (!isActive) {
             faqItem.classList.add('active');
+            question.setAttribute('aria-expanded', 'true');
         }
     });
 });

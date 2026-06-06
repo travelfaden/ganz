@@ -38,7 +38,7 @@ Vercel zbuduje projekt automatycznie.
 
 ## Krok 5: Test
 
-1. Otwórz stronę usługi (np. `oferta-dnia.html`).
+1. Otwórz stronę usługi (np. `reisevorschlag-des-tages.html`).
 2. Zaznacz checkboxy → **Jetzt kostenpflichtig bestellen**.
 3. W Supabase → **Table Editor** → `order_consents` → nowy wiersz (`payment_status`: `pending`).
 4. Dokończ testową płatność Stripe.

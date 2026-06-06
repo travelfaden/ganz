@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Podgląd – success.html</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body { margin: 0; background: #eef2f7; font-family: system-ui, sans-serif; }
+    .preview-bar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 12px 20px;
+      text-align: center;
+      font-size: 14px;
+      line-height: 1.5;
+      border-bottom: 2px solid #2563eb;
+    }
+    .preview-bar strong { color: #fff; }
+    .preview-wrap { max-width: 1100px; margin: 0 auto; padding: 24px 16px 48px; }
+    .preview-section { margin-bottom: 2.5rem; }
+    .preview-label {
+      margin: 0 0 12px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #475569;
+    }
+    .success-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      background: var(--bg-light);
+      border-radius: 16px;
+      border: 1px solid #e2e8f0;
+    }
+    .success-card {
+      background: white;
+      padding: 2.5rem;
+      border-radius: 20px;
+      box-shadow: var(--shadow-xl);
+      text-align: center;
+      max-width: 600px;
+      width: 100%;
+    }
+    .success-icon { font-size: 4rem; margin-bottom: 1.5rem; }
+    .success-card h1 { color: var(--primary-color); margin-bottom: 1rem; font-size: 1.75rem; }
+    .success-card p { color: var(--text-light); margin-bottom: 1rem; line-height: 1.8; }
+    .success-order-box {
+      margin: 1.25rem 0 1.5rem;
+      padding: 1.25rem 1.5rem;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      text-align: left;
+    }
+    .success-order-box .label {
+      margin: 0 0 6px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #64748b;
+    }
+    .success-order-box .value {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+      color: #0f172a;
+      font-family: Consolas, Monaco, 'Courier New', monospace;
+      word-break: break-all;
+    }
+    .success-order-box .value--accent { color: #2563eb; }
+    .success-order-box .block + .block {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid #e2e8f0;
+    }
+    .success-button {
+      padding: 1rem 2.5rem;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      border-radius: 50px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-block;
+      margin-top: 0.5rem;
+    }
+    .success-back {
+      display: inline-block;
+      margin-top: 1.5rem;
+      color: var(--text-light);
+      text-decoration: none;
+    }
+    .success-card--error h1 { color: #b91c1c; }
+    .success-card--pending h1 { color: var(--text-color); }
+  </style>
+</head>
+<body>
+  <div class="preview-bar">
+    <strong>Podgląd lokalny</strong> — tak wygląda <code>success.html</code> po weryfikacji płatności (dane przykładowe)
+  </div>
+
+  <div class="preview-wrap">
+    <section class="preview-section">
+      <p class="preview-label">1. Opłacone — Reisevorschlag des Tages (z numerem)</p>
+      <div class="success-container">
+        <div class="success-card">
+          <div class="success-icon" aria-hidden="true">✅</div>
+          <h1>Zahlung erfolgreich!</h1>
+          <p>Vielen Dank für Ihre Bestellung bei <strong>Travel Faden</strong>.</p>
+          <div class="success-order-box">
+            <div class="block">
+              <p class="label">Bestellnummer</p>
+              <p class="value">TF-003</p>
+            </div>
+            <div class="block">
+              <p class="label">Reisevorschlag des Tages ID</p>
+              <p class="value value--accent">TF-MALLORCA-12092026</p>
+            </div>
+          </div>
+          <p>Sie erhalten zusätzlich eine E-Mail mit Ihrer Bestellbestätigung.</p>
+          <p>Bitte prüfen Sie auch Ihren Spam-Ordner, falls die Nachricht nicht ankommt.</p>
+          <a href="#" class="success-button">Zur Startseite</a><br>
+          <a href="#" class="success-back">← Weitere Reisevorschläge ansehen</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="preview-section">
+      <p class="preview-label">2. Opłacone — inna usługa (tylko Bestellnummer)</p>
+      <div class="success-container">
+        <div class="success-card">
+          <div class="success-icon" aria-hidden="true">✅</div>
+          <h1>Zahlung erfolgreich!</h1>
+          <p>Vielen Dank für Ihre Bestellung bei <strong>Travel Faden</strong>.</p>
+          <div class="success-order-box">
+            <div class="block">
+              <p class="label">Bestellnummer</p>
+              <p class="value">TF-004</p>
+            </div>
+          </div>
+          <p>Sie erhalten zusätzlich eine E-Mail mit Ihrer Bestellbestätigung.</p>
+          <p>Bitte prüfen Sie auch Ihren Spam-Ordner, falls die Nachricht nicht ankommt.</p>
+          <a href="#" class="success-button">Zur Startseite</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="preview-section">
+      <p class="preview-label">3. Opłacone — numer jeszcze się tworzy (webhook)</p>
+      <div class="success-container">
+        <div class="success-card success-card--pending">
+          <div class="success-icon" aria-hidden="true">✅</div>
+          <h1>Zahlung erfolgreich!</h1>
+          <p>Vielen Dank für Ihre Bestellung bei <strong>Travel Faden</strong>.</p>
+          <p>Ihre Zahlung wurde bestätigt. Ihre Bestellnummer wird gerade erstellt.</p>
+          <p>Sie erhalten in Kürze eine E-Mail mit Ihrer Bestellbestätigung und Bestellnummer.</p>
+          <p>Bitte prüfen Sie auch Ihren Spam-Ordner, falls die Nachricht nicht ankommt.</p>
+          <a href="#" class="success-button">Zur Startseite</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="preview-section">
+      <p class="preview-label">4. Nie opłacone / anulowane</p>
+      <div class="success-container">
+        <div class="success-card success-card--error">
+          <div class="success-icon" aria-hidden="true">❌</div>
+          <h1>Zahlung nicht abgeschlossen</h1>
+          <p>Ihre Zahlung wurde nicht abgeschlossen. Es wurden keine Beträge belastet. Sie können es erneut versuchen.</p>
+          <a href="#" class="success-button">Zur Startseite</a>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

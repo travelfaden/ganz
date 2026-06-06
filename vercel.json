@@ -5,6 +5,17 @@
       "memory": 1024
     }
   },
+  "redirects": [
+    { "source": "/city-break.html", "destination": "/kurztrip-vorschlaege.html", "permanent": true },
+    { "source": "/wakacje-dla-ciebie.html", "destination": "/individueller-reisevorschlag.html", "permanent": true },
+    { "source": "/loty.html", "destination": "/flugvorschlaege.html", "permanent": true },
+    { "source": "/noclegi.html", "destination": "/unterkunftsvorschlaege.html", "permanent": true },
+    { "source": "/o-nas.html", "destination": "/ueber-uns.html", "permanent": true },
+    { "source": "/oferta-dnia.html", "destination": "/reisevorschlag-des-tages.html", "permanent": true },
+    { "source": "/oferta-dnia-nav.html", "destination": "/reisevorschlaege.html", "permanent": true },
+    { "source": "/regulamin.html", "destination": "/agb.html", "permanent": true },
+    { "source": "/pytania-i-odpowiedzi.html", "destination": "/faq.html", "permanent": true }
+  ],
   "rewrites": [
     {
       "source": "/api/(.*)",
