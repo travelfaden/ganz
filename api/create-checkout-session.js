@@ -47,6 +47,11 @@ module.exports = async (req, res) => {
     const session = await stripe.checkout.sessions.create({
       locale: 'de',
       payment_method_types: ['card', 'paypal'],
+      wallet_options: {
+        link: {
+          display: 'never',
+        },
+      },
       line_items: [
         {
           price_data: {
