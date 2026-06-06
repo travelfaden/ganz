@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Płatność Zakończona - Travel Faden</title>
+    <title>Zahlung erfolgreich – Travel Faden</title>
     <link rel="stylesheet" href="styles.css">
     <style>
         .success-container {
@@ -32,7 +32,7 @@
         }
         .success-card p {
             color: var(--text-light);
-            margin-bottom: 2rem;
+            margin-bottom: 1rem;
             line-height: 1.8;
         }
         .success-button {
@@ -47,27 +47,37 @@
             text-decoration: none;
             display: inline-block;
             transition: all 0.3s ease;
+            margin-top: 0.5rem;
         }
         .success-button:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+        }
+        .success-back {
+            display: inline-block;
+            margin-top: 1.5rem;
+            color: var(--text-light);
+            text-decoration: none;
+        }
+        .success-back:hover {
+            color: var(--primary-color);
         }
     </style>
 </head>
 <body>
     <div class="success-container">
         <div class="success-card">
-            <div class="success-icon">✅</div>
-            <h1>Płatność Zakończona Pomyślnie!</h1>
-            <p>Dziękujemy za zakup vouchera. Otrzymasz email z potwierdzeniem płatności oraz numerem vouchera.</p>
-            <p>Możesz teraz wykorzystać swój voucher, składając zapytanie o ofertę podróży.</p>
-            <a href="index.html#request" class="success-button">Złóż Zapytanie o Ofertę</a>
-            <br><br>
-            <a href="index.html" style="color: var(--text-light); text-decoration: none;">← Powrót do strony głównej</a>
+            <div class="success-icon" aria-hidden="true">✅</div>
+            <h1>Zahlung erfolgreich!</h1>
+            <p>Vielen Dank für Ihre Bestellung bei <strong>Travel Faden</strong>.</p>
+            <p>Sie erhalten in Kürze eine E-Mail mit Ihrer Bestellbestätigung und Ihrer Bestellnummer.</p>
+            <p>Bitte prüfen Sie auch Ihren Spam-Ordner, falls die Nachricht nicht ankommt.</p>
+            <a href="index.html" class="success-button">Zur Startseite</a>
+            <br>
+            <a href="oferta-dnia-nav.html" class="success-back">← Weitere Reisevorschläge ansehen</a>
         </div>
     </div>
 
     <script src="script.js"></script>
 </body>
 </html>
-

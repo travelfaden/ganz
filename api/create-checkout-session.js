@@ -45,6 +45,7 @@ module.exports = async (req, res) => {
 
     // Tworzenie sesji Checkout
     const session = await stripe.checkout.sessions.create({
+      locale: 'de',
       payment_method_types: ['card', 'paypal'],
       line_items: [
         {
@@ -72,7 +73,7 @@ module.exports = async (req, res) => {
       },
       custom_text: {
         submit: {
-          message: 'Dziękujemy za wybór Travel Faden!',
+          message: 'Vielen Dank, dass Sie Travel Faden gewählt haben!',
         },
       },
     });
