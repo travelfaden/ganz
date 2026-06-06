@@ -28,12 +28,12 @@ module.exports = async (req, res) => {
 
     if (!amount) {
       console.error('Błąd: Brak kwoty');
-      return res.status(400).json({ error: 'Kwota jest wymagana' });
+      return res.status(400).json({ error: 'Betrag ist erforderlich' });
     }
 
     if (!process.env.STRIPE_SECRET_KEY) {
       console.error('Błąd: Brak klucza Stripe w zmiennych środowiskowych');
-      return res.status(500).json({ error: 'Brak konfiguracji Stripe' });
+      return res.status(500).json({ error: 'Stripe ist nicht konfiguriert' });
     }
 
     console.log('Tworzenie sesji Stripe dla kwoty:', amount);
@@ -93,7 +93,7 @@ module.exports = async (req, res) => {
     console.error('Pełny błąd:', JSON.stringify(error, null, 2));
     console.error('==================');
     res.status(500).json({ 
-      error: 'Błąd podczas tworzenia sesji płatności',
+      error: 'Fehler beim Erstellen der Zahlungssitzung',
       message: error.message,
       code: error.code,
       type: error.type

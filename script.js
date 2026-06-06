@@ -165,7 +165,7 @@ async function recordConsentAndCreateSession(amount, productName, consents, reis
     });
 
     if (!consentResponse.ok) {
-        let msg = 'Zgody nie zostały zapisane.';
+        let msg = 'Die Einwilligungen konnten nicht gespeichert werden.';
         try {
             const err = await consentResponse.json();
             msg = err.message || err.error || msg;
@@ -300,7 +300,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Disable button and show loading
         button.disabled = true;
         const originalText = button.textContent;
-        button.textContent = 'Przetwarzanie...';
+        button.textContent = 'Wird geladen...';
         button.style.opacity = '0.6';
         
         try {
@@ -308,7 +308,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const reiseId = button.getAttribute('data-reise-id');
             const productName = reiseId
                 ? `Reisevorschlag des Tages - ${reiseId}`
-                : `Usługa Travel Faden - ${amount}€`;
+                : `Travel Faden – Dienstleistung ${amount}€`;
             const session = await recordConsentAndCreateSession(
                 amount,
                 productName,
@@ -325,7 +325,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         } catch (error) {
             console.error('Błąd:', error);
-            alert(`Wystąpił błąd: ${error.message}\n\nUpewnij się, że backend jest skonfigurowany i działa.`);
+            alert(`Fehler: ${error.message}\n\nBitte versuchen Sie es erneut oder laden Sie die Seite neu.`);
             
             // Re-enable button
             button.disabled = false;
@@ -341,7 +341,7 @@ const requestForm = document.querySelector('.request-form');
 if (requestForm) {
     requestForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        alert('Dziękujemy za zapytanie! Skontaktujemy się z Tobą wkrótce z najlepszą ofertą.');
+        alert('Vielen Dank für Ihre Anfrage! Wir melden uns in Kürze bei Ihnen.');
         requestForm.reset();
     });
 }
@@ -385,15 +385,76 @@ if (contactForm) {
         });
     });
 
-    contactForm.addEventListener('submit', (e) => {
+    function showContactFormStatus(message, type) {
+        const statusEl = document.getElementById('contactFormStatus');
+        if (!statusEl) return;
+        statusEl.textContent = message;
+        statusEl.className = `contact-form-status contact-form-status--${type}`;
+        statusEl.hidden = false;
+    }
+
+    function clearContactFormStatus() {
+        const statusEl = document.getElementById('contactFormStatus');
+        if (!statusEl) return;
+        statusEl.textContent = '';
+        statusEl.className = 'contact-form-status';
+        statusEl.hidden = true;
+    }
+
+    contactForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        clearContactFormStatus();
         if (!contactForm.checkValidity()) {
-            e.preventDefault();
             contactForm.reportValidity();
             return;
         }
-        e.preventDefault();
-        alert('Vielen Dank fuer Ihre Nachricht! Wir werden uns in Kuerze bei Ihnen melden.');
-        contactForm.reset();
+
+        const nameInput = contactForm.querySelector('#contact-name');
+        const emailInput = contactForm.querySelector('#contact-email');
+        const messageInput = contactForm.querySelector('#contact-message');
+        const submitBtn = contactForm.querySelector('.submit-button');
+        const originalText = submitBtn ? submitBtn.textContent : '';
+
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Wird gesendet...';
+            submitBtn.style.opacity = '0.65';
+        }
+
+        try {
+            const response = await fetch(`${BACKEND_URL}/api/send-contact-email`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name: nameInput?.value.trim(),
+                    email: emailInput?.value.trim(),
+                    message: messageInput?.value.trim(),
+                }),
+            });
+
+            if (!response.ok) {
+                let msg = 'Die Nachricht konnte nicht gesendet werden.';
+                try {
+                    const err = await response.json();
+                    msg = err.error || err.message || msg;
+                } catch (_) {}
+                throw new Error(msg);
+            }
+
+            contactForm.reset();
+            showContactFormStatus(
+                'Vielen Dank für Ihre Nachricht! Wir melden uns in Kürze bei Ihnen.',
+                'success'
+            );
+        } catch (error) {
+            showContactFormStatus(`Fehler: ${error.message}`, 'error');
+        } finally {
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+                submitBtn.style.opacity = '1';
+            }
+        }
     });
 }
 
@@ -493,7 +554,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const timeSpan = document.createElement('span');
         timeSpan.className = 'message-time';
         const now = new Date();
-        timeSpan.textContent = now.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' });
+        timeSpan.textContent = now.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
         
         messageDiv.appendChild(contentDiv);
         messageDiv.appendChild(timeSpan);
@@ -512,10 +573,10 @@ document.addEventListener('DOMContentLoaded', function() {
             // Simulate bot response (możesz to zastąpić prawdziwą integracją)
             setTimeout(() => {
                 const responses = [
-                    'Dziękujemy za wiadomość! Skontaktujemy się z Tobą wkrótce.',
-                    'Rozumiem. Jak możemy Ci pomóc w planowaniu podróży?',
-                    'Świetnie! Opowiedz nam więcej o swoich planach podróży.',
-                    'Czy chciałbyś kupić usługę lub złożyć zapytanie o ofertę?',
+                    'Vielen Dank für Ihre Nachricht! Wir melden uns in Kürze bei Ihnen.',
+                    'Verstanden. Wie können wir Ihnen bei der Reiseplanung helfen?',
+                    'Sehr gerne! Erzählen Sie uns mehr über Ihre Reisepläne.',
+                    'Möchten Sie eine Dienstleistung buchen oder eine Anfrage stellen?',
                 ];
                 const randomResponse = responses[Math.floor(Math.random() * responses.length)];
                 sendMessage(randomResponse, false);

@@ -1349,6 +1349,27 @@ body {
     color: var(--text-light);
 }
 
+.contact-form-status {
+    margin: 0;
+    padding: 1rem 1.25rem;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    text-align: center;
+}
+
+.contact-form-status--success {
+    background: #ecfdf5;
+    border: 1px solid #6ee7b7;
+    color: #065f46;
+}
+
+.contact-form-status--error {
+    background: #fef2f2;
+    border: 1px solid #fca5a5;
+    color: #991b1b;
+}
+
 .submit-button {
     padding: 1.2rem 2.5rem;
     background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));

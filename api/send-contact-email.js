@@ -1,35 +1,43 @@
-// Vercel Serverless Function - Wysyłanie emaila kontaktowego
 const { Resend } = require('resend');
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 const FROM_EMAIL = process.env.FROM_EMAIL || 'onboarding@resend.dev';
-const CONTACT_EMAIL = process.env.CONTACT_EMAIL || 'contact@example.com';
+const CONTACT_EMAIL = process.env.CONTACT_EMAIL || 'travelfaden@gmail.com';
 
-async function sendEmail(to, subject, html, text = null) {
+function escapeHtml(value) {
+  if (value === null || value === undefined) return '';
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+async function sendEmail(to, subject, html, text, replyTo = null) {
   if (!resend) {
-    console.warn('⚠️  Resend nie jest skonfigurowany. Dodaj RESEND_API_KEY do zmiennych środowiskowych');
-    return { success: false, error: 'Resend nie jest skonfigurowany' };
+    return { success: false, error: 'Resend ist nicht konfiguriert' };
   }
 
   try {
-    const data = await resend.emails.send({
+    const payload = {
       from: FROM_EMAIL,
       to: [to],
-      subject: subject,
-      html: html,
+      subject,
+      html,
       text: text || subject,
-    });
+    };
+    if (replyTo) {
+      payload.reply_to = replyTo;
+    }
 
-    console.log('✅ Email wysłany:', data);
+    const data = await resend.emails.send(payload);
     return { success: true, data };
   } catch (error) {
-    console.error('❌ Błąd wysyłania emaila:', error);
     return { success: false, error: error.message };
   }
 }
 
 module.exports = async (req, res) => {
-  // CORS headers
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST,OPTIONS');
@@ -38,70 +46,76 @@ module.exports = async (req, res) => {
     'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
   );
 
-  // Handle preflight
   if (req.method === 'OPTIONS') {
     res.status(200).end();
     return;
   }
 
-  // Tylko POST
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
-    const { name, email, message } = req.body;
-    
-    if (!name || !email || !message) {
-      return res.status(400).json({ error: 'Wszystkie pola są wymagane' });
+    const { name, email, message } = req.body || {};
+    const trimmedName = String(name || '').trim();
+    const trimmedEmail = String(email || '').trim();
+    const trimmedMessage = String(message || '').trim();
+
+    if (!trimmedName || !trimmedEmail || !trimmedMessage) {
+      return res.status(400).json({ error: 'Alle Felder sind erforderlich' });
     }
-    
-    // Email do Ciebie (jako właściciela strony)
+
+    const safeName = escapeHtml(trimmedName);
+    const safeEmail = escapeHtml(trimmedEmail);
+    const safeMessageHtml = escapeHtml(trimmedMessage).replace(/\n/g, '<br>');
+
     const adminEmailHtml = `
-      <h2>Nowa wiadomość z formularza kontaktowego</h2>
-      <p><strong>Od:</strong> ${name} (${email})</p>
-      <p><strong>Wiadomość:</strong></p>
-      <p>${message.replace(/\n/g, '<br>')}</p>
+      <h2>Neue Kontaktanfrage</h2>
+      <p><strong>Von:</strong> ${safeName} (${safeEmail})</p>
+      <p><strong>Nachricht:</strong></p>
+      <p>${safeMessageHtml}</p>
       <hr>
-      <p style="color: #666; font-size: 12px;">Odpowiedz na ten email, aby skontaktować się z klientem.</p>
+      <p style="color:#666;font-size:12px;">Antworten Sie auf diese E-Mail, um den Kunden zu kontaktieren.</p>
     `;
-    
-    // Email potwierdzający do klienta
+
     const customerEmailHtml = `
-      <h2>Dziękujemy za wiadomość!</h2>
-      <p>Witaj ${name},</p>
-      <p>Otrzymaliśmy Twoją wiadomość i skontaktujemy się z Tobą wkrótce.</p>
-      <p><strong>Twoja wiadomość:</strong></p>
-      <p>${message.replace(/\n/g, '<br>')}</p>
+      <h2>Vielen Dank für Ihre Nachricht</h2>
+      <p>Guten Tag ${safeName},</p>
+      <p>wir haben Ihre Nachricht erhalten und melden uns in Kürze bei Ihnen.</p>
+      <p><strong>Ihre Nachricht:</strong></p>
+      <p>${safeMessageHtml}</p>
       <hr>
-      <p>Pozdrawiamy,<br>Zespół Travel Faden</p>
+      <p>Mit freundlichen Grüßen<br>Travel Faden<br>Bartosz Nagiec</p>
     `;
-    
-    // Wysyłanie emaila do Ciebie
+
     const adminResult = await sendEmail(
       CONTACT_EMAIL,
-      `Nowa wiadomość od ${name} - Travel Faden`,
-      adminEmailHtml
+      `Neue Kontaktanfrage von ${trimmedName} – Travel Faden`,
+      adminEmailHtml,
+      `Neue Kontaktanfrage von ${trimmedName} (${trimmedEmail}):\n\n${trimmedMessage}`,
+      trimmedEmail
     );
-    
-    // Wysyłanie potwierdzenia do klienta
+
     const customerResult = await sendEmail(
-      email,
-      'Dziękujemy za wiadomość - Travel Faden',
-      customerEmailHtml
+      trimmedEmail,
+      'Ihre Nachricht an Travel Faden',
+      customerEmailHtml,
+      `Guten Tag ${trimmedName},\n\nwir haben Ihre Nachricht erhalten und melden uns in Kürze bei Ihnen.\n\nIhre Nachricht:\n${trimmedMessage}\n\nMit freundlichen Grüßen\nTravel Faden`,
+      CONTACT_EMAIL
     );
-    
+
     if (adminResult.success && customerResult.success) {
-      res.json({ success: true, message: 'Wiadomość wysłana pomyślnie' });
-    } else {
-      res.status(500).json({ 
-        error: 'Błąd wysyłania wiadomości',
-        adminError: adminResult.error,
-        customerError: customerResult.error
-      });
+      res.json({ success: true, message: 'Nachricht erfolgreich gesendet' });
+      return;
     }
+
+    res.status(500).json({
+      error: 'Die Nachricht konnte nicht gesendet werden',
+      adminError: adminResult.error,
+      customerError: customerResult.error,
+    });
   } catch (error) {
-    console.error('Błąd:', error);
+    console.error('send-contact-email error:', error);
     res.status(500).json({ error: error.message });
   }
 };

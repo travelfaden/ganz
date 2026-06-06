@@ -25,19 +25,19 @@ module.exports = async (req, res) => {
 
   if (!isSupabaseConfigured()) {
     console.error('Brak SUPABASE_URL lub SUPABASE_SERVICE_ROLE_KEY');
-    return res.status(500).json({ error: 'Brak konfiguracji Supabase' });
+    return res.status(500).json({ error: 'Supabase ist nicht konfiguriert' });
   }
 
   try {
     const { amount, currency = 'eur', productName, consents, reisevorschlagId, formData } = req.body || {};
 
     if (!amount || !Array.isArray(consents) || consents.length === 0) {
-      return res.status(400).json({ error: 'amount i consents są wymagane' });
+      return res.status(400).json({ error: 'Betrag und Einwilligungen sind erforderlich' });
     }
 
     const allChecked = consents.every((c) => c.checked === true);
     if (!allChecked) {
-      return res.status(400).json({ error: 'Wszystkie wymagane zgody muszą być zaznaczone' });
+      return res.status(400).json({ error: 'Alle erforderlichen Einwilligungen müssen bestätigt werden' });
     }
 
     const consentId = generateConsentId();
@@ -83,7 +83,7 @@ module.exports = async (req, res) => {
   } catch (error) {
     console.error('record-consent error:', error);
     res.status(500).json({
-      error: 'Błąd zapisu zgody',
+      error: 'Fehler beim Speichern der Einwilligung',
       message: error.message,
     });
   }
