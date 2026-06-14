@@ -13,14 +13,6 @@ document.addEventListener('DOMContentLoaded', function() {
             navMenu.classList.toggle('active');
             hamburger.classList.toggle('active');
             updateHamburgerA11y(hamburger, navMenu.classList.contains('active'));
-
-            if (!navMenu.classList.contains('active')) {
-                document.querySelectorAll('.nav-dropdown').forEach((dropdown) => {
-                    dropdown.classList.remove('active');
-                    const toggle = dropdown.querySelector('.dropdown-toggle');
-                    if (toggle) toggle.setAttribute('aria-expanded', 'false');
-                });
-            }
         });
     }
 });
