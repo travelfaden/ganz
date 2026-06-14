@@ -43,9 +43,14 @@ module.exports = async (req, res) => {
       ? `https://${req.headers.host}` 
       : 'http://localhost:3000';
 
+    const checkoutDisplayName = (process.env.CHECKOUT_DISPLAY_NAME || 'Travel Faden').trim();
+
     // Tworzenie sesji Checkout
     const session = await stripe.checkout.sessions.create({
       locale: 'de',
+      branding_settings: {
+        display_name: checkoutDisplayName,
+      },
       payment_method_types: ['card', 'paypal'],
       wallet_options: {
         link: {
