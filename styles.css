@@ -133,9 +133,13 @@ body {
     }
 
     .search-container,
-    .social-icons,
+    .social-icons {
+        transform: translateX(-22px);
+    }
+
     .hamburger {
         transform: translateX(-10px);
+        padding: 0.35rem;
     }
 
     .social-icons {
@@ -144,10 +148,6 @@ body {
     }
 
     .social-icons a {
-        padding: 0.35rem;
-    }
-
-    .hamburger {
         padding: 0.35rem;
     }
 }
