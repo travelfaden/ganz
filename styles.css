@@ -100,24 +100,49 @@ body {
 }
 
 @media (max-width: 768px) {
+    .navbar .container {
+        justify-content: center;
+        gap: 0.65rem;
+        padding: 0.9rem 14px;
+    }
+
     .logo-icon {
         width: 32px;
         height: 32px;
     }
     
     .logo {
-        font-size: 1.25rem;
-        margin-left: 8px;
+        font-size: 1.2rem;
+        margin-left: 0;
         flex-shrink: 0;
     }
 
     .logo a {
         flex-shrink: 0;
         white-space: nowrap;
+        gap: 8px;
     }
 
     .logo-text {
         white-space: nowrap;
+    }
+
+    .search-toggle {
+        margin-left: 0;
+        padding: 0.35rem;
+    }
+
+    .social-icons {
+        margin-right: 0 !important;
+        gap: 6px;
+    }
+
+    .social-icons a {
+        padding: 0.35rem;
+    }
+
+    .hamburger {
+        padding: 0.35rem;
     }
 }
 
@@ -201,8 +226,7 @@ body {
 
 @media (max-width: 768px) {
     .social-icons {
-        margin-right: 8px;
-        gap: 8px;
+        gap: 6px;
     }
     
     .social-icons a svg {
