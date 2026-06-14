@@ -397,14 +397,23 @@ body {
 }
 
 @media (max-width: 768px) {
+    .nav-dropdown {
+        width: 100%;
+    }
+
+    .dropdown-toggle {
+        justify-content: center;
+    }
+
     .dropdown-menu {
         position: static;
-        opacity: 1;
-        visibility: visible;
+        opacity: 0;
+        visibility: hidden;
         transform: none;
         box-shadow: none;
-        background: var(--bg-light);
-        margin: 0.5rem 0 0 0;
+        background: transparent;
+        margin: 0;
+        padding: 0;
         border-radius: 0;
         max-height: 0;
         overflow: hidden;
@@ -412,7 +421,11 @@ body {
     }
     
     .nav-dropdown.active .dropdown-menu {
+        opacity: 1;
+        visibility: visible;
         max-height: 500px;
+        background: var(--bg-light);
+        margin: 0.5rem 0 0 0;
     }
 
     .nav-dropdown.active .dropdown-arrow {
