@@ -132,6 +132,12 @@ body {
         padding: 0.35rem;
     }
 
+    .search-container,
+    .social-icons,
+    .hamburger {
+        transform: translateX(-10px);
+    }
+
     .social-icons {
         margin-right: 0 !important;
         gap: 6px;
