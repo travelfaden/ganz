@@ -73,8 +73,8 @@ module.exports = async (req, res) => {
         },
       ],
       mode: 'payment',
-      success_url: `${origin}/success.html?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/cancel.html`,
+      success_url: `${origin}/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}/cancel`,
       metadata: {
         voucher_amount: amount.toString(),
         voucher_currency: currency,
