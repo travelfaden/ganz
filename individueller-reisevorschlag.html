@@ -13,7 +13,7 @@
     <nav class="navbar">
         <div class="container">
             <div class="logo">
-                <a href="index.html" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
+                <a href="/" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
                     <svg class="logo-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
                         <circle cx="50" cy="50" r="40" fill="none" stroke="url(#logoGradient)" stroke-width="3"/>
                         <circle cx="50" cy="50" r="35" fill="none" stroke="url(#logoGradient)" stroke-width="2" opacity="0.6"/>
@@ -37,20 +37,20 @@
             </div>
             <ul class="nav-menu" id="navMenu">
                 <li class="nav-dropdown">
-                    <a href="index.html#vouchers" class="dropdown-toggle">Unsere Leistungen <span class="dropdown-arrow">▼</span></a>
+                    <a href="/#vouchers" class="dropdown-toggle">Unsere Leistungen <span class="dropdown-arrow">▼</span></a>
                     <ul class="dropdown-menu">
-                        <li><a href="reisevorschlaege.html">Reisevorschlag des Tages</a></li>
-                        <li><a href="individueller-reisevorschlag.html">Individueller Reisevorschlag</a></li>
-                        <li><a href="flugvorschlaege.html">Flugvorschläge</a></li>
-                        <li><a href="unterkunftsvorschlaege.html">Unterkunftsvorschläge</a></li>
-                        <li><a href="kurztrip-vorschlaege.html">Kurztrip-Vorschläge</a></li>
+                        <li><a href="/reisevorschlaege">Reisevorschlag des Tages</a></li>
+                        <li><a href="/individueller-reisevorschlag">Individueller Reisevorschlag</a></li>
+                        <li><a href="/flugvorschlaege">Flugvorschläge</a></li>
+                        <li><a href="/unterkunftsvorschlaege">Unterkunftsvorschläge</a></li>
+                        <li><a href="/kurztrip-vorschlaege">Kurztrip-Vorschläge</a></li>
                     </ul>
                 </li>
-                <li><a href="index.html#how-it-works">So läuft’s ab</a></li>
-                <li><a href="reisevorschlaege.html">Reisevorschlag des Tages</a></li>
-                <li><a href="faq.html">FAQ</a></li>
-                <li><a href="ueber-uns.html">Über uns</a></li>
-                <li><a href="index.html#contact">Kontakt</a></li>
+                <li><a href="/#how-it-works">So läuft’s ab</a></li>
+                <li><a href="/reisevorschlaege">Reisevorschlag des Tages</a></li>
+                <li><a href="/faq">FAQ</a></li>
+                <li><a href="/ueber-uns">Über uns</a></li>
+                <li><a href="/#contact">Kontakt</a></li>
             </ul>
             <div class="search-container">
                 <button type="button" class="search-toggle" id="searchToggle" aria-label="Suche öffnen" aria-expanded="false" aria-controls="searchBox">
@@ -142,24 +142,24 @@
                             <div style="display: flex; align-items: flex-start; gap: 0.5rem; margin-bottom: 1rem;">
                                 <input type="checkbox" id="withdrawal-consent" name="withdrawal-consent" required style="margin-top: 0.25rem; cursor: pointer; flex-shrink: 0;">
                                 <label for="withdrawal-consent" style="font-size: 0.9rem; color: var(--text-color); cursor: pointer; line-height: 1.5;">
-                                    Ich stimme ausdrücklich zu, dass mit der Ausführung der Dienstleistung vor Ablauf der Widerrufsfrist begonnen wird. Mir ist bekannt, dass ich dadurch mein Widerrufsrecht bei vollständiger Vertragserfüllung verliere. (<a href="widerrufsbelehrung.html" target="_blank" style="color: var(--primary-color); text-decoration: underline;">Widerrufsbelehrung</a>)
+                                    Ich stimme ausdrücklich zu, dass mit der Ausführung der Dienstleistung vor Ablauf der Widerrufsfrist begonnen wird. Mir ist bekannt, dass ich dadurch mein Widerrufsrecht bei vollständiger Vertragserfüllung verliere. (<a href="/widerrufsbelehrung" target="_blank" style="color: var(--primary-color); text-decoration: underline;">Widerrufsbelehrung</a>)
                                 </label>
                             </div>
                             <div style="display: flex; align-items: flex-start; gap: 0.5rem; margin-bottom: 1rem;">
                                 <input type="checkbox" id="agb-consent" name="agb-consent" required style="margin-top: 0.25rem; cursor: pointer; flex-shrink: 0;">
                                 <label for="agb-consent" style="font-size: 0.9rem; color: var(--text-color); cursor: pointer; line-height: 1.5;">
-                                    Ich habe die <a href="agb.html" target="_blank" style="color: var(--primary-color); text-decoration: underline;">AGB</a> gelesen und akzeptiere sie.
+                                    Ich habe die <a href="/agb" target="_blank" style="color: var(--primary-color); text-decoration: underline;">AGB</a> gelesen und akzeptiere sie.
                                 </label>
                             </div>
                             <div style="display: flex; align-items: flex-start; gap: 0.5rem;">
                                 <input type="checkbox" id="privacy-consent" name="privacy-consent" required style="margin-top: 0.25rem; cursor: pointer; flex-shrink: 0;">
                                 <label for="privacy-consent" style="font-size: 0.9rem; color: var(--text-color); cursor: pointer; line-height: 1.5;">
-                                    Ich habe die <a href="datenschutzerklaerung.html" target="_blank" style="color: var(--primary-color); text-decoration: underline;">Datenschutzerklärung</a> gelesen und stimme der Verarbeitung meiner Daten zur Bearbeitung meiner Anfrage zu.
+                                    Ich habe die <a href="/datenschutzerklaerung" target="_blank" style="color: var(--primary-color); text-decoration: underline;">Datenschutzerklärung</a> gelesen und stimme der Verarbeitung meiner Daten zur Bearbeitung meiner Anfrage zu.
                                 </label>
                             </div>
                         </div>
                         <button class="voucher-button service-buy-button" id="buyButton" data-amount="80" style="width: 100%; margin-top: 1rem; opacity: 0.5; cursor: not-allowed;" disabled>Jetzt kostenpflichtig bestellen</button>
-                        <a href="index.html#vouchers" class="back-link" style="display: block; text-align: center; margin-top: 1rem; color: var(--primary-color); text-decoration: none;">← Zurück zu allen Leistungen</a>
+                        <a href="/#vouchers" class="back-link" style="display: block; text-align: center; margin-top: 1rem; color: var(--primary-color); text-decoration: none;">← Zurück zu allen Leistungen</a>
                     </div>
                 </div>
             </div>
@@ -174,7 +174,7 @@
                     Bei Fragen zu dieser Dienstleistung oder wenn Sie zusätzliche Informationen benötigen, ermutigen wir Sie, sich an unser Team zu wenden. Wir stehen Ihnen zur Verfügung und beantworten gerne alle Ihre Fragen.
                 </p>
                 <div style="margin-top: 2rem;">
-                    <a href="index.html#contact" class="voucher-button" style="display: inline-block; text-decoration: none;">Kontaktieren Sie uns</a>
+                    <a href="/#contact" class="voucher-button" style="display: inline-block; text-decoration: none;">Kontaktieren Sie uns</a>
                 </div>
             </div>
         </div>
@@ -185,10 +185,10 @@
             <div class="footer-content">
                 <p>&copy; 2026 Travel Faden. Alle Rechte vorbehalten.</p>
                 <div class="footer-links">
-                    <a href="agb.html">AGB</a>
-                    <a href="impressum.html">Impressum</a>
-                    <a href="datenschutzerklaerung.html">Datenschutzerklärung</a>
-                    <a href="widerrufsbelehrung.html">Widerrufsbelehrung</a>
+                    <a href="/agb">AGB</a>
+                    <a href="/impressum">Impressum</a>
+                    <a href="/datenschutzerklaerung">Datenschutzerklärung</a>
+                    <a href="/widerrufsbelehrung">Widerrufsbelehrung</a>
                 </div>
             </div>
         </div>

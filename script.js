@@ -629,86 +629,86 @@ function initSearch() {
     // Search data - sekcje strony do wyszukiwania
     // Funkcja zwracająca dane wyszukiwania w zależności od aktualnej strony
     function getSearchData() {
-        const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-        const isHomePage = currentPage === 'index.html' || currentPage === '' || currentPage === '/';
+        const path = window.location.pathname.replace(/\/$/, '') || '/';
+        const isHomePage = path === '/' || path === '/index.html';
     
     const baseData = [
         {
             title: 'HOME',
             desc: 'Idealne Ferien für Sie - finden Sie das beste Reiseangebot',
-            link: isHomePage ? '#home' : 'index.html#home',
+            link: isHomePage ? '#home' : '/#home',
             keywords: 'home startseite ferien reise angebot'
         },
         {
             title: 'Über uns',
             desc: 'Lernen Sie Travel Faden kennen - Ihr vertrauensvoller Reisevermittler',
-            link: 'ueber-uns.html',
+            link: '/ueber-uns',
             keywords: 'über uns über die firma travel faden reisevermittler'
         },
         {
             title: 'So funktioniert es',
             desc: 'Erfahren Sie, wie das System der Dienstleistungen und Angebotssuche funktioniert',
-            link: isHomePage ? '#how-it-works' : 'index.html#how-it-works',
+            link: isHomePage ? '#how-it-works' : '/#how-it-works',
             keywords: 'so funktioniert es prozess dienstleistung schritte anleitung'
         },
         {
             title: 'Unsere Leistungen',
             desc: 'Kaufen Sie eine Dienstleistung und nutzen Sie sie für jedes Angebot',
-            link: isHomePage ? '#vouchers' : 'index.html#vouchers',
+            link: isHomePage ? '#vouchers' : '/#vouchers',
             keywords: 'dienstleistungen dienstleistung kaufen kauf euro'
         },
         {
             title: 'Tagesvorschlag',
             desc: 'Fertiges, sorgfältig ausgearbeitetes Reiseangebot basierend auf unserem Wissen',
-            link: 'reisevorschlag-des-tages.html',
+            link: '/reisevorschlag-des-tages',
             keywords: 'tagesvorschlag tagesangebot fertiges angebot reise'
         },
         {
             title: 'Reise auf Sie zugeschnitten',
             desc: 'Umfassendes Urlaubsangebot, das auf Ihre Bedürfnisse zugeschnitten ist',
-            link: 'individueller-reisevorschlag.html',
+            link: '/individueller-reisevorschlag',
             keywords: 'reise zugeschnitten ferien für sie individuelles angebot'
         },
         {
             title: 'Flüge',
             desc: 'Flugverbindungen zu erschwinglichen Preisen - schnell und ohne Stress',
-            link: 'flugvorschlaege.html',
+            link: '/flugvorschlaege',
             keywords: 'flüge flugzeug flugverbindungen flugtickets'
         },
         {
             title: 'Unterkünfte',
             desc: 'Finden Sie die perfekte Unterkunft am gewählten Ort',
-            link: 'unterkunftsvorschlaege.html',
+            link: '/unterkunftsvorschlaege',
             keywords: 'unterkünfte hotel apartment unterkunft übernachtung'
         },
         {
             title: 'Kurztrip-Vorschläge',
             desc: 'Kurze Reisen in die schönsten Städte Europas',
-            link: 'kurztrip-vorschlaege.html',
+            link: '/kurztrip-vorschlaege',
             keywords: 'city break kurze reisen städte europa wochenende'
         },
         {
             title: 'Anfrage stellen',
             desc: 'Haben Sie eine Dienstleistung? Stellen Sie eine Anfrage für ein Reiseangebot',
-            link: isHomePage ? '#request' : 'index.html#request',
+            link: isHomePage ? '#request' : '/#request',
             keywords: 'anfrage angebot formular reise ort datum'
         },
         {
             title: 'FAQ',
             desc: 'Finden Sie Antworten auf häufig gestellte Fragen',
-            link: 'faq.html',
+            link: '/faq',
             keywords: 'fragen antworten faq hilfe unterstützung'
         },
         {
             title: 'Kontakt',
             desc: 'Kontaktieren Sie uns - wir beantworten alle Ihre Fragen',
-            link: isHomePage ? '#contact' : 'index.html#contact',
+            link: isHomePage ? '#contact' : '/#contact',
             keywords: 'kontakt email nachricht kontaktformular'
         },
         {
             title: 'AGB',
             desc: 'Lesen Sie die Allgemeinen Geschäftsbedingungen der Travel Faden Dienstleistungen',
-            link: 'agb.html',
+            link: '/agb',
             keywords: 'agb regeln bedingungen nutzungsbedingungen'
         }
     ];
@@ -795,9 +795,8 @@ function initSearch() {
                     const link = item.getAttribute('data-link');
                     // Check if it's an anchor link or a page link
                     if (link.startsWith('#')) {
-                        // Anchor link - sprawdź czy jesteśmy na stronie głównej
-                        const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-                        const isHomePage = currentPage === 'index.html' || currentPage === '' || currentPage === '/';
+                        const path = window.location.pathname.replace(/\/$/, '') || '/';
+                        const isHomePage = path === '/' || path === '/index.html';
                         
                         if (isHomePage) {
                             const target = document.querySelector(link);
@@ -805,9 +804,10 @@ function initSearch() {
                                 target.scrollIntoView({ behavior: 'smooth' });
                             }
                         } else {
-                            // Przekieruj do strony głównej z sekcją
-                            window.location.href = 'index.html' + link;
+                            window.location.href = '/' + link;
                         }
+                    } else if (link.startsWith('/#')) {
+                        window.location.href = link;
                     } else {
                         // It's a page link, navigate to it
                         window.location.href = link;
