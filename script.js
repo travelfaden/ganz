@@ -93,19 +93,117 @@ window.addEventListener('scroll', () => {
 });
 
 // Stripe Configuration
-// WAŻNE: Zastąp 'YOUR_PUBLISHABLE_KEY' swoim kluczem publicznym z Stripe Dashboard
-// Dla testów możesz użyć: pk_test_51...
-// Dla produkcji użyj: pk_live_...
 let stripe = null;
-// Automatyczne wykrywanie URL backendu
-// Jeśli jesteś na Vercel, użyj aktualnego URL, w przeciwnym razie localhost
 let BACKEND_URL = typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1'
-  ? window.location.origin // Użyj aktualnego URL (Vercel)
-  : 'http://localhost:3000'; // Localhost dla testów lokalnych
+  ? window.location.origin
+  : 'http://localhost:3000';
 
-/**
- * Start Stripe Checkout (używane przez strony z formularzem: Flüge, Unterkünfte, City Break, itd.)
- */
+function collectPageConsents() {
+    const consentIds = ['withdrawal-consent', 'agb-consent', 'privacy-consent'];
+    const collected = [];
+
+    consentIds.forEach((id) => {
+        const input = document.getElementById(id);
+        if (!input) return;
+
+        const label = document.querySelector(`label[for="${id}"]`);
+        collected.push({
+            id,
+            label: label ? label.innerText.replace(/\s+/g, ' ').trim() : id,
+            checked: Boolean(input.checked),
+        });
+    });
+
+    return collected;
+}
+
+/** Reisevorschlag des Tages IDs (rid in URL) – auch in api/_lib/reisevorschlag-ids.js pflegen */
+const VALID_REISEVORSCHLAG_IDS = {
+    'TF-MALLORCA-12092026': { title: 'Mallorca' },
+    'TF-KRETA-12092026': { title: 'Kreta' },
+};
+
+function serializeTravelForm(form) {
+    const data = {};
+    const fd = new FormData(form);
+    for (const [key, value] of fd.entries()) {
+        if (Object.prototype.hasOwnProperty.call(data, key)) {
+            const prev = data[key];
+            data[key] = Array.isArray(prev) ? [...prev, value] : [prev, value];
+        } else {
+            data[key] = value;
+        }
+    }
+    return data;
+}
+
+window.travelFadenSerializeForm = serializeTravelForm;
+
+function readStoredTravelFormData() {
+    try {
+        const raw = sessionStorage.getItem('travelFormData');
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        return parsed && typeof parsed === 'object' ? parsed : null;
+    } catch (_) {
+        return null;
+    }
+}
+
+async function recordConsentAndCreateSession(amount, productName, consents, reisevorschlagId = null, formData = null) {
+    let consentId = null;
+
+    if (consents.length > 0) {
+        const consentResponse = await fetch(`${BACKEND_URL}/api/record-consent`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                amount,
+                currency: 'eur',
+                productName,
+                consents,
+                reisevorschlagId: reisevorschlagId || undefined,
+                formData: formData || undefined,
+            }),
+        });
+
+        if (!consentResponse.ok) {
+            let msg = 'Die Einwilligungen konnten nicht gespeichert werden.';
+            try {
+                const err = await consentResponse.json();
+                msg = err.message || err.error || msg;
+            } catch (_) {}
+            throw new Error(msg);
+        }
+
+        const consentData = await consentResponse.json();
+        consentId = consentData.consentId;
+    }
+
+    const sessionResponse = await fetch(`${BACKEND_URL}/api/create-checkout-session`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            amount,
+            currency: 'eur',
+            productName,
+            consentId,
+            reisevorschlagId: reisevorschlagId || undefined,
+        }),
+    });
+
+    if (!sessionResponse.ok) {
+        let msg = 'Checkout konnte nicht gestartet werden.';
+        try {
+            const err = await sessionResponse.json();
+            msg = err.message || err.error || msg;
+        } catch (_) {}
+        throw new Error(msg);
+    }
+
+    return sessionResponse.json();
+}
+
 window.travelFadenStartCheckout = async function (amount, productName, loadingButton) {
     if (!stripe) {
         alert('Zahlungssystem nicht geladen. Bitte die Seite neu laden.');
@@ -119,24 +217,16 @@ window.travelFadenStartCheckout = async function (amount, productName, loadingBu
         btn.style.opacity = '0.65';
     }
     try {
-        const response = await fetch(`${BACKEND_URL}/api/create-checkout-session`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                amount: amount,
-                currency: 'eur',
-                productName: productName || `Travel Faden - ${amount}€`,
-            }),
-        });
-        if (!response.ok) {
-            let msg = 'Checkout konnte nicht gestartet werden.';
-            try {
-                const err = await response.json();
-                msg = err.message || err.error || msg;
-            } catch (_) {}
-            throw new Error(msg);
-        }
-        const session = await response.json();
+        const consents = collectPageConsents();
+        const formData = readStoredTravelFormData();
+        const session = await recordConsentAndCreateSession(
+            amount,
+            productName || `Travel Faden - ${amount}€`,
+            consents,
+            null,
+            formData
+        );
+        sessionStorage.removeItem('travelFormData');
         const result = await stripe.redirectToCheckout({ sessionId: session.id });
         if (result.error) {
             throw new Error(result.error.message);
@@ -152,35 +242,29 @@ window.travelFadenStartCheckout = async function (amount, productName, loadingBu
     }
 };
 
-// Inicjalizacja Stripe tylko jeśli jest dostępny
 document.addEventListener('DOMContentLoaded', function() {
     if (typeof Stripe !== 'undefined') {
         try {
-            stripe = Stripe('pk_test_51SpXfA0v0hpavs4B6yGcGGwLa6z3vVlwhFAPRGNc46570wwT9OMUWirrYrf3y74nh9oBdC5lQKQB9C17UccPRIyc00cIywttqE'); // Klucz publiczny (publishable key) z Stripe
+            stripe = Stripe('pk_test_51SpXfA0v0hpavs4B6yGcGGwLa6z3vVlwhFAPRGNc46570wwT9OMUWirrYrf3y74nh9oBdC5lQKQB9C17UccPRIyc00cIywttqE', { locale: 'de' });
         } catch (e) {
             console.log('Stripe nie jest dostępny:', e);
         }
     }
 });
 
-// Voucher button handlers with Stripe integration
 document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.voucher-button').forEach(button => {
-    // Linki stylowane jak przycisk (np. Kontakt) — bez Stripe
     if (button.tagName === 'A') {
         return;
     }
-    // Pomiń przyciski z klasą service-buy-button (formularz + własny checkout)
     if (button.classList.contains('service-buy-button')) {
         return;
     }
     
     button.addEventListener('click', async (e) => {
-        // Pobierz przycisk i kwotę na początku
-        const button = e.target;
+        const button = e.currentTarget;
         const amount = button.getAttribute('data-amount');
         
-        // Sprawdź checkboxy z akceptacją (jeśli istnieją)
         const withdrawalConsent = document.getElementById('withdrawal-consent');
         const agbConsent = document.getElementById('agb-consent');
         
@@ -200,41 +284,30 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // Jeśli przycisk jest disabled, nie wykonuj akcji
         if (button.disabled) {
             e.preventDefault();
             e.stopPropagation();
             return;
         }
         
-        // Disable button and show loading
         button.disabled = true;
         const originalText = button.textContent;
-        button.textContent = 'Przetwarzanie...';
+        button.textContent = 'Wird geladen...';
         button.style.opacity = '0.6';
         
         try {
-            // Tworzenie Checkout Session przez backend
-            // WAŻNE: Musisz stworzyć endpoint na backendzie, który utworzy Stripe Checkout Session
-            const response = await fetch(`${BACKEND_URL}/api/create-checkout-session`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    amount: amount,
-                    currency: 'eur',
-                    productName: `Usługa Travel Faden - ${amount}€`,
-                }),
-            });
+            const consents = collectPageConsents();
+            const reiseId = button.getAttribute('data-reise-id');
+            const productName = reiseId
+                ? `Reisevorschlag des Tages - ${reiseId}`
+                : `Travel Faden – Dienstleistung ${amount}€`;
+            const session = await recordConsentAndCreateSession(
+                amount,
+                productName,
+                consents,
+                reiseId || null
+            );
 
-            if (!response.ok) {
-                throw new Error('Błąd podczas tworzenia sesji płatności');
-            }
-
-            const session = await response.json();
-
-            // Przekierowanie do Stripe Checkout
             const result = await stripe.redirectToCheckout({
                 sessionId: session.id
             });
@@ -243,10 +316,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 throw new Error(result.error.message);
             }
         } catch (error) {
-            console.error('Błąd:', error);
-            alert(`Wystąpił błąd: ${error.message}\n\nUpewnij się, że backend jest skonfigurowany i działa.`);
+            console.error('Checkout error:', error);
+            alert(`Fehler: ${error.message}\n\nBitte versuchen Sie es erneut oder laden Sie die Seite neu.`);
             
-            // Re-enable button
             button.disabled = false;
             button.textContent = originalText;
             button.style.opacity = '1';
