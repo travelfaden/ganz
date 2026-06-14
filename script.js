@@ -380,15 +380,76 @@ if (contactForm) {
         });
     });
 
-    contactForm.addEventListener('submit', (e) => {
+    function showContactFormStatus(message, type) {
+        const statusEl = document.getElementById('contactFormStatus');
+        if (!statusEl) return;
+        statusEl.textContent = message;
+        statusEl.className = `contact-form-status contact-form-status--${type}`;
+        statusEl.hidden = false;
+    }
+
+    function clearContactFormStatus() {
+        const statusEl = document.getElementById('contactFormStatus');
+        if (!statusEl) return;
+        statusEl.textContent = '';
+        statusEl.className = 'contact-form-status';
+        statusEl.hidden = true;
+    }
+
+    contactForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        clearContactFormStatus();
         if (!contactForm.checkValidity()) {
-            e.preventDefault();
             contactForm.reportValidity();
             return;
         }
-        e.preventDefault();
-        alert('Vielen Dank fuer Ihre Nachricht! Wir werden uns in Kuerze bei Ihnen melden.');
-        contactForm.reset();
+
+        const nameInput = contactForm.querySelector('#contact-name');
+        const emailInput = contactForm.querySelector('#contact-email');
+        const messageInput = contactForm.querySelector('#contact-message');
+        const submitBtn = contactForm.querySelector('.submit-button');
+        const originalText = submitBtn ? submitBtn.textContent : '';
+
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Wird gesendet...';
+            submitBtn.style.opacity = '0.65';
+        }
+
+        try {
+            const response = await fetch(`${BACKEND_URL}/api/send-contact-email`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name: nameInput?.value.trim(),
+                    email: emailInput?.value.trim(),
+                    message: messageInput?.value.trim(),
+                }),
+            });
+
+            if (!response.ok) {
+                let msg = 'Die Nachricht konnte nicht gesendet werden.';
+                try {
+                    const err = await response.json();
+                    msg = err.error || err.message || msg;
+                } catch (_) {}
+                throw new Error(msg);
+            }
+
+            contactForm.reset();
+            showContactFormStatus(
+                'Vielen Dank für Ihre Nachricht! Wir melden uns in Kürze bei Ihnen.',
+                'success'
+            );
+        } catch (error) {
+            showContactFormStatus(`Fehler: ${error.message}`, 'error');
+        } finally {
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+                submitBtn.style.opacity = '1';
+            }
+        }
     });
 }
 
