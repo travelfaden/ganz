@@ -2223,8 +2223,11 @@ body {
     }
 
     .section:has(.regulamin) > .container > h1 {
-        font-size: clamp(1.75rem, 7vw, 2.5rem);
-        margin-bottom: 1.5rem;
+        font-size: clamp(1.25rem, 4.8vw, 1.85rem) !important;
+        margin-bottom: 1.5rem !important;
+        line-height: 1.2;
+        padding: 0 0.25rem;
+        hyphens: auto;
     }
     
     .regulamin h2 {
