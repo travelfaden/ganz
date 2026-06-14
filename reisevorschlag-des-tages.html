@@ -201,7 +201,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const params = new URLSearchParams(window.location.search);
-            const rid = (params.get('rid') || '').trim().toUpperCase();
+            const rid = (params.get('rid') || params.get('id') || '').trim().toUpperCase();
             const blockedPanel = document.getElementById('offer-blocked-panel');
             const checkoutPanel = document.getElementById('offer-checkout-panel');
             const ridValueEl = document.getElementById('offer-rid-value');
