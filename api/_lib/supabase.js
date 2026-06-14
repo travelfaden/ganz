@@ -1,8 +1,41 @@
-const SUPABASE_URL = process.env.SUPABASE_URL;
-const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+function getSupabaseUrl() {
+  const raw = (process.env.SUPABASE_URL || '').trim();
+  if (!raw) return '';
+  if (!/^https?:\/\//i.test(raw)) {
+    return `https://${raw.replace(/^\/+/, '')}`;
+  }
+  return raw.replace(/\/+$/, '');
+}
+
+const SUPABASE_URL = getSupabaseUrl();
+const SUPABASE_SERVICE_ROLE_KEY = (process.env.SUPABASE_SERVICE_ROLE_KEY || '').trim();
 
 function isSupabaseConfigured() {
-  return Boolean(SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY);
+  return Boolean(
+    SUPABASE_URL &&
+    SUPABASE_SERVICE_ROLE_KEY &&
+    SUPABASE_URL.includes('.supabase.co')
+  );
+}
+
+async function supabaseFetch(path, options = {}, timeoutMs = 15000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(`${SUPABASE_URL}${path}`, {
+      ...options,
+      signal: controller.signal,
+    });
+  } catch (error) {
+    if (error.name === 'AbortError') {
+      throw new Error('Supabase timeout – Projekt prawdopodobnie wstrzymany lub URL jest nieprawidłowy');
+    }
+    throw new Error(
+      error.cause?.message || error.message || 'Supabase-Verbindung fehlgeschlagen'
+    );
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 function supabaseHeaders(prefer = 'return=representation') {
@@ -15,7 +48,7 @@ function supabaseHeaders(prefer = 'return=representation') {
 }
 
 async function insertOrderConsent(row) {
-  const response = await fetch(`${SUPABASE_URL}/rest/v1/order_consents`, {
+  const response = await supabaseFetch('/rest/v1/order_consents', {
     method: 'POST',
     headers: supabaseHeaders(),
     body: JSON.stringify(row),
@@ -37,8 +70,8 @@ function formatOrderNumber(sequenceValue) {
 }
 
 async function getOrderConsentByConsentId(consentId) {
-  const response = await fetch(
-    `${SUPABASE_URL}/rest/v1/order_consents?consent_id=eq.${encodeURIComponent(consentId)}&select=*&limit=1`,
+  const response = await supabaseFetch(
+    `/rest/v1/order_consents?consent_id=eq.${encodeURIComponent(consentId)}&select=*&limit=1`,
     {
       method: 'GET',
       headers: supabaseHeaders(),
@@ -55,7 +88,7 @@ async function getOrderConsentByConsentId(consentId) {
 }
 
 async function getNextOrderNumber() {
-  const response = await fetch(`${SUPABASE_URL}/rest/v1/rpc/next_order_number`, {
+  const response = await supabaseFetch('/rest/v1/rpc/next_order_number', {
     method: 'POST',
     headers: supabaseHeaders(),
     body: '{}',
@@ -71,8 +104,8 @@ async function getNextOrderNumber() {
 }
 
 async function getOrderConsentByStripeSessionId(stripeSessionId) {
-  const response = await fetch(
-    `${SUPABASE_URL}/rest/v1/order_consents?stripe_session_id=eq.${encodeURIComponent(stripeSessionId)}&select=*&limit=1`,
+  const response = await supabaseFetch(
+    `/rest/v1/order_consents?stripe_session_id=eq.${encodeURIComponent(stripeSessionId)}&select=*&limit=1`,
     {
       method: 'GET',
       headers: supabaseHeaders(),
@@ -89,8 +122,8 @@ async function getOrderConsentByStripeSessionId(stripeSessionId) {
 }
 
 async function updateOrderConsentByConsentId(consentId, patch) {
-  const response = await fetch(
-    `${SUPABASE_URL}/rest/v1/order_consents?consent_id=eq.${encodeURIComponent(consentId)}`,
+  const response = await supabaseFetch(
+    `/rest/v1/order_consents?consent_id=eq.${encodeURIComponent(consentId)}`,
     {
       method: 'PATCH',
       headers: supabaseHeaders(),
@@ -145,4 +178,23 @@ module.exports = {
   generateConsentId,
   getClientIp,
   setCors,
+  getSupabaseUrl,
+  async testSupabaseConnection() {
+    if (!isSupabaseConfigured()) {
+      return { ok: false, error: 'not_configured' };
+    }
+    try {
+      const response = await supabaseFetch('/rest/v1/order_consents?select=consent_id&limit=1', {
+        method: 'GET',
+        headers: supabaseHeaders(),
+      });
+      if (!response.ok) {
+        const text = await response.text();
+        return { ok: false, error: `http_${response.status}`, detail: text.slice(0, 200) };
+      }
+      return { ok: true };
+    } catch (error) {
+      return { ok: false, error: error.message };
+    }
+  },
 };

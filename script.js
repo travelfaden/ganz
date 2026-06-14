@@ -154,30 +154,34 @@ async function recordConsentAndCreateSession(amount, productName, consents, reis
     let consentId = null;
 
     if (consents.length > 0) {
-        const consentResponse = await fetch(`${BACKEND_URL}/api/record-consent`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                amount,
-                currency: 'eur',
-                productName,
-                consents,
-                reisevorschlagId: reisevorschlagId || undefined,
-                formData: formData || undefined,
-            }),
-        });
+        try {
+            const consentResponse = await fetch(`${BACKEND_URL}/api/record-consent`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    amount,
+                    currency: 'eur',
+                    productName,
+                    consents,
+                    reisevorschlagId: reisevorschlagId || undefined,
+                    formData: formData || undefined,
+                }),
+            });
 
-        if (!consentResponse.ok) {
-            let msg = 'Die Einwilligungen konnten nicht gespeichert werden.';
-            try {
-                const err = await consentResponse.json();
-                msg = err.message || err.error || msg;
-            } catch (_) {}
-            throw new Error(msg);
+            if (consentResponse.ok) {
+                const consentData = await consentResponse.json();
+                consentId = consentData.consentId;
+            } else {
+                let msg = 'Die Einwilligungen konnten nicht gespeichert werden.';
+                try {
+                    const err = await consentResponse.json();
+                    msg = err.message || err.error || msg;
+                } catch (_) {}
+                console.warn('record-consent failed, continuing checkout:', msg);
+            }
+        } catch (error) {
+            console.warn('record-consent unreachable, continuing checkout:', error.message);
         }
-
-        const consentData = await consentResponse.json();
-        consentId = consentData.consentId;
     }
 
     const sessionResponse = await fetch(`${BACKEND_URL}/api/create-checkout-session`, {
