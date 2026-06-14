@@ -488,6 +488,9 @@ document.querySelectorAll('.service-card').forEach((card, index) => {
 
 // Observe section headings
 document.querySelectorAll('.section h2').forEach(heading => {
+    if (heading.closest('.regulamin, .faq-container')) {
+        return;
+    }
     heading.style.opacity = '0';
     heading.style.transform = 'translateY(-20px)';
     heading.style.transition = 'all 0.8s ease';
@@ -505,15 +508,19 @@ window.addEventListener('scroll', () => {
 
 // Add smooth fade-in for sections
 document.querySelectorAll('.section').forEach(section => {
+    if (section.querySelector('.regulamin, .faq-container')) {
+        return;
+    }
     section.style.opacity = '0';
     section.style.transition = 'opacity 0.8s ease';
     const sectionObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.style.opacity = '1';
+                sectionObserver.unobserve(entry.target);
             }
         });
-    }, { threshold: 0.1 });
+    }, { threshold: 0 });
     sectionObserver.observe(section);
 });
 

@@ -2179,10 +2179,25 @@ body {
     margin-bottom: 1rem;
 }
 
-.regulamin ul {
+.regulamin ul,
+.regulamin ol {
     margin: 1rem 0;
     padding-left: 1.5rem;
+}
+
+.regulamin ul {
     list-style-type: disc;
+}
+
+.regulamin ol {
+    list-style-type: decimal;
+}
+
+.regulamin h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin: 1.25rem 0 0.75rem;
 }
 
 .regulamin li {
@@ -2200,6 +2215,16 @@ body {
 @media (max-width: 768px) {
     .regulamin {
         padding: 1.5rem;
+    }
+
+    .section:has(.regulamin) {
+        margin-top: 0 !important;
+        padding-top: 5rem;
+    }
+
+    .section:has(.regulamin) > .container > h1 {
+        font-size: clamp(1.75rem, 7vw, 2.5rem);
+        margin-bottom: 1.5rem;
     }
     
     .regulamin h2 {
