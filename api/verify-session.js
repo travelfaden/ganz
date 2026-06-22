@@ -5,6 +5,7 @@ const {
   getOrderConsentByStripeSessionId,
   setCors,
 } = require('./_lib/supabase');
+const { fulfillCheckoutSession } = require('./_lib/fulfill-checkout');
 
 module.exports = async (req, res) => {
   setCors(res);
@@ -36,13 +37,27 @@ module.exports = async (req, res) => {
     let reisevorschlagId = session.metadata?.reisevorschlag_id || null;
     let productName = null;
 
+    if (paid && isSupabaseConfigured()) {
+      try {
+        const fulfillment = await fulfillCheckoutSession(session.id);
+        if (fulfillment.voucherNumber) {
+          orderNumber = fulfillment.voucherNumber;
+        }
+        if (fulfillment.reisevorschlagId) {
+          reisevorschlagId = fulfillment.reisevorschlagId;
+        }
+      } catch (fulfillError) {
+        console.error('fulfill-checkout from verify-session:', fulfillError.message);
+      }
+    }
+
     if (isSupabaseConfigured()) {
       let order = await getOrderConsentByStripeSessionId(session.id);
       if (!order && session.metadata?.consent_id) {
         order = await getOrderConsentByConsentId(session.metadata.consent_id);
       }
       if (order) {
-        orderNumber = order.voucher_number || null;
+        orderNumber = order.voucher_number || orderNumber;
         reisevorschlagId = reisevorschlagId || order.reisevorschlag_id || null;
         productName = order.product_name || null;
       }
