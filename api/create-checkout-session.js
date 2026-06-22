@@ -1,19 +1,18 @@
 // Vercel Serverless Function - Tworzenie Stripe Checkout Session
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const { validateCheckoutPrice } = require('./_lib/pricing');
+
+const { applyCors, handlePreflight, enforceCors, resolveRequestOrigin } = require('./_lib/cors');
 
 module.exports = async (req, res) => {
-  // CORS headers
-  res.setHeader('Access-Control-Allow-Credentials', true);
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
-  res.setHeader(
-    'Access-Control-Allow-Headers',
-    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
-  );
+  applyCors(req, res, { methods: 'POST,OPTIONS' });
 
-  // Handle preflight
   if (req.method === 'OPTIONS') {
-    res.status(200).end();
+    handlePreflight(req, res, { methods: 'POST,OPTIONS' });
+    return;
+  }
+
+  if (!enforceCors(req, res)) {
     return;
   }
 
@@ -30,15 +29,22 @@ module.exports = async (req, res) => {
       return res.status(400).json({ error: 'Betrag ist erforderlich' });
     }
 
+    const priceCheck = validateCheckoutPrice(amount, productName, reisevorschlagId);
+    if (!priceCheck.ok) {
+      return res.status(400).json({ error: priceCheck.error });
+    }
+    const validatedAmount = priceCheck.amount;
+
+    if (currency !== 'eur') {
+      return res.status(400).json({ error: 'Nur EUR wird unterstützt' });
+    }
+
     if (!process.env.STRIPE_SECRET_KEY) {
       console.error('Błąd: Brak klucza Stripe w zmiennych środowiskowych');
       return res.status(500).json({ error: 'Stripe ist nicht konfiguriert' });
     }
 
-    // Pobierz origin z nagłówka lub użyj domyślnego
-    const origin = req.headers.origin || req.headers.host 
-      ? `https://${req.headers.host}` 
-      : 'http://localhost:3000';
+    const origin = resolveRequestOrigin(req);
 
     const checkoutDisplayName = (process.env.CHECKOUT_DISPLAY_NAME || 'Travel Faden').trim();
 
@@ -59,12 +65,12 @@ module.exports = async (req, res) => {
           price_data: {
             currency: currency,
             product_data: {
-              name: productName || `Reisevorschlag des Tages - ${amount}€`,
+              name: productName || `Reisevorschlag des Tages - ${validatedAmount}€`,
               description: reisevorschlagId
                 ? `Reisevorschlag des Tages ID: ${reisevorschlagId}`
-                : `Reisevorschlag des Tages – ${amount}€`,
+                : `Reisevorschlag des Tages – ${validatedAmount}€`,
             },
-            unit_amount: amount * 100, // Stripe używa centów
+            unit_amount: validatedAmount * 100,
           },
           quantity: 1,
         },
@@ -73,7 +79,7 @@ module.exports = async (req, res) => {
       success_url: `${origin}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/cancel`,
       metadata: {
-        voucher_amount: amount.toString(),
+        voucher_amount: validatedAmount.toString(),
         voucher_currency: currency,
         ...(consentId ? { consent_id: String(consentId) } : {}),
         ...(reisevorschlagId ? { reisevorschlag_id: String(reisevorschlagId) } : {}),

@@ -17,6 +17,7 @@ const FIELD_LABELS = {
   tripDuration: 'Reisedauer',
   adults: 'Anzahl der Erwachsenen',
   children: 'Anzahl der Kinder',
+  bookedPersonCount: 'Gewählte Personenanzahl (Zusammenfassung)',
   childrenAge: 'Alter des Kindes/der Kinder',
   budget: 'Budget (pro Person, EUR)',
   departureLocation: 'Bevorzugter Abflughafen',

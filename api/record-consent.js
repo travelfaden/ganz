@@ -3,19 +3,24 @@ const {
   insertOrderConsent,
   generateConsentId,
   getClientIp,
-  setCors,
 } = require('./_lib/supabase');
+const { applyCors, handlePreflight, enforceCors } = require('./_lib/cors');
 const {
   normalizeReisevorschlagId,
   isValidReisevorschlagId,
 } = require('./_lib/reisevorschlag-ids');
 const { sanitizeFormData } = require('./_lib/form-pdf');
+const { validateCheckoutPrice, validateFormTravelersAgainstBooking } = require('./_lib/pricing');
 
 module.exports = async (req, res) => {
-  setCors(res);
+  applyCors(req, res, { methods: 'POST,OPTIONS' });
 
   if (req.method === 'OPTIONS') {
-    res.status(200).end();
+    handlePreflight(req, res, { methods: 'POST,OPTIONS' });
+    return;
+  }
+
+  if (!enforceCors(req, res)) {
     return;
   }
 
@@ -40,20 +45,25 @@ module.exports = async (req, res) => {
       return res.status(400).json({ error: 'Alle erforderlichen Einwilligungen müssen bestätigt werden' });
     }
 
+    const normalizedRid = reisevorschlagId ? normalizeReisevorschlagId(reisevorschlagId) : null;
+    const priceCheck = validateCheckoutPrice(amount, productName, normalizedRid);
+    if (!priceCheck.ok) {
+      return res.status(400).json({ error: priceCheck.error });
+    }
+
     const consentId = generateConsentId();
 
     const row = {
       consent_id: consentId,
       ip_address: getClientIp(req),
       user_agent: req.headers['user-agent'] || null,
-      amount: Number(amount),
+      amount: priceCheck.amount,
       currency,
       product_name: productName || null,
       consents,
       payment_status: 'pending',
     };
-    const isRdT = /Reisevorschlag des Tages/i.test(productName || '');
-    const normalizedRid = reisevorschlagId ? normalizeReisevorschlagId(reisevorschlagId) : null;
+    const isRdT = /Reisevorschlag des Tages/i.test(productName || '') || Boolean(normalizedRid);
 
     if (isRdT) {
       if (!normalizedRid || !isValidReisevorschlagId(normalizedRid)) {
@@ -73,6 +83,10 @@ module.exports = async (req, res) => {
 
     const cleanedFormData = sanitizeFormData(formData);
     if (cleanedFormData && !isRdT) {
+      const travelerCheck = validateFormTravelersAgainstBooking(cleanedFormData);
+      if (!travelerCheck.ok) {
+        return res.status(400).json({ error: travelerCheck.error });
+      }
       row.form_data = cleanedFormData;
     }
 

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OG-Bild Vorschau | Travel Faden</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" href="images/logo.png" type="image/png">
+    <style>
+        :root {
+            --bg: #f1f5f9;
+            --card: #ffffff;
+            --text: #0f172a;
+            --muted: #64748b;
+            --line: #e2e8f0;
+            --blue: #2563eb;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+        }
+
+        .wrap {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2rem 1.25rem 3rem;
+        }
+
+        h1 {
+            margin: 0 0 0.5rem;
+            font-size: 1.75rem;
+        }
+
+        .lead {
+            margin: 0 0 2rem;
+            color: var(--muted);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+        }
+
+        .card h2 {
+            margin: 0;
+            padding: 1rem 1.1rem 0.75rem;
+            font-size: 1rem;
+        }
+
+        .preview-full {
+            margin-bottom: 1.25rem;
+        }
+
+        .preview-full img {
+            display: block;
+            width: 100%;
+            height: auto;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+        }
+
+        .meta {
+            padding: 0 1.1rem 1rem;
+            font-size: 0.9rem;
+            color: var(--muted);
+        }
+
+        /* WhatsApp-style */
+        .wa-bubble {
+            margin: 0 1rem 1rem;
+            background: #dcf8c6;
+            border-radius: 10px 10px 10px 2px;
+            overflow: hidden;
+            max-width: 320px;
+        }
+
+        .wa-bubble img {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        .wa-text {
+            padding: 0.55rem 0.7rem 0.7rem;
+            font-size: 0.82rem;
+        }
+
+        .wa-link {
+            color: #1d4ed8;
+            word-break: break-all;
+        }
+
+        /* Facebook / LinkedIn style */
+        .social-card {
+            margin: 0 1rem 1rem;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .social-card img {
+            display: block;
+            width: 100%;
+            aspect-ratio: 1200 / 630;
+            object-fit: cover;
+            background: #dbeafe;
+        }
+
+        .social-body {
+            padding: 0.75rem 0.85rem 0.9rem;
+            background: #f8fafc;
+        }
+
+        .social-domain {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            color: var(--muted);
+            letter-spacing: 0.04em;
+        }
+
+        .social-title {
+            margin-top: 0.2rem;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .social-desc {
+            margin-top: 0.25rem;
+            font-size: 0.82rem;
+            color: var(--muted);
+        }
+
+        .note {
+            margin-top: 1.5rem;
+            padding: 1rem 1.1rem;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 12px;
+            font-size: 0.92rem;
+        }
+
+        .note strong { color: var(--blue); }
+
+        a.back {
+            display: inline-block;
+            margin-top: 1.25rem;
+            color: var(--blue);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        a.back:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <h1>Vorschau: OG-Bild für Social Media</h1>
+        <p class="lead">So kann der Link <strong>travelfaden.com</strong> in WhatsApp, Facebook und LinkedIn aussehen (nach dem Deploy).</p>
+
+        <div class="preview-full card">
+            <h2>Volles OG-Bild (1200 × 630 px)</h2>
+            <div style="padding: 0 1.1rem 1.1rem;">
+                <img src="images/og-image.png" alt="Travel Faden OG-Bild Vorschau" width="1200" height="630">
+            </div>
+            <div class="meta">Datei: <code>images/og-image.png</code> · Gradient, biała ikona, TravelFaden</div>
+        </div>
+
+        <div class="grid">
+            <section class="card">
+                <h2>WhatsApp</h2>
+                <div class="wa-bubble">
+                    <img src="images/og-image.png" alt="">
+                    <div class="wa-text">
+                        <div class="wa-link">travelfaden.com</div>
+                        TravelFaden – Reisevorschläge &amp; Urlaubsplanung
+                    </div>
+                </div>
+            </section>
+
+            <section class="card">
+                <h2>Facebook / LinkedIn</h2>
+                <div class="social-card">
+                    <img src="images/og-image.png" alt="">
+                    <div class="social-body">
+                        <div class="social-domain">travelfaden.com</div>
+                        <div class="social-title">TravelFaden – Reisevorschläge &amp; Urlaubsplanung</div>
+                        <div class="social-desc">Reisevorschläge des Tages, individuelle Urlaubsplanung, Flug- und Unterkunftsvorschläge.</div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div class="note">
+            <strong>Hinweis:</strong> Favicon und Logo in der Navigation bleiben <code>images/logo.png</code>.
+            Nur die Social-Vorschau nutzt <code>images/og-image.png</code> (breites Format 1200×630).
+        </div>
+
+        <a class="back" href="index.html">← Zurück zur Startseite</a>
+    </div>
+</body>
+</html>

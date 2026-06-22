@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/favicon.svg">
+    <link rel="icon" href="images/logo.png" type="image/png">
+    <link rel="apple-touch-icon" href="images/logo.png">
     <title>Widerrufsbelehrung | Travel Faden</title>
     <meta name="description" content="Widerrufsbelehrung von Travel Faden zu kostenpflichtigen Recherche- und Informationsdienstleistungen.">
     <link rel="canonical" href="https://travelfaden.com/widerrufsbelehrung">
@@ -14,37 +14,30 @@
     <meta property="og:description" content="Widerrufsbelehrung von Travel Faden zu kostenpflichtigen Recherche- und Informationsdienstleistungen.">
     <meta property="og:url" content="https://travelfaden.com/widerrufsbelehrung">
     <meta property="og:locale" content="de_DE">
-    <meta name="twitter:card" content="summary">
+    <meta property="og:image" content="https://travelfaden.com/images/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Travel Faden – Reisevorschläge &amp; Urlaubsplanung">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://travelfaden.com/images/og-image.png">
     <meta name="twitter:title" content="Widerrufsbelehrung | Travel Faden">
     <meta name="twitter:description" content="Widerrufsbelehrung von Travel Faden zu kostenpflichtigen Recherche- und Informationsdienstleistungen.">
 
 
 <link rel="stylesheet" href="styles.css">
-    <script src="https://js.stripe.com/v3/"></script>
 </head>
 <body>
     <nav class="navbar">
         <div class="container">
             <div class="logo">
                 <a href="/" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
-                    <svg class="logo-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="50" cy="50" r="40" fill="none" stroke="url(#logoGradient)" stroke-width="3"/>
-                        <circle cx="50" cy="50" r="35" fill="none" stroke="url(#logoGradient)" stroke-width="2" opacity="0.6"/>
-                        <line x1="15" y1="30" x2="85" y2="30" stroke="url(#logoGradient)" stroke-width="1.5"/>
-                        <line x1="15" y1="50" x2="85" y2="50" stroke="url(#logoGradient)" stroke-width="1.5"/>
-                        <line x1="15" y1="70" x2="85" y2="70" stroke="url(#logoGradient)" stroke-width="1.5"/>
-                        <path d="M 50 10 Q 50 30, 50 50 Q 50 70, 50 90" fill="none" stroke="url(#logoGradient)" stroke-width="1.5"/>
-                        <g transform="translate(50, 50) rotate(45)">
-                            <path d="M -15 -5 L 15 -5 L 10 0 L 15 5 L -15 5 L -10 0 Z" fill="url(#logoGradient)"/>
-                            <circle cx="0" cy="0" r="3" fill="url(#logoGradient)"/>
-                        </g>
-                        <defs>
-                            <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" style="stop-color:#2563eb;stop-opacity:1" />
-                                <stop offset="100%" style="stop-color:#0ea5e9;stop-opacity:1" />
-                            </linearGradient>
-                        </defs>
-                    </svg>
+                                        <img
+                        src="images/logo.png"
+                        alt=""
+                        class="logo-icon"
+                        width="40"
+                        height="40"
+                    >
                     <span class="logo-text">Travel<span class="logo-gap"></span>Faden</span>
                 </a>
             </div>
@@ -103,16 +96,55 @@
                         <h2>Widerrufsrecht</h2>
                         <p>Verbraucher haben das Recht, binnen vierzehn Tagen ohne Angabe von Gründen diesen Vertrag zu widerrufen.</p>
                         <p>Die Widerrufsfrist beträgt 14 Tage ab dem Tag des Vertragsschlusses.</p>
-                        <p>Um Ihr Widerrufsrecht auszuüben, müssen Sie uns</p>
-                        <p style="margin-left: 1.5rem;">
-                            <strong>Travel Faden</strong><br>
-                            <strong>Bartosz Nagiec</strong><br>
-                            <strong>Pönitzer Weg 2a</strong><br>
-                            <strong>23684 Scharbeutz</strong><br>
-                            <strong>Deutschland</strong><br>
-                            E-Mail: <a href="mailto:travelfaden@gmail.com">travelfaden@gmail.com</a>
-                        </p>
-                        <p>mittels einer eindeutigen Erklärung (z. B. per E-Mail) über Ihren Entschluss, diesen Vertrag zu widerrufen, informieren.</p>
+                    </section>
+
+                    <section>
+                        <h2>Widerruf ausüben</h2>
+                        <p>Um Ihr Widerrufsrecht auszuüben, informieren Sie uns mittels einer eindeutigen Erklärung über Ihren Entschluss, diesen Vertrag zu widerrufen. Dafür genügt zum Beispiel:</p>
+                        <ul class="widerruf-options">
+                            <li>eine formlose E-Mail</li>
+                            <li>ein Schreiben per Post</li>
+                            <li>unser Muster-Widerrufsformular (PDF) — die Nutzung ist freiwillig</li>
+                        </ul>
+
+                        <div class="widerruf-panel">
+                            <div class="widerruf-card widerruf-contact">
+                                <h3>
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                        <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    Kontakt für Ihren Widerruf
+                                </h3>
+                                <address>
+                                    <strong>Travel Faden</strong><br>
+                                    Bartosz Nagiec<br>
+                                    Pönitzer Weg 2a<br>
+                                    23684 Scharbeutz<br>
+                                    Deutschland<br>
+                                    <a href="mailto:travelfaden@gmail.com">travelfaden@gmail.com</a><br>
+                                    <a href="tel:+491723611639">+49 172 3611639</a>
+                                </address>
+                            </div>
+
+                            <div class="widerruf-card widerruf-pdf-card">
+                                <div>
+                                    <h3>
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                        Muster-Widerrufsformular
+                                    </h3>
+                                    <p>Laden Sie das Formular herunter, füllen Sie es aus und senden Sie es per E-Mail oder Post an die angegebene Adresse zurück.</p>
+                                </div>
+                                <a class="widerruf-pdf-btn" href="documents/muster-widerrufsformular.pdf" download="Muster-Widerrufsformular-Travel-Faden.pdf">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                        <path d="M12 3v12m0 0l4-4m-4 4l-4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    PDF herunterladen
+                                </a>
+                            </div>
+                        </div>
                     </section>
 
                     <section>

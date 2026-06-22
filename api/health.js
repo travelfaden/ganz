@@ -1,10 +1,15 @@
-const { isSupabaseConfigured, testSupabaseConnection, setCors } = require('./_lib/supabase');
+const { isSupabaseConfigured, testSupabaseConnection } = require('./_lib/supabase');
+const { applyCors, handlePreflight, enforceCors } = require('./_lib/cors');
 
 module.exports = async (req, res) => {
-  setCors(res);
+  applyCors(req, res, { methods: 'GET,OPTIONS' });
 
   if (req.method === 'OPTIONS') {
-    res.status(200).end();
+    handlePreflight(req, res, { methods: 'GET,OPTIONS' });
+    return;
+  }
+
+  if (!enforceCors(req, res)) {
     return;
   }
 

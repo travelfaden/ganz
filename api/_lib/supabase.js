@@ -157,16 +157,6 @@ function getClientIp(req) {
   return req.headers['x-real-ip'] || req.socket?.remoteAddress || null;
 }
 
-function setCors(res) {
-  res.setHeader('Access-Control-Allow-Credentials', true);
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,POST,PATCH');
-  res.setHeader(
-    'Access-Control-Allow-Headers',
-    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
-  );
-}
-
 module.exports = {
   isSupabaseConfigured,
   insertOrderConsent,
@@ -177,7 +167,6 @@ module.exports = {
   updateOrderConsentByConsentId,
   generateConsentId,
   getClientIp,
-  setCors,
   getSupabaseUrl,
   async testSupabaseConnection() {
     if (!isSupabaseConfigured()) {

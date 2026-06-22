@@ -78,6 +78,8 @@ body {
     height: 40px;
     flex-shrink: 0;
     animation: logoFloat 3s ease-in-out infinite;
+    border-radius: 10px;
+    object-fit: cover;
 }
 
 .logo-text {
@@ -1895,6 +1897,111 @@ body {
     font-weight: 600;
 }
 
+/* Widerrufsbelehrung – Ausübung & Musterformular */
+.widerruf-panel {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    margin-top: 1.5rem;
+}
+
+.widerruf-card {
+    background: linear-gradient(145deg, #f8fafc 0%, #f1f5f9 100%);
+    border: 1px solid rgba(37, 99, 235, 0.12);
+    border-radius: 12px;
+    padding: 1.5rem;
+}
+
+.widerruf-card h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin: 0 0 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.widerruf-card h3 svg {
+    flex-shrink: 0;
+    color: var(--primary-color);
+}
+
+.widerruf-contact address {
+    font-style: normal;
+    font-size: 0.95rem;
+    line-height: 1.75;
+    color: var(--text-color);
+}
+
+.widerruf-contact address a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.widerruf-contact address a:hover {
+    text-decoration: underline;
+}
+
+.widerruf-pdf-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.widerruf-pdf-card p {
+    font-size: 0.95rem;
+    color: var(--text-light);
+    margin-bottom: 1.25rem;
+}
+
+.widerruf-pdf-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    text-decoration: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    align-self: flex-start;
+}
+
+.widerruf-pdf-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+    color: white;
+}
+
+.widerruf-options {
+    margin: 1rem 0 0;
+    padding-left: 1.25rem;
+}
+
+.widerruf-options li {
+    margin-bottom: 0.35rem;
+}
+
+.widerruf-options li:last-child {
+    margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+    .widerruf-panel {
+        grid-template-columns: 1fr;
+    }
+
+    .widerruf-pdf-btn {
+        width: 100%;
+        align-self: stretch;
+    }
+}
+
 @media (max-width: 768px) {
     .regulamin {
         padding: 1.5rem;
@@ -2276,6 +2383,14 @@ body {
 .form-group textarea {
     resize: vertical;
     min-height: 100px;
+}
+
+.traveler-count-error {
+    margin: -0.25rem 0 1rem;
+    color: #dc2626;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    font-weight: 500;
 }
 
 .checkbox-label {

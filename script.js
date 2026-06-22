@@ -240,6 +240,108 @@ function serializeTravelForm(form) {
 
 window.travelFadenSerializeForm = serializeTravelForm;
 
+function validateTravelerCountForBooking(personCount, adults, children) {
+    const booked = parseInt(personCount, 10);
+    const adultsNum = parseInt(adults, 10);
+    const childrenNum = parseInt(children, 10);
+    const personLabel = booked === 1 ? 'Person' : 'Personen';
+
+    if (!Number.isFinite(booked) || booked < 1 || booked > 8) {
+        return { ok: false, message: 'Ungültige Personenanzahl.' };
+    }
+    if (!Number.isFinite(adultsNum) || adultsNum < 0) {
+        return { ok: false, message: 'Bitte geben Sie eine gültige Anzahl der Erwachsenen an.' };
+    }
+    if (!Number.isFinite(childrenNum) || childrenNum < 0) {
+        return { ok: false, message: 'Bitte geben Sie eine gültige Anzahl der Kinder an.' };
+    }
+    if (adultsNum < 1) {
+        return {
+            ok: false,
+            message: `Sie haben ${booked} ${personLabel} gewählt. Bitte geben Sie mindestens einen Erwachsenen an.`,
+        };
+    }
+
+    const travelerTotal = adultsNum + childrenNum;
+    if (travelerTotal !== booked) {
+        return {
+            ok: false,
+            message:
+                `Sie haben ${booked} ${personLabel} gewählt. ` +
+                `Erwachsene und Kinder im Formular müssen zusammen genau ${booked} ergeben ` +
+                `(aktuell: ${travelerTotal}).`,
+        };
+    }
+
+    return { ok: true, bookedPersonCount: booked, travelerTotal };
+}
+
+function updateTravelerCountErrorDisplay() {
+    const personCountEl = document.getElementById('personCount');
+    const adultsEl = document.getElementById('adults');
+    const childrenEl = document.getElementById('children');
+    const errorEl = document.getElementById('traveler-count-error');
+    if (!personCountEl || !adultsEl || !childrenEl || !errorEl) return;
+
+    const check = validateTravelerCountForBooking(
+        personCountEl.value,
+        adultsEl.value,
+        childrenEl.value
+    );
+
+    if (check.ok) {
+        errorEl.textContent = '';
+        errorEl.hidden = true;
+        adultsEl.removeAttribute('aria-invalid');
+        childrenEl.removeAttribute('aria-invalid');
+        adultsEl.style.borderColor = '';
+        childrenEl.style.borderColor = '';
+        return;
+    }
+
+    errorEl.textContent = check.message;
+    errorEl.hidden = false;
+    adultsEl.setAttribute('aria-invalid', 'true');
+    childrenEl.setAttribute('aria-invalid', 'true');
+    adultsEl.style.borderColor = '#ef4444';
+    childrenEl.style.borderColor = '#ef4444';
+}
+
+function initTravelerCountLiveValidation() {
+    const personCountEl = document.getElementById('personCount');
+    const adultsEl = document.getElementById('adults');
+    const childrenEl = document.getElementById('children');
+    if (!personCountEl || !adultsEl || !childrenEl) return;
+    if (adultsEl.dataset.travelerValidationInit === 'true') return;
+
+    const formRow = adultsEl.closest('.form-row');
+    if (!formRow) return;
+
+    let errorEl = document.getElementById('traveler-count-error');
+    if (!errorEl) {
+        errorEl = document.createElement('p');
+        errorEl.id = 'traveler-count-error';
+        errorEl.className = 'traveler-count-error';
+        errorEl.setAttribute('role', 'alert');
+        errorEl.hidden = true;
+        formRow.insertAdjacentElement('afterend', errorEl);
+    }
+
+    const refresh = () => updateTravelerCountErrorDisplay();
+    ['input', 'change'].forEach((evt) => {
+        adultsEl.addEventListener(evt, refresh);
+        childrenEl.addEventListener(evt, refresh);
+        personCountEl.addEventListener(evt, refresh);
+    });
+
+    adultsEl.dataset.travelerValidationInit = 'true';
+    refresh();
+}
+
+window.travelFadenValidateTravelerCount = validateTravelerCountForBooking;
+window.travelFadenInitTravelerCountValidation = initTravelerCountLiveValidation;
+window.travelFadenRefreshTravelerCountValidation = updateTravelerCountErrorDisplay;
+
 function readStoredTravelFormData() {
     try {
         const raw = sessionStorage.getItem('travelFormData');
@@ -255,8 +357,9 @@ async function recordConsentAndCreateSession(amount, productName, consents, reis
     let consentId = null;
 
     if (consents.length > 0) {
+        let consentResponse;
         try {
-            const consentResponse = await fetch(`${BACKEND_URL}/api/record-consent`, {
+            consentResponse = await fetch(`${BACKEND_URL}/api/record-consent`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -268,20 +371,25 @@ async function recordConsentAndCreateSession(amount, productName, consents, reis
                     formData: formData || undefined,
                 }),
             });
-
-            if (consentResponse.ok) {
-                const consentData = await consentResponse.json();
-                consentId = consentData.consentId;
-            } else {
-                let msg = 'Die Einwilligungen konnten nicht gespeichert werden.';
-                try {
-                    const err = await consentResponse.json();
-                    msg = err.message || err.error || msg;
-                } catch (_) {}
-                console.warn('record-consent failed, continuing checkout:', msg);
-            }
         } catch (error) {
-            console.warn('record-consent unreachable, continuing checkout:', error.message);
+            throw new Error(
+                'Die Einwilligungen konnten nicht gespeichert werden. Bitte versuchen Sie es später erneut.'
+            );
+        }
+
+        if (!consentResponse.ok) {
+            let msg = 'Die Einwilligungen konnten nicht gespeichert werden.';
+            try {
+                const err = await consentResponse.json();
+                msg = err.message || err.error || msg;
+            } catch (_) {}
+            throw new Error(msg);
+        }
+
+        const consentData = await consentResponse.json();
+        consentId = consentData.consentId;
+        if (!consentId) {
+            throw new Error('Die Einwilligungen konnten nicht gespeichert werden.');
         }
     }
 
@@ -355,6 +463,7 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('Stripe nie jest dostępny:', e);
         }
     }
+    initTravelerCountLiveValidation();
 });
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -372,6 +481,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const withdrawalConsent = document.getElementById('withdrawal-consent');
         const agbConsent = document.getElementById('agb-consent');
+        const privacyConsent = document.getElementById('privacy-consent');
         
         if (withdrawalConsent && !withdrawalConsent.checked) {
             e.preventDefault();
@@ -386,6 +496,14 @@ document.addEventListener('DOMContentLoaded', function() {
             e.stopPropagation();
             alert('Bitte akzeptieren Sie die AGB, um fortzufahren.');
             agbConsent.focus();
+            return;
+        }
+
+        if (privacyConsent && !privacyConsent.checked) {
+            e.preventDefault();
+            e.stopPropagation();
+            alert('Bitte akzeptieren Sie die Datenschutzerklärung, um fortzufahren.');
+            privacyConsent.focus();
             return;
         }
         
@@ -432,29 +550,19 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Request form submission
-const requestForm = document.querySelector('.request-form');
-if (requestForm) {
-    requestForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        alert('Dziękujemy za zapytanie! Skontaktujemy się z Tobą wkrótce z najlepszą ofertą.');
-        requestForm.reset();
-    });
-}
-
 // Contact form submission
 const contactForm = document.querySelector('.contact-form');
 if (contactForm) {
     const getGermanValidationMessage = (field) => {
         if (field.id === 'privacy-checkbox') {
-            return 'Bitte akzeptieren Sie die Datenschutzerklaerung.';
+            return 'Bitte akzeptieren Sie die Datenschutzerklärung.';
         }
         if (field.type === 'email') {
             if (field.validity.valueMissing) {
                 return 'Bitte geben Sie Ihre E-Mail-Adresse ein.';
             }
             if (field.validity.typeMismatch) {
-                return 'Bitte geben Sie eine gueltige E-Mail-Adresse ein.';
+                return 'Bitte geben Sie eine gültige E-Mail-Adresse ein.';
             }
         }
         if (field.tagName === 'TEXTAREA') {
@@ -463,7 +571,7 @@ if (contactForm) {
         if (field.type === 'text') {
             return 'Bitte geben Sie Ihren Namen ein.';
         }
-        return 'Bitte fuellen Sie dieses Feld aus.';
+        return 'Bitte füllen Sie dieses Feld aus.';
     };
 
     const contactFields = contactForm.querySelectorAll('input, textarea');
@@ -701,7 +809,7 @@ function initSearch() {
         {
             title: 'Anfrage stellen',
             desc: 'Haben Sie eine Dienstleistung? Stellen Sie eine Anfrage für ein Reiseangebot',
-            link: isHomePage ? '#request' : '/#request',
+            link: isHomePage ? '#contact' : '/#contact',
             keywords: 'anfrage angebot formular reise ort datum'
         },
         {

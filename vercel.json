@@ -8,6 +8,8 @@
     }
   },
   "redirects": [
+    { "source": "/favicon.svg", "destination": "/images/logo.png", "permanent": true },
+    { "source": "/favicon.ico", "destination": "/favicon.png", "permanent": true },
     { "source": "/city-break", "destination": "/kurztrip-vorschlaege", "permanent": true },
     { "source": "/city-break.html", "destination": "/kurztrip-vorschlaege", "permanent": true },
     { "source": "/wakacje-dla-ciebie", "destination": "/individueller-reisevorschlag", "permanent": true },

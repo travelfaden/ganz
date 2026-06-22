@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/favicon.svg">
+    <link rel="icon" href="images/logo.png" type="image/png">
+    <link rel="apple-touch-icon" href="images/logo.png">
     <title>Unterkunftsvorschläge für Ihre Reise | Travel Faden</title>
     <meta name="description" content="Unterkunftsvorschläge von Travel Faden: Hotels und Apartments passend zu Ihrem Reiseziel und Budget. Buchung direkt beim jeweiligen Anbieter.">
     <link rel="canonical" href="https://travelfaden.com/unterkunftsvorschlaege">
@@ -14,7 +14,12 @@
     <meta property="og:description" content="Unterkunftsvorschläge von Travel Faden: Hotels und Apartments passend zu Ihrem Reiseziel und Budget. Buchung direkt beim jeweiligen Anbieter.">
     <meta property="og:url" content="https://travelfaden.com/unterkunftsvorschlaege">
     <meta property="og:locale" content="de_DE">
-    <meta name="twitter:card" content="summary">
+    <meta property="og:image" content="https://travelfaden.com/images/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Travel Faden – Reisevorschläge &amp; Urlaubsplanung">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://travelfaden.com/images/og-image.png">
     <meta name="twitter:title" content="Unterkunftsvorschläge für Ihre Reise | Travel Faden">
     <meta name="twitter:description" content="Unterkunftsvorschläge von Travel Faden: Hotels und Apartments passend zu Ihrem Reiseziel und Budget. Buchung direkt beim jeweiligen Anbieter.">
 
@@ -27,24 +32,13 @@
         <div class="container">
             <div class="logo">
                 <a href="/" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
-                    <svg class="logo-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="50" cy="50" r="40" fill="none" stroke="url(#logoGradient)" stroke-width="3"/>
-                        <circle cx="50" cy="50" r="35" fill="none" stroke="url(#logoGradient)" stroke-width="2" opacity="0.6"/>
-                        <line x1="15" y1="30" x2="85" y2="30" stroke="url(#logoGradient)" stroke-width="1.5"/>
-                        <line x1="15" y1="50" x2="85" y2="50" stroke="url(#logoGradient)" stroke-width="1.5"/>
-                        <line x1="15" y1="70" x2="85" y2="70" stroke="url(#logoGradient)" stroke-width="1.5"/>
-                        <path d="M 50 10 Q 50 30, 50 50 Q 50 70, 50 90" fill="none" stroke="url(#logoGradient)" stroke-width="1.5"/>
-                        <g transform="translate(50, 50) rotate(45)">
-                            <path d="M -15 -5 L 15 -5 L 10 0 L 15 5 L -15 5 L -10 0 Z" fill="url(#logoGradient)"/>
-                            <circle cx="0" cy="0" r="3" fill="url(#logoGradient)"/>
-                        </g>
-                        <defs>
-                            <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" style="stop-color:#2563eb;stop-opacity:1" />
-                                <stop offset="100%" style="stop-color:#0ea5e9;stop-opacity:1" />
-                            </linearGradient>
-                        </defs>
-                    </svg>
+                                        <img
+                        src="images/logo.png"
+                        alt=""
+                        class="logo-icon"
+                        width="40"
+                        height="40"
+                    >
                     <span class="logo-text">Travel<span class="logo-gap"></span>Faden</span>
                 </a>
             </div>
@@ -145,7 +139,7 @@
                         </div>
                         <div class="summary-item">
                             <span>Preis:</span>
-                            <strong id="servicePrice">50€</strong>
+                            <strong id="servicePrice">70€</strong>
                         </div>
                         <div class="summary-item">
                             <span>Vorbereitungszeit:</span>
@@ -171,7 +165,7 @@
                                 </label>
                             </div>
                         </div>
-                        <button class="voucher-button service-buy-button" id="buyButton" data-amount="50" style="width: 100%; margin-top: 1rem; opacity: 0.5; cursor: not-allowed;" disabled>Jetzt kostenpflichtig bestellen</button>
+                        <button class="voucher-button service-buy-button" id="buyButton" data-amount="70" style="width: 100%; margin-top: 1rem; opacity: 0.5; cursor: not-allowed;" disabled>Jetzt kostenpflichtig bestellen</button>
                         <a href="/#vouchers" class="back-link" style="display: block; text-align: center; margin-top: 1rem; color: var(--primary-color); text-decoration: none;">← Zurück zu allen Leistungen</a>
                     </div>
                 </div>
@@ -278,7 +272,7 @@
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="adults">Anzahl der Erwachsenen *</label>
-                                <input type="number" id="adults" name="adults" min="1" max="10" value="2" required>
+                                <input type="number" id="adults" name="adults" min="0" max="10" value="0" required>
                             </div>
                             
                             <div class="form-group">
@@ -460,23 +454,6 @@
                     }
                 }, true); // true = capture phase
             }
-        
-            async function sendFormToEmail(data) {
-            const companyEmail = 'travelfaden@gmail.com';
-            
-            // Przygotuj treść emaila
-            let emailBody = 'Neues Unterkunftsformular - Unterkünfte\n\n';
-            emailBody += '\nFormulardetails:\n\n';
-                emailBody += `Vorname: ${data.firstName || 'Nicht angegeben'}\n`;
-                emailBody += `E-Mail: ${data.email || 'Nicht angegeben'}\n`;
-                emailBody += `Reiseziel: ${data.destination || 'Nicht angegeben'}\n`;
-                emailBody += `Zeitraum der Reise: ${data.travelPeriod || 'Nicht angegeben'}\n`;
-                emailBody += `Reisedauer: ${data.tripDuration || 'Nicht angegeben'}\n`;
-                emailBody += `Anzahl der Erwachsenen: ${data.adults || 'Nicht angegeben'}\n`;
-                emailBody += `Anzahl der Kinder: ${data.children || 'Nicht angegeben'}\n`;
-                if (data.childrenAge) {
-                    emailBody += `Alter des Kindes/der Kinder: ${data.childrenAge}\n`;
-                }
                 emailBody += `Budget (pro Person): ${data.budget || 'Nicht angegeben'} EUR\n`;
                 emailBody += `Art der Unterkunft: ${data.accommodationType || 'Nicht angegeben'}\n`;
                 emailBody += `Bevorzugte Bewertungsstufe: ${data.accommodationRating || 'Nicht angegeben'}\n`;
@@ -577,14 +554,14 @@
             const servicePriceElement = document.getElementById('servicePrice');
             
             const priceMap = {
-                1: 50,
-                2: 50,
-                3: 65,
-                4: 65,
-                5: 80,
-                6: 80,
-                7: 95,
-                8: 95
+                1: 70,
+                2: 70,
+                3: 110,
+                4: 110,
+                5: 150,
+                6: 150,
+                7: 190,
+                8: 190
             };
             
             function updatePrice() {
