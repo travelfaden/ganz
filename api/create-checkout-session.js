@@ -23,7 +23,6 @@ module.exports = async (req, res) => {
   }
 
   try {
-    console.log('Otrzymano żądanie:', req.body);
     const { amount, currency = 'eur', productName, consentId, reisevorschlagId } = req.body;
 
     if (!amount) {
@@ -36,8 +35,6 @@ module.exports = async (req, res) => {
       return res.status(500).json({ error: 'Stripe ist nicht konfiguriert' });
     }
 
-    console.log('Tworzenie sesji Stripe dla kwoty:', amount);
-    
     // Pobierz origin z nagłówka lub użyj domyślnego
     const origin = req.headers.origin || req.headers.host 
       ? `https://${req.headers.host}` 
@@ -88,7 +85,6 @@ module.exports = async (req, res) => {
       },
     });
 
-    console.log('Sesja utworzona:', session.id);
     res.json({ id: session.id });
   } catch (error) {
     console.error('=== BŁĄD STRIPE ===');

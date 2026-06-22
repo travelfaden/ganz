@@ -3,6 +3,98 @@ function updateHamburgerA11y(hamburger, isOpen) {
     hamburger.setAttribute('aria-label', isOpen ? 'Menü schließen' : 'Menü öffnen');
 }
 
+// Podgląd file:// – zamiana /czyste-url na pliki .html (Vercel bez zmian)
+function isFilePreview() {
+    return window.location.protocol === 'file:';
+}
+
+function toLocalHref(href) {
+    if (!href || !isFilePreview()) return href;
+    if (href.startsWith('//')) return href;
+
+    let pathOnly = href;
+    let hashPart = '';
+    let queryPart = '';
+
+    const hashIndex = pathOnly.indexOf('#');
+    if (hashIndex >= 0) {
+        hashPart = pathOnly.slice(hashIndex);
+        pathOnly = pathOnly.slice(0, hashIndex);
+    }
+
+    const queryIndex = pathOnly.indexOf('?');
+    if (queryIndex >= 0) {
+        queryPart = pathOnly.slice(queryIndex);
+        pathOnly = pathOnly.slice(0, queryIndex);
+    }
+
+    if (pathOnly === '/' || pathOnly === '/index.html') {
+        return 'index.html' + queryPart + hashPart;
+    }
+
+    if (pathOnly.startsWith('/#')) {
+        return 'index.html' + pathOnly.slice(1) + queryPart + hashPart;
+    }
+
+    if (pathOnly.startsWith('/')) {
+        const slug = pathOnly.slice(1);
+        if (!slug) return 'index.html' + queryPart + hashPart;
+        if (/\.[a-z0-9]+$/i.test(slug)) return slug + queryPart + hashPart;
+        return slug + '.html' + queryPart + hashPart;
+    }
+
+    return href;
+}
+
+function isHomePageContext() {
+    if (isFilePreview()) {
+        return /index\.html$/i.test(window.location.pathname);
+    }
+    const path = window.location.pathname.replace(/\/$/, '') || '/';
+    return path === '/' || path === '/index.html';
+}
+
+function fixFilePreviewLinks() {
+    if (!isFilePreview()) return;
+
+    document.querySelectorAll('a[href^="/"]').forEach((anchor) => {
+        const href = anchor.getAttribute('href');
+        if (href && !href.startsWith('//')) {
+            anchor.setAttribute('href', toLocalHref(href));
+        }
+    });
+
+    document.querySelectorAll('link[href^="/"]').forEach((link) => {
+        const href = link.getAttribute('href');
+        if (href) link.setAttribute('href', href.slice(1));
+    });
+}
+
+function initFilePreviewNavigation() {
+    if (!isFilePreview()) return;
+
+    fixFilePreviewLinks();
+
+    document.addEventListener('click', (event) => {
+        const anchor = event.target.closest('a[href]');
+        if (!anchor) return;
+
+        const href = anchor.getAttribute('href');
+        if (!href || href.startsWith('//')) return;
+        if (/^(https?:|mailto:|tel:)/i.test(href)) return;
+        if (!href.startsWith('/')) return;
+
+        event.preventDefault();
+        window.location.href = toLocalHref(href);
+    }, true);
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initFilePreviewNavigation);
+} else {
+    initFilePreviewNavigation();
+}
+
 // Mobile menu toggle
 document.addEventListener('DOMContentLoaded', function() {
     const hamburger = document.querySelector('.hamburger');
@@ -488,7 +580,7 @@ document.querySelectorAll('.service-card').forEach((card, index) => {
 
 // Observe section headings
 document.querySelectorAll('.section h2').forEach(heading => {
-    if (heading.closest('.regulamin, .faq-container')) {
+    if (heading.closest('.regulamin, .faq-container, .service-main-content')) {
         return;
     }
     heading.style.opacity = '0';
@@ -508,7 +600,7 @@ window.addEventListener('scroll', () => {
 
 // Add smooth fade-in for sections
 document.querySelectorAll('.section').forEach(section => {
-    if (section.querySelector('.regulamin, .faq-container')) {
+    if (section.querySelector('.regulamin, .faq-container, .service-details')) {
         return;
     }
     section.style.opacity = '0';
@@ -523,94 +615,6 @@ document.querySelectorAll('.section').forEach(section => {
     }, { threshold: 0 });
     sectionObserver.observe(section);
 });
-
-// Live Chat Widget
-document.addEventListener('DOMContentLoaded', function() {
-    const chatToggle = document.getElementById('chatToggle');
-    const chatWidget = document.getElementById('chatWidget');
-    const chatClose = document.getElementById('chatClose');
-    const chatInput = document.getElementById('chatInput');
-    const chatSend = document.getElementById('chatSend');
-    const chatMessages = document.getElementById('chatMessages');
-    
-    // Sprawdź, czy elementy chat istnieją
-    if (!chatToggle || !chatWidget || !chatClose || !chatInput || !chatSend || !chatMessages) {
-        return; // Elementy chat nie istnieją na tej stronie
-    }
-
-    // Toggle chat widget
-    chatToggle.addEventListener('click', () => {
-        chatWidget.classList.add('active');
-        chatToggle.classList.add('hidden');
-        chatInput.focus();
-    });
-
-    chatClose.addEventListener('click', () => {
-        chatWidget.classList.remove('active');
-        chatToggle.classList.remove('hidden');
-    });
-
-    // Send message
-    function sendMessage(message, isUser = true) {
-        const messageDiv = document.createElement('div');
-        messageDiv.className = `chat-message ${isUser ? 'user' : 'bot'}`;
-        
-        const contentDiv = document.createElement('div');
-        contentDiv.className = 'message-content';
-        
-        const p = document.createElement('p');
-        p.textContent = message;
-        contentDiv.appendChild(p);
-        
-        const timeSpan = document.createElement('span');
-        timeSpan.className = 'message-time';
-        const now = new Date();
-        timeSpan.textContent = now.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' });
-        
-        messageDiv.appendChild(contentDiv);
-        messageDiv.appendChild(timeSpan);
-        
-        chatMessages.appendChild(messageDiv);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
-
-    // Handle send button click
-    chatSend.addEventListener('click', () => {
-        const message = chatInput.value.trim();
-        if (message) {
-            sendMessage(message, true);
-            chatInput.value = '';
-            
-            // Simulate bot response (możesz to zastąpić prawdziwą integracją)
-            setTimeout(() => {
-                const responses = [
-                    'Dziękujemy za wiadomość! Skontaktujemy się z Tobą wkrótce.',
-                    'Rozumiem. Jak możemy Ci pomóc w planowaniu podróży?',
-                    'Świetnie! Opowiedz nam więcej o swoich planach podróży.',
-                    'Czy chciałbyś kupić usługę lub złożyć zapytanie o ofertę?',
-                ];
-                const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-                sendMessage(randomResponse, false);
-            }, 1000);
-        }
-    });
-
-    // Handle Enter key
-    chatInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            chatSend.click();
-        }
-    });
-});
-
-// Auto-open chat on first visit (optional)
-// Możesz to włączyć, jeśli chcesz, żeby chat otwierał się automatycznie
-// setTimeout(() => {
-//     if (!localStorage.getItem('chatOpened')) {
-//         chatToggle.click();
-//         localStorage.setItem('chatOpened', 'true');
-//     }
-// }, 3000);
 
 // Search Functionality - inicjalizacja po załadowaniu DOM
 function initSearch() {
@@ -802,22 +806,18 @@ function initSearch() {
                     const link = item.getAttribute('data-link');
                     // Check if it's an anchor link or a page link
                     if (link.startsWith('#')) {
-                        const path = window.location.pathname.replace(/\/$/, '') || '/';
-                        const isHomePage = path === '/' || path === '/index.html';
-                        
-                        if (isHomePage) {
+                        if (isHomePageContext()) {
                             const target = document.querySelector(link);
                             if (target) {
                                 target.scrollIntoView({ behavior: 'smooth' });
                             }
                         } else {
-                            window.location.href = '/' + link;
+                            window.location.href = toLocalHref('/' + link);
                         }
                     } else if (link.startsWith('/#')) {
-                        window.location.href = link;
+                        window.location.href = toLocalHref(link);
                     } else {
-                        // It's a page link, navigate to it
-                        window.location.href = link;
+                        window.location.href = toLocalHref(link);
                     }
                     searchBox.classList.remove('active');
                     searchInput.value = '';

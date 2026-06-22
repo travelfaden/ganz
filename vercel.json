@@ -8,14 +8,23 @@
     }
   },
   "redirects": [
+    { "source": "/city-break", "destination": "/kurztrip-vorschlaege", "permanent": true },
     { "source": "/city-break.html", "destination": "/kurztrip-vorschlaege", "permanent": true },
+    { "source": "/wakacje-dla-ciebie", "destination": "/individueller-reisevorschlag", "permanent": true },
     { "source": "/wakacje-dla-ciebie.html", "destination": "/individueller-reisevorschlag", "permanent": true },
+    { "source": "/loty", "destination": "/flugvorschlaege", "permanent": true },
     { "source": "/loty.html", "destination": "/flugvorschlaege", "permanent": true },
+    { "source": "/noclegi", "destination": "/unterkunftsvorschlaege", "permanent": true },
     { "source": "/noclegi.html", "destination": "/unterkunftsvorschlaege", "permanent": true },
+    { "source": "/o-nas", "destination": "/ueber-uns", "permanent": true },
     { "source": "/o-nas.html", "destination": "/ueber-uns", "permanent": true },
+    { "source": "/oferta-dnia", "destination": "/reisevorschlag-des-tages", "permanent": true },
     { "source": "/oferta-dnia.html", "destination": "/reisevorschlag-des-tages", "permanent": true },
+    { "source": "/oferta-dnia-nav", "destination": "/reisevorschlaege", "permanent": true },
     { "source": "/oferta-dnia-nav.html", "destination": "/reisevorschlaege", "permanent": true },
+    { "source": "/regulamin", "destination": "/agb", "permanent": true },
     { "source": "/regulamin.html", "destination": "/agb", "permanent": true },
+    { "source": "/pytania-i-odpowiedzi", "destination": "/faq", "permanent": true },
     { "source": "/pytania-i-odpowiedzi.html", "destination": "/faq", "permanent": true }
   ],
   "rewrites": [

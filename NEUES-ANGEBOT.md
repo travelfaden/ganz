@@ -12,7 +12,7 @@ Wrzuć do `images/`, np. `images/kreta-2026.png`
 1. Skopiuj **`angebot-mallorca.html`** → **`angebot-kreta.html`**
 2. Zamień (Ctrl+H): Mallorca → Kreta, zdjęcie, daty, teksty, `<title>`
 3. **Reisevorschlag des Tages ID** — nad datą podróży blok `.angebot-reise-id`, np. `TF-KRETA-12092026` (format: `TF-MIEJSCE-DDMMYYYY` od daty wylotu; każde ID tylko raz w całej ofercie)
-4. Link **Jetzt bestellen** → `reisevorschlag-des-tages.html?rid=TF-KRETA-12092026` (ten sam ID co w bloku)
+4. Link **Jetzt bestellen** → `/reisevorschlag-des-tages?rid=TF-KRETA-12092026` (ten sam ID co w bloku)
 5. Dopisz ten sam ID w **`script.js`** (`VALID_REISEVORSCHLAG_IDS`) **oraz** w **`api/_lib/reisevorschlag-ids.js`**
 6. **Bestellnummer** (`TF-001`, `TF-002`…) nadaje się automatycznie po płatności — nie ustawiasz ręcznie
 7. **Data podróży** — blok `.angebot-travel-date` nad siatką; zmień daty w `angebot-travel-date-value`
@@ -23,7 +23,7 @@ Wrzuć do `images/`, np. `images/kreta-2026.png`
 
 W **`reisevorschlaege.html`** wklej **na górze** `<div class="daily-offers-list">` nową kartę (wzór: Mallorca). **Data** w bloku `daily-offer-travel-date` (duża, na środku). Link:
 
-`href="angebot-kreta.html"`
+`href="/angebot-kreta"`
 
 ## Krok 4 – Online
 
@@ -36,4 +36,4 @@ git push
 ## Podgląd
 
 - Otwórz plik HTML w przeglądarce (widzisz treść od razu w pliku)
-- Lub: `npm run preview` → http://localhost:3000/reisevorschlaege.html
+- Lub: `npm run dev` → http://localhost:3000/reisevorschlaege

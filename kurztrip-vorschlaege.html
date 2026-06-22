@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8">
@@ -52,7 +52,7 @@
                 <li class="nav-dropdown">
                     <a href="/#vouchers" class="dropdown-toggle">Unsere Leistungen <span class="dropdown-arrow">▼</span></a>
                     <ul class="dropdown-menu">
-                        <li><a href="/reisevorschlaege">Reisevorschlag des Tages</a></li>
+                        <li><a href="/reisevorschlag-des-tages">Reisevorschlag des Tages</a></li>
                         <li><a href="/individueller-reisevorschlag">Individueller Reisevorschlag</a></li>
                         <li><a href="/flugvorschlaege">Flugvorschläge</a></li>
                         <li><a href="/unterkunftsvorschlaege">Unterkunftsvorschläge</a></li>
@@ -60,7 +60,7 @@
                     </ul>
                 </li>
                 <li><a href="/#how-it-works">So läuft’s ab</a></li>
-                <li><a href="/reisevorschlaege">Reisevorschlag des Tages</a></li>
+                <li><a href="/reisevorschlaege">Aktuelle Vorschläge des Tages</a></li>
                 <li><a href="/faq">FAQ</a></li>
                 <li><a href="/ueber-uns">Über uns</a></li>
                 <li><a href="/#contact">Kontakt</a></li>
@@ -478,12 +478,8 @@
                 }, true); // true = capture phase
             }
         
-            // Funkcja wysyłania emaila
             async function sendFormToEmail(data) {
-            const email = data.email;
-            
-            // Adres email firmy (zmień na właściwy adres)
-            const companyEmail = 'kontakt@travelfaden.pl'; // ZMIEŃ NA WŁAŚCIWY ADRES
+            const companyEmail = 'travelfaden@gmail.com';
             
             // Przygotuj treść emaila
             let emailBody = 'Neues City Break Formular - City Break\n\n';
@@ -515,36 +511,9 @@
                 }
                 emailBody += `\nE-Mail des Kunden: ${data.email || 'Nicht angegeben'}\n`;
             
-            // Użyj mailto do wysłania emaila na adres firmy
-            // Dla produkcji zalecane jest użycie backend API lub EmailJS
             const subject = encodeURIComponent('City Break Formular - City Break');
             const body = encodeURIComponent(emailBody);
-            
-            // Otwórz klienta email z wypełnionym adresem odbiorcy (firma)
             window.location.href = `mailto:${companyEmail}?subject=${subject}&body=${body}`;
-            
-            // Alternatywnie, jeśli masz backend API, użyj tego (odkomentuj i zmień URL):
-            /*
-            try {
-                const response = await fetch('YOUR_BACKEND_URL/api/send-email', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        to: companyEmail,
-                        replyTo: email,
-                        subject: 'City Break Formular - City Break',
-                        body: emailBody
-                    })
-                });
-                if (!response.ok) {
-                    console.error('Błąd wysyłania emaila');
-                }
-            } catch (error) {
-                console.error('Błąd:', error);
-            }
-            */
         }
         
             // Obsługa wysłania formularza

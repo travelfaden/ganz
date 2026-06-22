@@ -1,9 +1,8 @@
 const { Resend } = require('resend');
 const { generateFormPdfBuffer } = require('./form-pdf');
+const { FROM_EMAIL, CONTACT_EMAIL } = require('./email-config');
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
-const FROM_EMAIL = process.env.FROM_EMAIL || 'onboarding@resend.dev';
-const CONTACT_EMAIL = process.env.CONTACT_EMAIL || 'travelfaden@gmail.com';
 
 function escapeHtml(value) {
   if (value === null || value === undefined) return '';

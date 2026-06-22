@@ -1,4 +1,4 @@
-const CONTACT_EMAIL = process.env.CONTACT_EMAIL || 'travelfaden@gmail.com';
+const { CONTACT_EMAIL } = require('./email-config');
 
 function getEmailHeaderLogoBlock() {
   return `

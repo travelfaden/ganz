@@ -1,12 +1,4 @@
 User-agent: *
 Allow: /
 
-Disallow: /test-stripe.html
-Disallow: /podglad-platnosci.html
-Disallow: /stripe-elements-example.html
-Disallow: /email-preview-admin.html
-Disallow: /email-preview-other-services.html
-Disallow: /email-preview-reisevorschlag.html
-Disallow: /success-preview.html
-
 Sitemap: https://travelfaden.com/sitemap.xml

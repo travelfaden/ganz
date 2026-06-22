@@ -23,6 +23,9 @@ Vercel → projekt → **Settings** → **Environment Variables** → dodaj:
 |--------|---------|
 | `SUPABASE_URL` | z Supabase |
 | `SUPABASE_SERVICE_ROLE_KEY` | service_role z Supabase |
+| `RESEND_API_KEY` | klucz z Resend → API Keys |
+| `FROM_EMAIL` | `Travel Faden <kontakt@travelfaden.com>` (opcjonalne — to samo jest domyślnie w kodzie po weryfikacji domeny) |
+| `CONTACT_EMAIL` | `travelfaden@gmail.com` |
 
 Zaznacz: Production, Preview, Development.
 

@@ -1,3 +1,33 @@
+function readRawBody(req) {
+  return new Promise((resolve, reject) => {
+    if (typeof req.body === 'string') {
+      resolve(req.body);
+      return;
+    }
+    if (Buffer.isBuffer(req.body)) {
+      resolve(req.body.toString('utf8'));
+      return;
+    }
+    if (req.body && typeof req.body === 'object') {
+      reject(new Error('Raw body required for Stripe signature verification'));
+      return;
+    }
+
+    const chunks = [];
+    req.on('data', (chunk) => {
+      chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
+    });
+    req.on('end', () => {
+      if (chunks.length === 0) {
+        reject(new Error('Empty request body'));
+        return;
+      }
+      resolve(Buffer.concat(chunks).toString('utf8'));
+    });
+    req.on('error', reject);
+  });
+}
+
 // Vercel Serverless Function - Webhook Stripe
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const { Resend } = require('resend');
@@ -17,11 +47,10 @@ const {
   isReisevorschlagDesTagesOrder,
 } = require('./_lib/purchase-email');
 const { sendAdminNewOrderEmail } = require('./_lib/admin-form-email');
+const { FROM_EMAIL, CONTACT_EMAIL } = require('./_lib/email-config');
 
 // Funkcje pomocnicze (importowane z utils)
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
-const FROM_EMAIL = process.env.FROM_EMAIL || 'onboarding@resend.dev';
-const CONTACT_EMAIL = process.env.CONTACT_EMAIL || 'travelfaden@gmail.com';
 
 // Funkcja pomocnicza do wysyłania emaili
 async function sendEmail(to, subject, html, text = null) {
@@ -48,13 +77,13 @@ async function sendEmail(to, subject, html, text = null) {
   }
 }
 
-// Vercel wymaga eksportu domyślnego dla webhooków
-// Dla webhooków Stripe w Vercel musimy użyć specjalnej konfiguracji
-// Vercel automatycznie parsuje body jako JSON, ale dla Stripe potrzebujemy raw body
 module.exports = async (req, res) => {
-  // Webhook Stripe wymaga raw body
+  if (req.method !== 'POST') {
+    return res.status(405).send('Method Not Allowed');
+  }
+
   const sig = req.headers['stripe-signature'];
-  
+
   if (!sig) {
     console.error('Webhook Error: No signature found');
     return res.status(400).send('Webhook Error: No signature found');
@@ -65,58 +94,24 @@ module.exports = async (req, res) => {
     return res.status(500).send('Webhook Error: STRIPE_WEBHOOK_SECRET not configured');
   }
 
-  let event;
-
+  let rawBody;
   try {
-    // Vercel dla webhooków może przekazywać body w różnych formatach
-    // Spróbujmy różnych sposobów dostępu do raw body
-    let body;
-    
-    // Sprawdź czy body jest dostępne jako raw string
-    if (typeof req.body === 'string') {
-      body = req.body;
-    } else if (Buffer.isBuffer(req.body)) {
-      body = req.body.toString('utf8');
-    } else if (req.body && typeof req.body === 'object') {
-      // Jeśli body jest już sparsowane jako JSON, musimy go zserializować z powrotem
-      // To nie jest idealne, ale może działać dla niektórych przypadków
-      // W rzeczywistości, dla Stripe webhooków, Vercel powinien przekazać raw body jako string
-      console.warn('Body is already parsed as JSON, trying to stringify');
-      body = JSON.stringify(req.body);
-    } else {
-      console.error('Webhook Error: Cannot get body');
-      return res.status(400).send('Webhook Error: Cannot get body');
-    }
-    
-    console.log('Body type:', typeof body);
-    console.log('Body length:', body.length);
-    
-    // Weryfikuj webhook z Stripe
-    // Uwaga: Jeśli body jest już sparsowane jako JSON, weryfikacja może nie działać
-    // W takim przypadku możemy tymczasowo wyłączyć weryfikację dla testów
-    try {
-      event = stripe.webhooks.constructEvent(body, sig, process.env.STRIPE_WEBHOOK_SECRET);
-    } catch (verifyError) {
-      // Jeśli weryfikacja nie działa, sprawdźmy czy to problem z formatem body
-      console.error('Signature verification failed:', verifyError.message);
-      console.error('Trying to parse event without verification (NOT RECOMMENDED FOR PRODUCTION)');
-      
-      // Tymczasowo: parsuj event bez weryfikacji (tylko dla testów!)
-      // W produkcji MUSISZ mieć działającą weryfikację!
-      if (typeof body === 'string') {
-        event = JSON.parse(body);
-      } else {
-        event = body;
-      }
-      
-      console.warn('⚠️  Event parsed without signature verification - THIS IS UNSAFE!');
-    }
+    rawBody = await readRawBody(req);
   } catch (err) {
-    console.error('Webhook Error:', err.message);
-    console.error('Error type:', err.type);
-    console.error('Body type received:', typeof req.body);
-    console.error('Body is Buffer:', Buffer.isBuffer(req.body));
+    console.error('Webhook Error: Cannot read raw body:', err.message);
     return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+
+  let event;
+  try {
+    event = stripe.webhooks.constructEvent(
+      rawBody,
+      sig,
+      process.env.STRIPE_WEBHOOK_SECRET
+    );
+  } catch (verifyError) {
+    console.error('Signature verification failed:', verifyError.message);
+    return res.status(400).send(`Webhook Error: ${verifyError.message}`);
   }
 
   // Obsługa różnych typów zdarzeń
@@ -253,4 +248,10 @@ module.exports = async (req, res) => {
   }
 
   res.json({ received: true });
+};
+
+module.exports.config = {
+  api: {
+    bodyParser: false,
+  },
 };
