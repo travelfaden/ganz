@@ -456,7 +456,7 @@ window.travelFadenStartCheckout = async function (amount, productName, loadingBu
 document.addEventListener('DOMContentLoaded', function() {
     if (typeof Stripe !== 'undefined') {
         try {
-            stripe = Stripe('pk_test_51SpXfA0v0hpavs4B6yGcGGwLa6z3vVlwhFAPRGNc46570wwT9OMUWirrYrf3y74nh9oBdC5lQKQB9C17UccPRIyc00cIywttqE', { locale: 'de' });
+            stripe = Stripe('pk_live_51SpXfA0v0hpavs4BSYF6kNp1ZlyxTFT31rehPl4rsipyi4l5BUGDEshwEMsyDUd3XaMoNAG40uLI6N0JxeGKTR6V009u0nVsZT', { locale: 'de' });
         } catch (e) {
             console.log('Stripe nie jest dostępny:', e);
         }
