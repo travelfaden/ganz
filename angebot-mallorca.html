@@ -22,17 +22,14 @@
     <meta name="twitter:image" content="https://travelfaden.com/images/og-image.png">
     <meta name="twitter:title" content="Mallorca Reisevorschlag 09/2026 ab Hamburg | Travel Faden">
     <meta name="twitter:description" content="Reisevorschlag Mallorca 12.-16.09.2026 ab Hamburg, 4 Tage ab 299 EUR pro Person. Fertige Urlaubsidee von Travel Faden - Links zur Buchung beim Anbieter.">
-
-
-<link rel="stylesheet" href="styles.css">
-    <script src="https://js.stripe.com/v3/"></script>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body class="has-daily-offers-hinweis">
     <nav class="navbar">
         <div class="container">
             <div class="logo">
                 <a href="/" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
-                                        <img
+                    <img
                         src="images/logo.png"
                         alt=""
                         class="logo-icon"
@@ -44,30 +41,30 @@
             </div>
             <ul class="nav-menu" id="navMenu">
                 <li class="nav-dropdown">
-                    <a href="/#vouchers" class="dropdown-toggle">Unsere Leistungen <span class="dropdown-arrow">?</span></a>
+                    <a href="/#vouchers" class="dropdown-toggle">Unsere Leistungen <span class="dropdown-arrow">▼</span></a>
                     <ul class="dropdown-menu">
                         <li><a href="/reisevorschlag-des-tages">Reisevorschlag des Tages</a></li>
                         <li><a href="/individueller-reisevorschlag">Individueller Reisevorschlag</a></li>
+                        <li><a href="/flugvorschlaege">Flugvorschläge</a></li>
+                        <li><a href="/unterkunftsvorschlaege">Unterkunftsvorschläge</a></li>
+                        <li><a href="/kurztrip-vorschlaege">Kurztrip-Vorschläge</a></li>
+                    </ul>
+                </li>
                 <li><a href="/#how-it-works">So läuft’s ab</a></li>
                 <li><a href="/reisevorschlaege">Aktuelle Vorschläge des Tages</a></li>
                 <li><a href="/faq">FAQ</a></li>
-                    </ul>
-                </li>
-            </ul>
-            <div class="search-container">
-                <li><a href="/faq">FAQ</a></li>
-                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <li><a href="/ueber-uns">Über uns</a></li>
                 <li><a href="/#contact">Kontakt</a></li>
             </ul>
             <div class="search-container">
-                <div class="search-box" id="searchBox">
+                <button type="button" class="search-toggle" id="searchToggle" aria-label="Suche öffnen" aria-expanded="false" aria-controls="searchBox">
                     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                 </button>
                 <div class="search-box" id="searchBox">
                     <input type="text" id="searchInput" placeholder="Suchen..." />
-                <a href="https://www.facebook.com/travelfaden" target="_blank" rel="noopener noreferrer" aria-label="Facebook" class="social-icon facebook-icon">
+                    <button type="button" class="search-close" id="searchClose" aria-label="Suche schließen">×</button>
                     <div class="search-results" id="searchResults"></div>
                 </div>
             </div>
@@ -83,7 +80,7 @@
                     </svg>
                 </a>
             </div>
-        <div class="service-hero-overlay"></div>
+            <button type="button" class="hamburger" aria-label="Menü öffnen" aria-expanded="false" aria-controls="navMenu"><span></span><span></span><span></span></button>
         </div>
     </nav>
 
@@ -106,21 +103,21 @@
                         <span class="angebot-reise-id-value">TF-MALLORCA-12092026</span>
                     </div>
                     <div class="angebot-travel-date">
-                        <span class="angebot-travel-date-label">?? Reisezeitraum</span>
-                        <div class="angebot-meta-item"><span>💰</span><div><strong>Preis</strong><br>ab 299 € pro Person</div></div>
+                        <span class="angebot-travel-date-label">📅 Reisezeitraum</span>
+                        <span class="angebot-travel-date-value">12.09.2026 – 16.09.2026</span>
                     </div>
                     <div class="angebot-meta-grid">
-                        <div class="angebot-meta-item"><span>??</span><div><strong>Abflug</strong><br>Hamburg</div></div>
-                        <div class="angebot-meta-item"><span>??</span><div><strong>Dauer</strong><br>4 Tage</div></div>
-                    <p>Kurzurlaub auf Mallorca mit Flug ab Hamburg – ideal für einen erholsamen Kurztrip ans Mittelmeer. Türkisfarbenes Wasser, sonnige Buchten und mediterranes Flair warten auf Sie.</p>
-                        <div class="angebot-meta-item"><span>??</span><div><strong>Unterkunftsart</strong><br>Hotel</div></div>
+                        <div class="angebot-meta-item"><span>✈️</span><div><strong>Abflug</strong><br>Hamburg</div></div>
+                        <div class="angebot-meta-item"><span>🌙</span><div><strong>Dauer</strong><br>4 Tage</div></div>
+                        <div class="angebot-meta-item"><span>💰</span><div><strong>Preis</strong><br>ab 299 € pro Person</div></div>
+                        <div class="angebot-meta-item"><span>🏨</span><div><strong>Unterkunftsart</strong><br>Hotel</div></div>
                     </div>
 
-                </div>
-                    <p>Kurzurlaub auf Mallorca mit Flug ab Hamburg � ideal f�r einen erholsamen Kurztrip ans Mittelmeer. T�rkisfarbenes Wasser, sonnige Buchten und mediterranes Flair warten auf Sie.</p>
-                <div class="service-sidebar">
+                    <h2>Über diesen Reisevorschlag</h2>
+                    <p>Kurzurlaub auf Mallorca mit Flug ab Hamburg – ideal für einen erholsamen Kurztrip ans Mittelmeer. Türkisfarbenes Wasser, sonnige Buchten und mediterranes Flair warten auf Sie.</p>
+                    <p>Dieser Reisevorschlag basiert auf zum Veröffentlichungszeitpunkt verfügbaren Optionen und Preisen. Nach dem Kauf der Dienstleistung „Reisevorschlag des Tages“ erhalten Sie die vollständige Recherche sowie die entsprechenden Links zur eigenständigen Buchung bei den jeweiligen Anbietern.</p>
 
-                        <h3>Dienstleistung buchen</h3>
+                    <p><a href="/reisevorschlaege" style="color: var(--primary-color); text-decoration: none; font-weight: 600;">← Zurück zu allen Reisevorschlägen</a></p>
                 </div>
 
                 <div class="service-sidebar">
@@ -131,7 +128,7 @@
                         </p>
                         <div class="summary-item">
                             <span>Preis der Dienstleistung:</span>
-            </div>
+                            <strong>60 €</strong>
                         </div>
                         <a href="/reisevorschlag-des-tages?rid=TF-MALLORCA-12092026" class="daily-offer-cta" style="width: 100%; margin-top: 1.25rem; text-align: center; box-sizing: border-box;">Jetzt bestellen</a>
                     </div>
@@ -142,7 +139,7 @@
 
     <aside class="daily-offers-hinweis" role="note" aria-label="Hinweis zu den Angeboten">
         <div class="daily-offers-hinweis-inner">
-        <div class="container">
+            <p><strong>Hinweis:</strong> Alle dargestellten Angebote sind Reisevorschläge. Die Buchung erfolgt eigenständig über die bereitgestellten Links bei den jeweiligen Drittanbietern.</p>
         </div>
     </aside>
 
@@ -153,7 +150,7 @@
                 <div class="footer-links">
                     <a href="/agb">AGB</a>
                     <a href="/impressum">Impressum</a>
-    </footer>
+                    <a href="/datenschutzerklaerung">Datenschutzerklärung</a>
                     <a href="/widerrufsbelehrung">Widerrufsbelehrung</a>
                 </div>
             </div>

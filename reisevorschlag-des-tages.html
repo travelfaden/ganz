@@ -163,10 +163,16 @@
                                     Ich stimme ausdrücklich zu, dass mit der Ausführung der Dienstleistung vor Ablauf der Widerrufsfrist begonnen wird. Mir ist bekannt, dass ich dadurch mein Widerrufsrecht bei vollständiger Vertragserfüllung verliere. (<a href="/widerrufsbelehrung" target="_blank" style="color: var(--primary-color); text-decoration: underline;">Widerrufsbelehrung</a>)
                                 </label>
                             </div>
-                            <div style="display: flex; align-items: flex-start; gap: 0.5rem;">
+                            <div style="display: flex; align-items: flex-start; gap: 0.5rem; margin-bottom: 1rem;">
                                 <input type="checkbox" id="agb-consent" name="agb-consent" required style="margin-top: 0.25rem; cursor: pointer; flex-shrink: 0;">
                                 <label for="agb-consent" style="font-size: 0.9rem; color: var(--text-color); cursor: pointer; line-height: 1.5;">
                                     Ich habe die <a href="/agb" target="_blank" style="color: var(--primary-color); text-decoration: underline;">AGB</a> gelesen und akzeptiere sie.
+                                </label>
+                            </div>
+                            <div style="display: flex; align-items: flex-start; gap: 0.5rem;">
+                                <input type="checkbox" id="privacy-consent" name="privacy-consent" required style="margin-top: 0.25rem; cursor: pointer; flex-shrink: 0;">
+                                <label for="privacy-consent" style="font-size: 0.9rem; color: var(--text-color); cursor: pointer; line-height: 1.5;">
+                                    Ich habe die <a href="/datenschutzerklaerung" target="_blank" style="color: var(--primary-color); text-decoration: underline;">Datenschutzerklärung</a> gelesen und stimme der Verarbeitung meiner Daten zur Bearbeitung meiner Anfrage zu.
                                 </label>
                             </div>
                         </div>
@@ -223,6 +229,7 @@
             const buyButton = document.getElementById('buyButtonOfertaDnia');
             const withdrawalConsent = document.getElementById('withdrawal-consent');
             const agbConsent = document.getElementById('agb-consent');
+            const privacyConsent = document.getElementById('privacy-consent');
 
             const knownIds = typeof VALID_REISEVORSCHLAG_IDS !== 'undefined' ? VALID_REISEVORSCHLAG_IDS : {};
             const isValidRid = rid && knownIds[rid];
@@ -237,9 +244,9 @@
                 checkoutPanel.hidden = true;
             }
 
-            if (withdrawalConsent && agbConsent && buyButton && isValidRid) {
+            if (withdrawalConsent && agbConsent && privacyConsent && buyButton && isValidRid) {
                 function updateButtonState() {
-                    if (withdrawalConsent.checked && agbConsent.checked) {
+                    if (withdrawalConsent.checked && agbConsent.checked && privacyConsent.checked) {
                         buyButton.disabled = false;
                         buyButton.style.opacity = '1';
                         buyButton.style.cursor = 'pointer';
@@ -251,6 +258,7 @@
                 }
                 withdrawalConsent.addEventListener('change', updateButtonState);
                 agbConsent.addEventListener('change', updateButtonState);
+                privacyConsent.addEventListener('change', updateButtonState);
                 updateButtonState();
             }
         });
