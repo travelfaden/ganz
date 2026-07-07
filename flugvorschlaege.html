@@ -465,20 +465,7 @@
                     }
                 }, true); // true = capture phase
             }
-                emailBody += `Budget (pro Person): ${data.budget || 'Nicht angegeben'} EUR\n`;
-                if (data.preferences) {
-                    emailBody += `Zusätzliche Informationen: ${data.preferences}\n`;
-                }
-                if (data.phone) {
-                    emailBody += `Telefon: ${data.phone}\n`;
-                }
-                emailBody += `\nE-Mail des Kunden: ${data.email || 'Nicht angegeben'}\n`;
-            
-            const subject = encodeURIComponent('Flugformular - Flüge');
-            const body = encodeURIComponent(emailBody);
-            window.location.href = `mailto:${companyEmail}?subject=${subject}&body=${body}`;
-        }
-        
+
             // Obsługa wysłania formularza
             travelForm.addEventListener('submit', async (e) => {
             e.preventDefault();

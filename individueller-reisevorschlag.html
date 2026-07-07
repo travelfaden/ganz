@@ -470,23 +470,7 @@
                     }
                 }, true); // true = capture phase
             }
-                emailBody += `Budget (pro Person): ${data.budget || 'Nicht angegeben'} EUR\n`;
-                emailBody += `Art der Unterkunft: ${data.accommodationType || 'Nicht angegeben'}\n`;
-                emailBody += `Verpflegung: ${data.mealPlan || 'Nicht angegeben'}\n`;
-                emailBody += `Lage: ${data.location || 'Nicht angegeben'}\n`;
-                if (data.preferences) {
-                    emailBody += `Zusätzliche Informationen: ${data.preferences}\n`;
-                }
-                if (data.phone) {
-                    emailBody += `Telefon: ${data.phone}\n`;
-                }
-                emailBody += `\nE-Mail des Kunden: ${data.email || 'Nicht angegeben'}\n`;
-            
-            const subject = encodeURIComponent('Reiseformular - Reise auf Sie zugeschnitten');
-            const body = encodeURIComponent(emailBody);
-            window.location.href = `mailto:${companyEmail}?subject=${subject}&body=${body}`;
-        }
-        
+
             // Obsługa wysłania formularza
             travelForm.addEventListener('submit', async (e) => {
             e.preventDefault();
