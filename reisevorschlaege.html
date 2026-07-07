@@ -94,42 +94,34 @@
                 Neue Angebote werden regelmäßig hinzugefügt – schauen Sie gerne regelmäßig vorbei und lassen Sie sich inspirieren.
             </p>
 
-            <!-- Neue Angebote immer OBEN einfügen (neueste zuerst). Detailseite: angebot-mallorca.html als Vorlage (inkl. fixierter Hinweis unten). -->
+            <!-- Neue Angebote immer OBEN in .daily-offers-list einfügen.
+                 Vorlage Detailseite: vorlagen/angebot-vorlage.html
+                 Vorlage Listenkarte: siehe HTML-Kommentar unten in dieser Datei + NEUES-ANGEBOT.md -->
             <div class="daily-offers-list">
+                <div class="daily-offers-empty" role="status">
+                    <p class="daily-offers-empty-title">Aktuell keine Angebote</p>
+                    <p class="daily-offers-empty-text">Derzeit sind keine Reisevorschläge des Tages veröffentlicht. Schauen Sie bald wieder vorbei – neue Angebote erscheinen hier.</p>
+                </div>
+
+                <!-- VORLAGE – neue Karte oben einfügen (Beispiel):
                 <article class="daily-offer-card">
                     <div class="daily-offer-image">
-                        <img src="images/kreta.PNG" alt="Kreta – Mittelmeer und Küste" width="320" height="240" loading="lazy">
+                        <img src="images/DEIN-BILD.png" alt="Zielort – Kurzbeschreibung" width="320" height="240" loading="lazy">
                     </div>
                     <div class="daily-offer-content">
-                        <h2 class="daily-offer-destination">Kreta</h2>
+                        <h2 class="daily-offer-destination">ZIELORT</h2>
                         <div class="daily-offer-travel-date">
-                            <span class="daily-offer-travel-date-value">📅 12.09.2026 – 16.09.2026</span>
+                            <span class="daily-offer-travel-date-value">📅 TT.MM.JJJJ – TT.MM.JJJJ</span>
                         </div>
                         <ul class="daily-offer-details">
-                            <li><span class="daily-offer-emoji" aria-hidden="true">✈️</span> Ab Hamburg</li>
-                            <li><span class="daily-offer-emoji" aria-hidden="true">🌙</span> 4 Tage</li>
-                            <li><span class="daily-offer-emoji" aria-hidden="true">💰</span> ab 299 € pro Person</li>
+                            <li><span class="daily-offer-emoji" aria-hidden="true">✈️</span> Ab STADT</li>
+                            <li><span class="daily-offer-emoji" aria-hidden="true">🌙</span> X Tage</li>
+                            <li><span class="daily-offer-emoji" aria-hidden="true">💰</span> ab XXX € pro Person</li>
                         </ul>
-                        <a href="/angebot-kreta" class="daily-offer-cta">Reisevorschlag ansehen</a>
+                        <a href="/angebot-zielort" class="daily-offer-cta">Reisevorschlag ansehen</a>
                     </div>
                 </article>
-                <article class="daily-offer-card">
-                    <div class="daily-offer-image">
-                        <img src="images/mallorca-2026.png" alt="Mallorca – Bucht mit türkisem Wasser" width="320" height="240" loading="lazy">
-                    </div>
-                    <div class="daily-offer-content">
-                        <h2 class="daily-offer-destination">Mallorca</h2>
-                        <div class="daily-offer-travel-date">
-                            <span class="daily-offer-travel-date-value">📅 12.09.2026 – 16.09.2026</span>
-                        </div>
-                        <ul class="daily-offer-details">
-                            <li><span class="daily-offer-emoji" aria-hidden="true">✈️</span> Ab Hamburg</li>
-                            <li><span class="daily-offer-emoji" aria-hidden="true">🌙</span> 4 Tage</li>
-                            <li><span class="daily-offer-emoji" aria-hidden="true">💰</span> ab 299 € pro Person</li>
-                        </ul>
-                        <a href="/angebot-mallorca" class="daily-offer-cta">Reisevorschlag ansehen</a>
-                    </div>
-                </article>
+                -->
             </div>
         </div>
     </section>

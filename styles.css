@@ -2652,6 +2652,30 @@ body {
     margin: 0 auto;
 }
 
+.daily-offers-empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem 1.5rem;
+    background: white;
+    border-radius: 18px;
+    border: 2px dashed var(--border-color);
+}
+
+.daily-offers-empty-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin-bottom: 0.75rem;
+}
+
+.daily-offers-empty-text {
+    font-size: 1rem;
+    color: var(--text-light);
+    line-height: 1.6;
+    max-width: 520px;
+    margin: 0 auto;
+}
+
 .daily-offer-card {
     display: flex;
     flex-direction: row;
