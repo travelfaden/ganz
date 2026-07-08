@@ -54,7 +54,7 @@ module.exports = async (req, res) => {
       branding_settings: {
         display_name: checkoutDisplayName,
       },
-      payment_method_types: ['card', 'paypal'],
+      payment_method_types: ['card'],
       wallet_options: {
         link: {
           display: 'never',
