@@ -29,7 +29,9 @@
     { "source": "/pytania-i-odpowiedzi", "destination": "/faq", "permanent": true },
     { "source": "/pytania-i-odpowiedzi.html", "destination": "/faq", "permanent": true },
     { "source": "/angebot-kreta", "destination": "/reisevorschlaege", "permanent": true },
-    { "source": "/angebot-kreta.html", "destination": "/reisevorschlaege", "permanent": true }
+    { "source": "/angebot-kreta.html", "destination": "/reisevorschlaege", "permanent": true },
+    { "source": "/angebot-mallorca", "destination": "/reisevorschlaege", "permanent": true },
+    { "source": "/angebot-mallorca.html", "destination": "/reisevorschlaege", "permanent": true }
   ],
   "rewrites": [
     {

@@ -1,6 +1,6 @@
 /** Bekannte Reisevorschlag des Tages IDs – bei neuer Angebotsseite hier + script.js ergänzen */
 const VALID_REISEVORSCHLAG_IDS = {
-  'TF-MALLORCA-15082026': true,
+  'TF-WARSCHAU-24092026': true,
 };
 
 function normalizeReisevorschlagId(id) {

@@ -220,7 +220,7 @@ function collectPageConsents() {
 
 /** Reisevorschlag des Tages IDs (rid in URL) – auch in api/_lib/reisevorschlag-ids.js pflegen */
 const VALID_REISEVORSCHLAG_IDS = {
-    'TF-MALLORCA-15082026': true,
+    'TF-WARSCHAU-24092026': true,
 };
 
 function serializeTravelForm(form) {
