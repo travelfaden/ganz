@@ -2107,38 +2107,80 @@ body {
     );
 }
 
-.angebot-page-hero-content {
-    max-width: 920px;
-    margin: 0 auto;
-    padding: 0 0.5rem;
+.angebot-page-hero .container {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding-left: 1rem;
+    padding-right: 1rem;
 }
 
-.angebot-page-hero-title {
+.angebot-page-hero-content {
+    max-width: 920px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Wyższa specificity niż .service-hero-content h1 (3.5rem / 2.5rem) */
+.service-hero-content.angebot-page-hero-content h1.angebot-page-hero-title {
     margin: 0 0 0.85rem;
     font-family: 'Fraunces', Georgia, 'Times New Roman', serif;
     font-optical-sizing: auto;
     font-size: clamp(1.15rem, 3.2vw, 2.35rem);
     font-weight: 800;
     letter-spacing: -0.02em;
-    line-height: 1.15;
-    white-space: nowrap;
+    line-height: 1.25;
     color: #fff;
     text-shadow: 0 2px 18px rgba(0, 0, 0, 0.35);
+    text-wrap: balance;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    max-width: 100%;
 }
 
 .angebot-page-hero-lead {
     margin: 0 auto;
     max-width: 38rem;
-    font-size: clamp(1rem, 2.2vw, 1.15rem);
+    width: 100%;
+    box-sizing: border-box;
+    font-size: clamp(0.95rem, 2.2vw, 1.15rem);
     font-weight: 500;
     line-height: 1.55;
     color: rgba(255, 255, 255, 0.94);
     text-shadow: 0 1px 10px rgba(0, 0, 0, 0.35);
 }
 
-@media (max-width: 700px) {
-    .angebot-page-hero-title {
-        font-size: clamp(0.95rem, 4.2vw, 1.35rem);
+@media (min-width: 901px) {
+    .service-hero-content.angebot-page-hero-content h1.angebot-page-hero-title {
+        white-space: nowrap;
+        overflow-wrap: normal;
+        word-break: normal;
+    }
+}
+
+@media (max-width: 900px) {
+    .angebot-page-hero {
+        min-height: 340px;
+        padding: 2.5rem 0;
+    }
+
+    .service-hero-content.angebot-page-hero-content h1.angebot-page-hero-title {
+        font-size: clamp(1.15rem, 5.2vw, 1.5rem);
+        white-space: normal;
+    }
+
+    .angebot-page-hero-lead {
+        font-size: clamp(0.9rem, 3.6vw, 1.05rem);
+        padding: 0 0.15rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .service-hero-content.angebot-page-hero-content h1.angebot-page-hero-title {
+        font-size: 1.2rem;
     }
 }
 
@@ -2323,7 +2365,7 @@ body {
         position: static;
     }
     
-    .service-hero-content h1 {
+    .service-hero-content h1:not(.angebot-page-hero-title) {
         font-size: 2.5rem;
     }
     
