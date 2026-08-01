@@ -3520,18 +3520,21 @@ body {
 
     .angebot-route {
         grid-template-columns: 1fr;
-        text-align: left;
+        justify-items: center;
+        text-align: center;
         gap: 0.65rem;
     }
 
+    .angebot-route-point,
     .angebot-route-point--end {
-        text-align: left;
+        text-align: center;
+        justify-items: center;
     }
 
     .angebot-route-line {
         width: 2px;
         height: 1.5rem;
-        margin-left: 0.35rem;
+        margin: 0 auto;
         background: linear-gradient(180deg, var(--primary-color), var(--secondary-color));
     }
 
