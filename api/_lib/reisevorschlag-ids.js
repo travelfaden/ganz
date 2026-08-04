@@ -1,5 +1,6 @@
 /** Bekannte Reisevorschlag des Tages IDs – bei neuer Angebotsseite hier + script.js ergänzen */
 const VALID_REISEVORSCHLAG_IDS = {
+  'TF-ALBANIEN-15092026': true,
   'TF-SARDINIEN-24082026': true,
   'TF-WARSCHAU-24092026': true,
 };
