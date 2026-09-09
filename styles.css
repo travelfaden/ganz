@@ -2801,9 +2801,9 @@ body {
 }
 
 .daily-offer-image {
-    flex: 0 0 38%;
-    max-width: 200px;
-    min-width: 120px;
+    flex: 0 0 46%;
+    max-width: 280px;
+    min-width: 160px;
     min-height: 200px;
     background: var(--bg-light);
 }
@@ -2935,7 +2935,7 @@ body {
     }
 
     .daily-offer-image {
-        flex: 0 0 200px;
+        flex: 0 0 240px;
         max-width: none;
     }
 

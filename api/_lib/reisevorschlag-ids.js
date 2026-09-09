@@ -1,5 +1,6 @@
 /** Bekannte Reisevorschlag des Tages IDs – bei neuer Angebotsseite hier + script.js ergänzen */
 const VALID_REISEVORSCHLAG_IDS = {
+  'TF-ROM-14112026': true,
   'TF-MONTENEGRO-07112026': true,
   'TF-MEXIKO-19112026': true,
   'TF-ALBANIEN-15092026': true,
