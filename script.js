@@ -220,6 +220,7 @@ function collectPageConsents() {
 
 /** Reisevorschlag des Tages IDs (rid in URL) – auch in api/_lib/reisevorschlag-ids.js pflegen */
 const VALID_REISEVORSCHLAG_IDS = {
+    'TF-ZYPERN-10122026': true,
     'TF-ROM-14112026': true,
     'TF-MONTENEGRO-07112026': true,
     'TF-MEXIKO-19112026': true,
