@@ -1,5 +1,6 @@
 /** Bekannte Reisevorschlag des Tages IDs – bei neuer Angebotsseite hier + script.js ergänzen */
 const VALID_REISEVORSCHLAG_IDS = {
+  'TF-MAILAND-26112026': true,
   'TF-ZYPERN-10122026': true,
   'TF-ROM-14112026': true,
   'TF-MONTENEGRO-07112026': true,
