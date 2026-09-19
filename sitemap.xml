@@ -8,9 +8,15 @@
   </url>
   <url>
     <loc>https://travelfaden.com/reisevorschlaege</loc>
-    <lastmod>2026-09-17</lastmod>
+    <lastmod>2026-09-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://travelfaden.com/angebot-newyork</loc>
+    <lastmod>2026-09-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
   </url>
   <url>
     <loc>https://travelfaden.com/angebot-paris</loc>
