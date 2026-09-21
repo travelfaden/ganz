@@ -1,5 +1,6 @@
 /** Bekannte Reisevorschlag des Tages IDs – bei neuer Angebotsseite hier + script.js ergänzen */
 const VALID_REISEVORSCHLAG_IDS = {
+  'TF-KORFU-09052027': true,
   'TF-NEWYORK-08022027': true,
   'TF-PARIS-30122026': true,
   'TF-PHUKET-05102026': true,

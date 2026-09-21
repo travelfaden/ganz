@@ -220,6 +220,7 @@ function collectPageConsents() {
 
 /** Reisevorschlag des Tages IDs (rid in URL) – auch in api/_lib/reisevorschlag-ids.js pflegen */
 const VALID_REISEVORSCHLAG_IDS = {
+    'TF-KORFU-09052027': true,
     'TF-NEWYORK-08022027': true,
     'TF-PARIS-30122026': true,
     'TF-PHUKET-05102026': true,
