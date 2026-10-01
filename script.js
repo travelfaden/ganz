@@ -220,6 +220,7 @@ function collectPageConsents() {
 
 /** Reisevorschlag des Tages IDs (rid in URL) – auch in api/_lib/reisevorschlag-ids.js pflegen */
 const VALID_REISEVORSCHLAG_IDS = {
+    'TF-MALLORCA-21122026': true,
     'TF-FUERTEVENTURA-15032027': true,
     'TF-MALTA-13112026': true,
     'TF-MADEIRA-06122026': true,
