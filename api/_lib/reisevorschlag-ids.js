@@ -1,5 +1,6 @@
 /** Bekannte Reisevorschlag des Tages IDs – bei neuer Angebotsseite hier + script.js ergänzen */
 const VALID_REISEVORSCHLAG_IDS = {
+  'TF-BANGKOK-01032027': true,
   'TF-MAROKKO-12122026': true,
   'TF-BUDAPEST-04122026': true,
   'TF-MALLORCA-21122026': true,
